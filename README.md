@@ -1,22 +1,16 @@
-# Mi Proyecto API
+# 🧱 Clean Architecture API
 
-## Descripción
-API REST desarrollada con Node.js y Express
+Estructura base para un proyecto Node.js + Express + MongoDB usando Arquitectura Limpia.
 
-## Instalación
-```bash
-npm install
-```
+## 🚀 Instrucciones
 
-## Desarrollo
-```bash
-npm run dev
-```
-
-## Producción
-```bash
-npm start
-```
-
-## Estructura del Proyecto
-...
+1. Clona este repositorio o ejecuta el script de creación.
+2. Instala dependencias:
+   ```bash
+   npm install
+   ```
+3. Copia el archivo .env.example a .env
+4. Ejecuta el proyecto:
+   ```bash
+   npm run dev
+   ```

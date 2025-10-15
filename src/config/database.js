@@ -1,14 +1,12 @@
-// Configuración de base de datos
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+import config from "./index.js";
 
-const connectDB = async () => {
+export default async function connectDB() {
   try {
-    const conn = await mongoose.connect(process.env.DB_URL);
-    console.log('MongoDB Connected: ${conn.connection.host}');
+    const conn = await mongoose.connect(config.dbUrl);
+    console.log("🟢 MongoDB Connected:", conn.connection.host);
   } catch (error) {
-    console.error('Database connection error:', error);
+    console.error("🔴 MongoDB Connection Error:", error.message);
     process.exit(1);
   }
-};
-
-module.exports = connectDB;
+}
