@@ -4,18 +4,36 @@ import cors from "cors";
 import morgan from "morgan";
 import config from "./config/index.js";
 import connectDB from "./config/database.js";
+
+// Importar rutas
+import authRoutes from "./infrastructure/webserver/express/routes/authRoutes.js";
 import userRoutes from "./infrastructure/webserver/express/routes/userRoutes.js";
+import workspaceRoutes from "./infrastructure/webserver/express/routes/workspaceRoutes.js";
+import boardRoutes from "./infrastructure/webserver/express/routes/boardRoutes.js";
+import columnRoutes from "./infrastructure/webserver/express/routes/columnRoutes.js";
+import taskRoutes from "./infrastructure/webserver/express/routes/taskRoutes.js";
+import activityRoutes from "./infrastructure/webserver/express/routes/activityRoutes.js";
 
 const app = express();
 
 // 🧱 Middlewares base
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: config.frontendUrl,
+  credentials: true
+}));
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // 📦 Rutas principales
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/workspaces", workspaceRoutes);
+app.use("/api/boards", boardRoutes);
+app.use("/api/columns", columnRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/activities", activityRoutes);
 
 // 🌐 Ruta de salud
 app.get("/api/health", (req, res) => {
