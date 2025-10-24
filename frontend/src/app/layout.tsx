@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Sistema de Gestión de Proyectos",
-  description: "Gestiona tus proyectos y tareas de forma eficiente",
+  title: "Flowly - Gestión de Proyectos",
+  description: "Organiza, colabora y completa tus proyectos más rápido con tableros Kanban",
 };
 
 export default function RootLayout({

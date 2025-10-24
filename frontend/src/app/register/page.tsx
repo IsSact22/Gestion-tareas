@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, User, UserPlus } from 'lucide-react';
+import Image from 'next/image';
+import { Mail, Lock, User } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -88,8 +89,14 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         {/* Logo y Título */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-600 rounded-2xl mb-4">
-            <UserPlus className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <Image 
+              src="/logo/flowly-logo.svg" 
+              alt="Flowly Logo" 
+              width={64} 
+              height={64}
+              className="w-16 h-16"
+            />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Crear Cuenta
