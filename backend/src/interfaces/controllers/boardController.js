@@ -8,6 +8,7 @@ import WorkspaceRepository from '../../infrastructure/database/mongo/workspaceRe
 import ColumnRepository from '../../infrastructure/database/mongo/columnRepository.js';
 import TaskRepository from '../../infrastructure/database/mongo/taskRepository.js';
 import ActivityRepository from '../../infrastructure/database/mongo/activityRepository.js';
+import { emitToBoard, emitToWorkspace } from '../../socket/index.js';
 
 const boardRepository = new BoardRepository();
 const workspaceRepository = new WorkspaceRepository();
@@ -29,6 +30,13 @@ export async function createBoard(req, res, next) {
       description,
       workspaceId,
       userId: req.user._id
+    });
+
+    // Emitir evento Socket.IO a todos los usuarios del workspace
+    emitToWorkspace(workspaceId, 'board:updated', {
+      board,
+      userId: req.user._id,
+      timestamp: new Date()
     });
 
     res.status(201).json({ success: true, data: board });
@@ -74,6 +82,19 @@ export async function updateBoard(req, res, next) {
       description
     });
 
+    // Emitir evento Socket.IO al board y al workspace
+    emitToBoard(board._id.toString(), 'board:updated', {
+      board,
+      userId: req.user._id,
+      timestamp: new Date()
+    });
+
+    emitToWorkspace(board.workspace.toString(), 'board:updated', {
+      board,
+      userId: req.user._id,
+      timestamp: new Date()
+    });
+
     res.status(200).json({ success: true, data: board });
   } catch (error) {
     next(error);
@@ -82,10 +103,22 @@ export async function updateBoard(req, res, next) {
 
 export async function deleteBoard(req, res, next) {
   try {
+    // Obtener el board antes de eliminarlo para tener el workspaceId
+    const board = await boardRepository.findById(req.params.id);
+    
     const result = await deleteBoardUseCase.execute({
       boardId: req.params.id,
       userId: req.user._id
     });
+
+    // Emitir evento Socket.IO de eliminación
+    if (board) {
+      emitToWorkspace(board.workspace.toString(), 'board:deleted', {
+        boardId: req.params.id,
+        userId: req.user._id,
+        timestamp: new Date()
+      });
+    }
 
     res.status(200).json({ success: true, data: result });
   } catch (error) {

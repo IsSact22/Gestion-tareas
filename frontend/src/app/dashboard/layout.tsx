@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
+import { useSocket } from '@/hooks/useSocket';
 import Sidebar from '@/components/layout/Sidebar';
 import Navbar from '@/components/layout/Navbar';
 import { Toaster } from 'react-hot-toast';
@@ -12,6 +13,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { checkAuth } = useAuthStore();
+  
+  // Inicializar Socket.IO automáticamente
+  useSocket();
 
   useEffect(() => {
     checkAuth();

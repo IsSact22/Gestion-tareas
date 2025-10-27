@@ -14,7 +14,13 @@ export default class CreateWorkspaceUseCase {
       name,
       description,
       owner: userId,
-      members: []
+      members: [
+        {
+          user: userId,
+          role: 'admin',
+          joinedAt: new Date()
+        }
+      ]
     });
 
     return workspace;

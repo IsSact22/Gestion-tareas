@@ -6,6 +6,7 @@ import AddMemberUseCase from '../../application/workspace/addMemberUseCase.js';
 import WorkspaceRepository from '../../infrastructure/database/mongo/workspaceRepository.js';
 import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
 import UserRepository from '../../infrastructure/database/mongo/userRepository.js';
+import { emitToWorkspace } from '../../socket/index.js';
 
 const workspaceRepository = new WorkspaceRepository();
 const boardRepository = new BoardRepository();
@@ -24,6 +25,13 @@ export async function createWorkspace(req, res, next) {
       name,
       description,
       userId: req.user._id
+    });
+
+    // Emitir evento Socket.IO
+    emitToWorkspace(workspace._id.toString(), 'workspace:updated', {
+      workspace,
+      userId: req.user._id,
+      timestamp: new Date()
     });
 
     res.status(201).json({ success: true, data: workspace });
@@ -58,6 +66,13 @@ export async function updateWorkspace(req, res, next) {
       userId: req.user._id,
       name,
       description
+    });
+
+    // Emitir evento Socket.IO
+    emitToWorkspace(workspace._id.toString(), 'workspace:updated', {
+      workspace,
+      userId: req.user._id,
+      timestamp: new Date()
     });
 
     res.status(200).json({ success: true, data: workspace });

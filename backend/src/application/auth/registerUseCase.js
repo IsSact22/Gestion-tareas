@@ -6,7 +6,7 @@ export default class RegisterUseCase {
     this.userRepository = userRepository;
   }
 
-  async execute({ name, email, password }) {
+  async execute({ name, email, password, role = 'member' }) {
     // Validar que el email no exista
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
@@ -23,11 +23,18 @@ export default class RegisterUseCase {
       throw new AppError('Password must be at least 6 characters', 400);
     }
 
+    // Validar rol
+    const validRoles = ['admin', 'member', 'viewer'];
+    if (role && !validRoles.includes(role)) {
+      throw new AppError('Invalid role. Must be: admin, member, or viewer', 400);
+    }
+
     // Crear usuario
     const user = await this.userRepository.create({
       name,
       email,
-      password
+      password,
+      role: role || 'member'
     });
 
     // Generar token
