@@ -10,13 +10,13 @@ export default function Home() {
         <nav className="flex items-center justify-between mb-16">
           <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <Image 
-              src="/logo/flowly-logo.svg" 
-              alt="Flowly Logo" 
+              src="/logo/isotipo-aura.svg" 
+              alt="AuraTasks Logo" 
               width={40} 
               height={40}
               className="w-10 h-10"
             />
-            <span className="text-2xl font-bold text-gray-900">Flowly</span>
+            <span className="text-2xl font-bold text-gray-900">AuraTasks</span>
           </Link>
           <div className="flex items-center space-x-4">
             <Link
@@ -76,7 +76,7 @@ export default function Home() {
         {/* Main Features */}
         <div className="mb-24">
           <h2 className="text-4xl font-bold text-center text-gray-900 mb-4">
-            Con Flowly, administrar tus proyectos se convierte en una{' '}
+            Con AuraTasks, administrar tus proyectos se convierte en una{' '}
             <span className="text-blue-600">experiencia fluida</span>
           </h2>
           <p className="text-center text-gray-600 text-lg mb-12 max-w-2xl mx-auto">
@@ -194,16 +194,16 @@ export default function Home() {
         <footer className="border-t border-gray-200 pt-12 pb-8 mt-20">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Image 
-              src="/logo/flowly-logo.svg" 
-              alt="Flowly Logo" 
+              src="/logo/isotipo-aura.svg" 
+              alt="AuraTasks Logo" 
               width={32} 
               height={32}
               className="w-8 h-8"
             />
-            <span className="text-xl font-bold text-gray-900">Flowly</span>
+            <span className="text-xl font-bold text-gray-900">AuraTasks</span>
           </div>
           <p className="text-center text-gray-600">
-            © 2025 Flowly. Gestiona tareas con fluidez y en equipo.
+            © 2025 AuraTasks. Gestiona tareas con fluidez y en equipo.
           </p>
         </footer>
       </div>

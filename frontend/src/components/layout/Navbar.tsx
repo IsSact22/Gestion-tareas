@@ -1,8 +1,9 @@
 'use client';
 
-import { Search, Bell, Plus } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,10 +33,7 @@ export default function Navbar() {
           </Button>
 
           {/* Notifications */}
-          <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
-            <Bell className="w-5 h-5 text-gray-600" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
+          <NotificationBell />
         </div>
       </div>
     </header>

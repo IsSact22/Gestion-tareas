@@ -10,7 +10,8 @@ import socketService from '@/services/socketService';
 import KanbanBoard from '@/components/kanban/KanbanBoard';
 import ColumnModal from '@/components/modals/ColumnModal';
 import TaskModal from '@/components/modals/TaskModal';
-import { ArrowLeft, Users, Settings, Star } from 'lucide-react';
+import AddBoardMemberModal from '@/components/modals/AddBoardMemberModal';
+import { ArrowLeft, Users, Settings, Star, Home } from 'lucide-react';
 import { Column } from '@/services/columnService';
 import { Task } from '@/services/taskService';
 
@@ -28,6 +29,7 @@ export default function BoardDetailPage() {
 
   const [showColumnModal, setShowColumnModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
+  const [showMemberModal, setShowMemberModal] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState<Column | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedColumnForTask, setSelectedColumnForTask] = useState<string | null>(null);
@@ -118,9 +120,15 @@ export default function BoardDetailPage() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/boards')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-500 rounded-lg transition-colors"
             >
               <ArrowLeft size={20} />
+                      </button>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="p-2 hover:bg-gray-500 rounded-lg transition-colors"
+            >
+              <Home size={20} />
             </button>
 
             <div>
@@ -158,12 +166,15 @@ export default function BoardDetailPage() {
               )}
             </div>
 
-            <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+            <button 
+              onClick={() => setShowMemberModal(true)}
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg--500 transition-colors flex items-center gap-2"
+            >
               <Users size={18} />
               <span>Invitar</span>
             </button>
 
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button className="p-2 hover:bg-gray-500 rounded-lg transition-colors">
               <Settings size={20} />
             </button>
           </div>
@@ -220,6 +231,12 @@ export default function BoardDetailPage() {
         task={selectedTask}
         boardId={boardId}
         columnId={selectedColumnForTask || undefined}
+      />
+
+      <AddBoardMemberModal
+        isOpen={showMemberModal}
+        onClose={() => setShowMemberModal(false)}
+        boardId={boardId}
       />
     </div>
   );

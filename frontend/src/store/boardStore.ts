@@ -136,3 +136,17 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set({ error: null });
   },
 }));
+
+// Escuchar eventos de Socket.IO para actualizar boards en tiempo real
+socketService.on('board:member-added', (data: { boardId: string; member: any }) => {
+  console.log('🔔 Nuevo miembro agregado al board:', data);
+  
+  // Recargar la lista de boards para mostrar el nuevo board
+  const state = useBoardStore.getState();
+  state.fetchBoards();
+  
+  // Si estamos viendo ese board, recargarlo
+  if (state.currentBoard?._id === data.boardId) {
+    state.fetchBoardById(data.boardId);
+  }
+});

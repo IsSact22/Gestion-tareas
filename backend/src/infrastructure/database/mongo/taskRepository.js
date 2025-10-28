@@ -19,7 +19,6 @@ export default class TaskRepository {
 
   async findByBoardId(boardId) {
     return TaskModel.find({ board: boardId })
-      .populate('column', 'name color')
       .populate('assignedTo', 'name email avatar')
       .populate('createdBy', 'name email avatar')
       .sort({ position: 1 });

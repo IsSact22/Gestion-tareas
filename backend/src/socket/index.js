@@ -37,6 +37,10 @@ function initializeSocket(server) {
   io.on('connection', (socket) => {
     console.log(`✅ Usuario conectado: ${socket.userId} (${socket.id})`);
 
+    // Unir al usuario a su room personal para notificaciones
+    socket.join(`user:${socket.userId}`);
+    console.log(`👤 Usuario ${socket.userId} unido a su room personal`);
+
     // ==================== WORKSPACE EVENTS ====================
     socket.on('join:workspace', (workspaceId) => {
       socket.join(`workspace:${workspaceId}`);
@@ -216,8 +220,16 @@ function emitToWorkspace(workspaceId, event, data) {
   }
 }
 
+function getIO() {
+  if (!io) {
+    throw new Error('Socket.IO no ha sido inicializado');
+  }
+  return io;
+}
+
 export {
   initializeSocket,
   emitToBoard,
-  emitToWorkspace
+  emitToWorkspace,
+  getIO
 };

@@ -13,6 +13,7 @@ import boardRoutes from "./infrastructure/webserver/express/routes/boardRoutes.j
 import columnRoutes from "./infrastructure/webserver/express/routes/columnRoutes.js";
 import taskRoutes from "./infrastructure/webserver/express/routes/taskRoutes.js";
 import activityRoutes from "./infrastructure/webserver/express/routes/activityRoutes.js";
+import notificationRoutes from "./infrastructure/webserver/express/routes/notificationRoutes.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use("/api/boards", boardRoutes);
 app.use("/api/columns", columnRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/activities", activityRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // 🌐 Ruta de salud
 app.get("/api/health", (req, res) => {

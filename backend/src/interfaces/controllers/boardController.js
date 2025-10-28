@@ -1,16 +1,18 @@
-import CreateBoardUseCase from '../../application/board/createBoardUseCase.js';
 import GetBoardsUseCase from '../../application/board/getBoardsUseCase.js';
 import GetBoardByIdUseCase from '../../application/board/getBoardByIdUseCase.js';
 import UpdateBoardUseCase from '../../application/board/updateBoardUseCase.js';
 import DeleteBoardUseCase from '../../application/board/deleteBoardUseCase.js';
 import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
+import NotificationRepository from '../../infrastructure/database/mongo/notificationRepository.js';
 import WorkspaceRepository from '../../infrastructure/database/mongo/workspaceRepository.js';
 import ColumnRepository from '../../infrastructure/database/mongo/columnRepository.js';
 import TaskRepository from '../../infrastructure/database/mongo/taskRepository.js';
 import ActivityRepository from '../../infrastructure/database/mongo/activityRepository.js';
-import { emitToBoard, emitToWorkspace } from '../../socket/index.js';
+import { emitToBoard, emitToWorkspace, getIO } from '../../socket/index.js';
+import CreateBoardUseCase from '../../application/board/createBoardUseCase.js';
 
 const boardRepository = new BoardRepository();
+const notificationRepository = new NotificationRepository();
 const workspaceRepository = new WorkspaceRepository();
 const columnRepository = new ColumnRepository();
 const taskRepository = new TaskRepository();
@@ -130,6 +132,30 @@ export async function addMember(req, res, next) {
   try {
     const { userId, role } = req.body;
     const board = await boardRepository.addMember(req.params.id, userId, role);
+    
+    // Crear notificación para el usuario agregado
+    const notification = await notificationRepository.create({
+      user: userId,
+      type: 'board_invitation',
+      title: 'Te agregaron a un board',
+      message: `Has sido agregado al board "${board.name}" como ${role === 'admin' ? 'administrador' : role === 'member' ? 'miembro' : 'visualizador'}`,
+      data: {
+        boardId: board._id,
+        fromUser: req.user._id
+      },
+      link: `/boards/${board._id}`
+    });
+
+    // Emitir notificación en tiempo real al usuario
+    const io = getIO();
+    io.to(`user:${userId}`).emit('notification', notification);
+    
+    // Emitir actualización del board a todos los miembros
+    io.to(`board:${board._id}`).emit('board:member-added', {
+      boardId: board._id,
+      member: { user: userId, role }
+    });
+    
     res.status(200).json({ success: true, data: board });
   } catch (error) {
     next(error);
