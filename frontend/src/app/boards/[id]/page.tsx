@@ -10,6 +10,7 @@ import socketService from '@/services/socketService';
 import KanbanBoard from '@/components/kanban/KanbanBoard';
 import ColumnModal from '@/components/modals/ColumnModal';
 import TaskModal from '@/components/modals/TaskModal';
+import TaskDetailModal from '@/components/modals/TaskDetailModal';
 import AddBoardMemberModal from '@/components/modals/AddBoardMemberModal';
 import { ArrowLeft, Users, Settings, Star, Home } from 'lucide-react';
 import { Column } from '@/services/columnService';
@@ -18,7 +19,7 @@ import { Task } from '@/services/taskService';
 export default function BoardDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const boardId = params.id as string;
+  const boardId = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
 
   const { currentBoard, fetchBoardById, isLoading } = useBoardStore();
   const { fetchColumns, addColumn, removeColumn } = useColumnStore();
@@ -29,6 +30,7 @@ export default function BoardDetailPage() {
 
   const [showColumnModal, setShowColumnModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
+  const [showTaskDetailModal, setShowTaskDetailModal] = useState(false);
   const [showMemberModal, setShowMemberModal] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState<Column | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -205,7 +207,7 @@ export default function BoardDetailPage() {
           }}
           onTaskClick={(task) => {
             setSelectedTask(task);
-            setShowTaskModal(true);
+            setShowTaskDetailModal(true);
           }}
         />
       </div>
@@ -238,6 +240,21 @@ export default function BoardDetailPage() {
         onClose={() => setShowMemberModal(false)}
         boardId={boardId}
       />
+
+      {selectedTask && (
+        <TaskDetailModal
+          isOpen={showTaskDetailModal}
+          onClose={() => {
+            setShowTaskDetailModal(false);
+            setSelectedTask(null);
+          }}
+          task={selectedTask}
+          onEdit={() => {
+            setShowTaskDetailModal(false);
+            setShowTaskModal(true);
+          }}
+        />
+      )}
     </div>
   );
 }

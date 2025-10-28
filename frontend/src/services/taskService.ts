@@ -5,7 +5,7 @@ export interface Task {
   title: string;
   description?: string;
   column: string;
-  board: string;
+  board: string | { _id: string; name: string };
   position: number;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   status: 'todo' | 'in_progress' | 'review' | 'done';
@@ -36,7 +36,7 @@ export interface Comment {
     email: string;
     avatar?: string;
   };
-  content: string;
+  text: string;
   createdAt: string;
 }
 
@@ -124,7 +124,7 @@ class TaskService {
    * Agregar comentario a una tarea
    */
   async addComment(taskId: string, content: string): Promise<Comment> {
-    const response = await api.post(`/tasks/${taskId}/comments`, { content });
+    const response = await api.post(`/tasks/${taskId}/comments`, { text: content });
     return response.data.data;
   }
 
@@ -133,6 +133,22 @@ class TaskService {
    */
   async deleteComment(taskId: string, commentId: string): Promise<void> {
     await api.delete(`/tasks/${taskId}/comments/${commentId}`);
+  }
+
+  /**
+   * Buscar tareas
+   */
+  async searchTasks(query: string): Promise<Task[]> {
+    const response = await api.get(`/tasks/search?q=${query}`);
+    return response.data.data;
+  }
+
+  /**
+   * Obtener mis tareas (asignadas al usuario actual)
+   */
+  async getMyTasks(): Promise<Task[]> {
+    const response = await api.get('/tasks/my-tasks');
+    return response.data.data;
   }
 }
 

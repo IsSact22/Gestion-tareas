@@ -1,7 +1,12 @@
 import { create } from 'zustand';
-import taskService, { Task, CreateTaskDto, UpdateTaskDto, MoveTaskDto, Comment } from '@/services/taskService';
+import taskService, { Task, CreateTaskDto, UpdateTaskDto, MoveTaskDto } from '@/services/taskService';
 import socketService from '@/services/socketService';
 import toast from 'react-hot-toast';
+
+// Helper para obtener el boardId de una tarea
+const getBoardId = (board: string | { _id: string; name: string }): string => {
+  return typeof board === 'string' ? board : board._id;
+};
 
 interface TaskState {
   tasks: Task[];
@@ -97,7 +102,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Emitir evento Socket.IO
       const task = get().tasks.find(t => t._id === id);
       if (task) {
-        socketService.emitTaskUpdated(task.board, updatedTask);
+        socketService.emitTaskUpdated(getBoardId(task.board), updatedTask);
       }
 
       toast.success('Tarea actualizada exitosamente');
@@ -123,7 +128,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       // Emitir evento Socket.IO
       if (task) {
-        socketService.emitTaskDeleted(task.board, id);
+        socketService.emitTaskDeleted(getBoardId(task.board), id);
       }
 
       toast.success('Tarea eliminada exitosamente');
@@ -148,7 +153,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const task = get().tasks.find(t => t._id === data.taskId);
       if (task) {
         socketService.emitTaskMoved(
-          task.board,
+          getBoardId(task.board),
           data.taskId,
           data.fromColumnId,
           data.toColumnId,
@@ -159,7 +164,10 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const errorMessage = error.response?.data?.message || 'Error al mover tarea';
       toast.error(errorMessage);
       // Revertir el cambio optimista si falla
-      get().fetchTasks(get().tasks[0]?.board || '');
+      const firstTask = get().tasks[0];
+      if (firstTask) {
+        get().fetchTasks(getBoardId(firstTask.board));
+      }
     }
   },
 

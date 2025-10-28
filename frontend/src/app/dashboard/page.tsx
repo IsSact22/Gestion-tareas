@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useBoardStore } from '@/store/boardStore';
+import { Task } from '@/services/taskService';
 import socketService from '@/services/socketService';
 import Card from '@/components/ui/Card';
 import { 
@@ -25,10 +26,27 @@ export default function DashboardPage() {
   const { user } = useAuthStore();
   const { workspaces, isLoading, fetchWorkspaces } = useWorkspaceStore();
   const { boards, isLoading: boardsLoading, fetchBoards } = useBoardStore();
+  const [myTasks, setMyTasks] = useState<Task[]>([]);
+  const [tasksLoading, setTasksLoading] = useState(true);
 
   useEffect(() => {
     fetchWorkspaces();
     fetchBoards();
+    
+    // Cargar mis tareas
+    const loadTasks = async () => {
+      try {
+        const taskService = (await import('@/services/taskService')).default;
+        const tasks = await taskService.getMyTasks();
+        setMyTasks(tasks);
+      } catch (error) {
+        console.error('Error al cargar tareas:', error);
+      } finally {
+        setTasksLoading(false);
+      }
+    };
+    
+    loadTasks();
   }, [fetchWorkspaces, fetchBoards]);
 
   // Unirse a todos los workspaces del usuario
@@ -95,7 +113,9 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Tareas Activas</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">0</p>
+              <p className="text-3xl font-bold text-gray-900">
+                {tasksLoading ? '...' : myTasks.filter(t => t.status !== 'done').length}
+              </p>
             </div>
             <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
               <CheckSquare className="w-6 h-6 text-orange-600" />
@@ -111,7 +131,9 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Completadas</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">0</p>
+              <p className="text-3xl font-bold text-gray-900">
+                {tasksLoading ? '...' : myTasks.filter(t => t.status === 'done').length}
+              </p>
             </div>
             <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
               <CheckSquare className="w-6 h-6 text-green-600" />

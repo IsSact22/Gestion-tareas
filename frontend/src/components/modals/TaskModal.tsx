@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { X, Calendar, Tag, AlertCircle, User } from 'lucide-react';
+import { X, Calendar, Tag, AlertCircle, User, UserPlus } from 'lucide-react';
 import { Task } from '@/services/taskService';
 import { useTaskStore } from '@/store/taskStore';
 import { useColumnStore } from '@/store/columnStore';
+import { useBoardStore } from '@/store/boardStore';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 
@@ -24,6 +25,7 @@ const PRIORITIES = [
 export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: TaskModalProps) {
   const { createTask, updateTask, isLoading } = useTaskStore();
   const { columns } = useColumnStore();
+  const { currentBoard } = useBoardStore();
   
   const [formData, setFormData] = useState({
     title: '',
@@ -32,6 +34,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
     priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
     tags: [] as string[],
     dueDate: '',
+    assignedTo: [] as string[],
   });
   
   const [tagInput, setTagInput] = useState('');
@@ -43,8 +46,9 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
         description: task.description || '',
         columnId: task.column,
         priority: task.priority,
-        tags: task.tags || [],
+        tags: Array.isArray(task.tags) ? task.tags : [],
         dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
+        assignedTo: Array.isArray(task.assignedTo) ? task.assignedTo.map(u => u._id) : [],
       });
     } else {
       setFormData({
@@ -54,6 +58,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
         priority: 'medium',
         tags: [],
         dueDate: '',
+        assignedTo: [],
       });
     }
   }, [task, columnId]);
@@ -71,6 +76,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
         priority: formData.priority,
         tags: formData.tags,
         dueDate: formData.dueDate || undefined,
+        assignedTo: formData.assignedTo,
       });
     } else {
       // Crear nueva tarea
@@ -82,6 +88,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
         priority: formData.priority,
         tags: formData.tags,
         dueDate: formData.dueDate || undefined,
+        assignedTo: formData.assignedTo,
       });
     }
 
@@ -252,6 +259,66 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Asignar a */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <UserPlus size={16} />
+              Asignar a
+            </label>
+            <div className="space-y-2">
+              {currentBoard?.members?.map((member) => (
+                <label
+                  key={member.user._id}
+                  className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.assignedTo.includes(member.user._id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setFormData({
+                          ...formData,
+                          assignedTo: [...formData.assignedTo, member.user._id],
+                        });
+                      } else {
+                        setFormData({
+                          ...formData,
+                          assignedTo: formData.assignedTo.filter(id => id !== member.user._id),
+                        });
+                      }
+                    }}
+                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                  <div className="flex items-center gap-2 flex-1">
+                    {member.user.avatar ? (
+                      <img
+                        src={member.user.avatar}
+                        alt={member.user.name}
+                        className="w-8 h-8 rounded-full"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <User size={16} className="text-blue-600" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{member.user.name}</p>
+                      <p className="text-xs text-gray-500">{member.user.email}</p>
+                    </div>
+                  </div>
+                  <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">
+                    {member.role === 'admin' ? 'Admin' : member.role === 'member' ? 'Miembro' : 'Viewer'}
+                  </span>
+                </label>
+              ))}
+              {(!currentBoard?.members || currentBoard.members.length === 0) && (
+                <p className="text-sm text-gray-500 text-center py-4">
+                  No hay miembros en este board
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Fecha de vencimiento */}

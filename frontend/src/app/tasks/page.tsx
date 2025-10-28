@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/authStore';
+import toast from 'react-hot-toast';
 import { useBoardStore } from '@/store/boardStore';
-import { useTaskStore } from '@/store/taskStore';
 import { Task } from '@/services/taskService';
+import taskService from '@/services/taskService';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { Plus, CheckSquare, Calendar, AlertCircle, Folder, ArrowRight } from 'lucide-react';
+import { CheckSquare, Calendar, AlertCircle, Folder, ArrowRight, Clock, PlayCircle, CheckCircle2 } from 'lucide-react';
 
 const priorityColors = {
   low: 'bg-gray-100 text-gray-800',
@@ -31,10 +31,23 @@ const statusLabels = {
   done: 'Completado',
 };
 
+const statusColors = {
+  todo: 'bg-gray-100 text-gray-800',
+  in_progress: 'bg-blue-100 text-blue-800',
+  review: 'bg-yellow-100 text-yellow-800',
+  done: 'bg-green-100 text-green-800',
+};
+
+const statusIcons = {
+  todo: Clock,
+  in_progress: PlayCircle,
+  review: AlertCircle,
+  done: CheckCircle2,
+};
+
 export default function TasksPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
-  const { boards, fetchBoards } = useBoardStore();
+  const { fetchBoards } = useBoardStore();
   const [myTasks, setMyTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<'all' | 'todo' | 'in_progress' | 'done'>('all');
   const [isLoading, setIsLoading] = useState(true);
@@ -46,10 +59,9 @@ export default function TasksPage() {
         // Cargar todos los boards del usuario
         await fetchBoards();
         
-        // Aquí deberías hacer una petición al backend para obtener
-        // solo las tareas asignadas al usuario actual
-        // Por ahora, simulamos con un array vacío
-        setMyTasks([]);
+        // Obtener tareas asignadas al usuario
+        const tasks = await taskService.getMyTasks();
+        setMyTasks(tasks);
       } catch (error) {
         console.error('Error al cargar tareas:', error);
       } finally {
@@ -59,6 +71,24 @@ export default function TasksPage() {
 
     loadMyTasks();
   }, [fetchBoards]);
+
+  const handleStatusChange = async (taskId: string, newStatus: 'todo' | 'in_progress' | 'review' | 'done') => {
+    try {
+      await taskService.updateTask(taskId, { status: newStatus });
+      
+      // Actualizar el estado local
+      setMyTasks(prevTasks =>
+        prevTasks.map(task =>
+          task._id === taskId ? { ...task, status: newStatus } : task
+        )
+      );
+      
+      toast.success(`Estado actualizado a "${statusLabels[newStatus]}"`);
+    } catch (error: any) {
+      console.error('Error al cambiar estado:', error);
+      toast.error(error.response?.data?.message || 'Error al cambiar estado');
+    }
+  };
 
   const filteredTasks = myTasks.filter(task => {
     if (filter === 'all') return true;
@@ -199,57 +229,86 @@ export default function TasksPage() {
       {filteredTasks.length > 0 ? (
         <div className="grid gap-4">
           {filteredTasks.map((task) => (
-            <Card 
-              key={task._id} 
-              variant="bordered" 
-              className="p-4 hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => router.push(`/boards/${task.board}`)}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-gray-900">{task.title}</h3>
-                    <span className={`px-2 py-1 text-xs rounded-full ${priorityColors[task.priority]}`}>
-                      {priorityLabels[task.priority]}
-                    </span>
-                    <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700">
-                      {statusLabels[task.status]}
-                    </span>
-                  </div>
-                  
-                  {task.description && (
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {task.description}
-                    </p>
-                  )}
+              <Card 
+                key={task._id} 
+                variant="bordered" 
+                className="p-5 hover:shadow-lg transition-all"
+              >
+                <div className="space-y-4">
+                  {/* Header */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-semibold text-lg text-gray-900">{task.title}</h3>
+                        <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${priorityColors[task.priority]}`}>
+                          {priorityLabels[task.priority]}
+                        </span>
+                      </div>
+                      
+                      {task.description && (
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                          {task.description}
+                        </p>
+                      )}
 
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
-                    {task.dueDate && (
-                      <div className="flex items-center gap-1">
-                        <Calendar size={14} />
-                        <span>{new Date(task.dueDate).toLocaleDateString('es-ES')}</span>
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        {task.dueDate && (
+                          <div className="flex items-center gap-1.5">
+                            <Calendar size={16} />
+                            <span>{new Date(task.dueDate).toLocaleDateString('es-ES')}</span>
+                          </div>
+                        )}
+                        {task.tags && task.tags.length > 0 && (
+                          <div className="flex gap-1.5">
+                            {task.tags.slice(0, 3).map((tag, index) => (
+                              <span
+                                key={index}
+                                className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
-                    {task.tags && task.tags.length > 0 && (
-                      <div className="flex gap-1">
-                        {task.tags.slice(0, 3).map((tag, index) => (
-                          <span
-                            key={index}
-                            className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                    </div>
+
+                    <button 
+                      onClick={() => router.push(`/boards/${typeof task.board === 'string' ? task.board : task.board._id}`)}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      title="Ver en el board"
+                    >
+                      <ArrowRight size={20} className="text-gray-400" />
+                    </button>
+                  </div>
+
+                  {/* Status Buttons */}
+                  <div className="flex items-center gap-2 pt-3 border-t">
+                    <span className="text-sm font-medium text-gray-700 mr-2">Estado:</span>
+                    {(Object.keys(statusLabels) as Array<keyof typeof statusLabels>).map((status) => {
+                      const Icon = statusIcons[status];
+                      return (
+                        <button
+                          key={status}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStatusChange(task._id, status);
+                          }}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
+                            task.status === status
+                              ? `${statusColors[status]} ring-2 ring-offset-1 ring-blue-400`
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          }`}
+                          title={statusLabels[status]}
+                        >
+                          <Icon size={14} />
+                          <span className="hidden sm:inline">{statusLabels[status]}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
-
-                <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                  <ArrowRight size={20} className="text-gray-400" />
-                </button>
-              </div>
-            </Card>
+              </Card>
           ))}
         </div>
       ) : (
