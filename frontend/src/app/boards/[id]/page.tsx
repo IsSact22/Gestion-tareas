@@ -12,7 +12,8 @@ import ColumnModal from '@/components/modals/ColumnModal';
 import TaskModal from '@/components/modals/TaskModal';
 import TaskDetailModal from '@/components/modals/TaskDetailModal';
 import AddBoardMemberModal from '@/components/modals/AddBoardMemberModal';
-import { ArrowLeft, Users, Settings, Star, Home } from 'lucide-react';
+import ManageMembersModal from '@/components/modals/ManageMembersModal';
+import { ArrowLeft, Users, Settings, Star, Home, UserPlus } from 'lucide-react';
 import { Column } from '@/services/columnService';
 import { Task } from '@/services/taskService';
 
@@ -32,6 +33,7 @@ export default function BoardDetailPage() {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [showTaskDetailModal, setShowTaskDetailModal] = useState(false);
   const [showMemberModal, setShowMemberModal] = useState(false);
+  const [showManageMembersModal, setShowManageMembersModal] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState<Column | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedColumnForTask, setSelectedColumnForTask] = useState<string | null>(null);
@@ -152,9 +154,9 @@ export default function BoardDetailPage() {
           <div className="flex items-center gap-3">
             {/* Members */}
             <div className="flex -space-x-2">
-              {currentBoard.members?.slice(0, 5).map((member) => (
+              {currentBoard.members?.slice(0, 5).map((member, index) => (
                 <div
-                  key={member.user._id}
+                  key={`${member.user._id}-${index}`}
                   className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-medium border-2 border-white"
                   title={member.user.name}
                 >
@@ -168,13 +170,25 @@ export default function BoardDetailPage() {
               )}
             </div>
 
-            <button 
-              onClick={() => setShowMemberModal(true)}
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg--500 transition-colors flex items-center gap-2"
-            >
-              <Users size={18} />
-              <span>Invitar</span>
-            </button>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setShowMemberModal(true)}
+                className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2"
+                title="Invitar miembro"
+              >
+                <UserPlus size={18} />
+                <span>Invitar</span>
+              </button>
+              
+              <button 
+                onClick={() => setShowManageMembersModal(true)}
+                className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+                title="Gestionar miembros"
+              >
+                <Users size={18} />
+                <span>Gestionar</span>
+              </button>
+            </div>
 
             <button className="p-2 hover:bg-gray-500 rounded-lg transition-colors">
               <Settings size={20} />
@@ -238,6 +252,12 @@ export default function BoardDetailPage() {
       <AddBoardMemberModal
         isOpen={showMemberModal}
         onClose={() => setShowMemberModal(false)}
+        boardId={boardId}
+      />
+
+      <ManageMembersModal
+        isOpen={showManageMembersModal}
+        onClose={() => setShowManageMembersModal(false)}
         boardId={boardId}
       />
 

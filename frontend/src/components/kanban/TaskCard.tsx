@@ -38,7 +38,9 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
     opacity: isDragging ? 0.5 : 1,
   };
 
-  return (
+    return (
+      
+        // card de tarea 
     <div
       ref={setNodeRef}
       style={style}

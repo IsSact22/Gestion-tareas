@@ -15,6 +15,7 @@ export interface Board {
   };
   members: Array<{
     user: {
+      avatar: string | Blob | undefined;
       _id: string;
       name: string;
       email: string;

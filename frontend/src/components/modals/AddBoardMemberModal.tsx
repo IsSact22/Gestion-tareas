@@ -20,7 +20,7 @@ const ROLES = [
 ];
 
 export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoardMemberModalProps) {
-  const { fetchBoardById } = useBoardStore();
+  const { fetchBoardById, currentBoard } = useBoardStore();
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'admin' | 'member' | 'viewer'>('member');
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +37,17 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
     try {
       const user = await userService.searchByEmail(email);
       if (user) {
+        // Verificar si el usuario ya es miembro del board
+        const isAlreadyMember = currentBoard?.members?.some(
+          (member) => member.user._id === user._id
+        );
+
+        if (isAlreadyMember) {
+          toast.error(`${user.name} ya es miembro de este board`);
+          setFoundUser(null);
+          return;
+        }
+
         setFoundUser(user);
         toast.success(`Usuario encontrado: ${user.name}`);
       } else {
@@ -56,6 +67,16 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
     
     if (!foundUser) {
       toast.error('Primero busca un usuario válido');
+      return;
+    }
+
+    // Verificar nuevamente antes de enviar
+    const isAlreadyMember = currentBoard?.members?.some(
+      (member) => member.user._id === foundUser._id
+    );
+
+    if (isAlreadyMember) {
+      toast.error(`${foundUser.name} ya es miembro de este board`);
       return;
     }
 

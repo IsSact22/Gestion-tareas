@@ -3,6 +3,7 @@ import { Send, Trash2, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Comment } from '@/services/taskService';
 import { useAuthStore } from '@/store/authStore';
+import { useConfirm } from '@/hooks/useConfirm';
 import Button from '@/components/ui/Button';
 
 interface CommentSectionProps {
@@ -19,6 +20,7 @@ export default function CommentSection({
   isLoading = false,
 }: CommentSectionProps) {
   const { user } = useAuthStore();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -40,7 +42,15 @@ export default function CommentSection({
   };
 
   const handleDelete = async (commentId: string) => {
-    if (!confirm('¿Estás seguro de eliminar este comentario?')) return;
+    const confirmed = await confirm({
+      title: '¿Eliminar comentario?',
+      message: 'Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar este comentario?',
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+      variant: 'danger',
+    });
+
+    if (!confirmed) return;
     
     try {
       await onDeleteComment(commentId);
@@ -130,7 +140,7 @@ export default function CommentSection({
             placeholder="Escribe un comentario..."
             rows={2}
             disabled={isSubmitting || isLoading}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
+            className="w-full px-3 text-gray-700 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
           />
         </div>
         <Button
@@ -145,6 +155,9 @@ export default function CommentSection({
           )}
         </Button>
       </form>
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog />
     </div>
   );
 }

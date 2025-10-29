@@ -130,7 +130,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
           </h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1 hover:bg-black rounded-lg transition-colors"
           >
             <X size={20} />
           </button>
@@ -268,9 +268,9 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
               Asignar a
             </label>
             <div className="space-y-2">
-              {currentBoard?.members?.map((member) => (
+              {currentBoard?.members?.map((member, index) => (
                 <label
-                  key={member.user._id}
+                  key={`${member.user._id}-${index}`}
                   className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <input
@@ -293,6 +293,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
                   />
                   <div className="flex items-center gap-2 flex-1">
                     {member.user.avatar ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={member.user.avatar}
                         alt={member.user.name}

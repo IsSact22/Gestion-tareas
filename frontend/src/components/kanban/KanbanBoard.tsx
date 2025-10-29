@@ -166,18 +166,13 @@ export default function KanbanBoard({
         : columnTasks.length;
 
       if (oldIndex !== newIndex) {
-        const reorderedTasks = arrayMove(columnTasks, oldIndex, newIndex);
-        
-        // Actualizar posiciones
-        const updatedTasks = tasks.map((task) => {
-          const newPosition = reorderedTasks.findIndex((t) => t._id === task._id);
-          if (newPosition !== -1) {
-            return { ...task, position: newPosition };
-          }
-          return task;
+        // Llamar al backend para guardar el cambio
+        await moveTask({
+          taskId: activeId,
+          fromColumnId: sourceColumnId,
+          toColumnId: targetColumnId,
+          position: newIndex,
         });
-
-        useTaskStore.setState({ tasks: updatedTasks });
       }
     } else {
       // Mover a otra columna

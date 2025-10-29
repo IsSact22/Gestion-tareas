@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { X, Calendar, Tag, AlertCircle, User, MessageSquare, Edit2, Trash2, CheckCircle2, Clock, PlayCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { Task } from '@/services/taskService';
 import { useTaskStore } from '@/store/taskStore';
+import { useConfirm } from '@/hooks/useConfirm';
 import Button from '@/components/ui/Button';
 import CommentSection from '@/components/task/CommentSection';
 import taskService from '@/services/taskService';
@@ -50,6 +52,7 @@ const statusIcons = {
 
 export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskDetailModalProps) {
   const { deleteTask, updateTask } = useTaskStore();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [comments, setComments] = useState(task.comments || []);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(task.status);
@@ -67,27 +70,30 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
     }
   };
 
-  const handleDeleteComment = async (commentId: string) => {
-    setIsLoadingComments(true);
-    try {
-      await taskService.deleteComment(task._id, commentId);
-      setComments(comments.filter(c => c._id !== commentId));
-    } catch (error) {
-      console.error('Error al eliminar comentario:', error);
-      throw error;
-    } finally {
-      setIsLoadingComments(false);
-    }
+  const handleDeleteComment = async (commentId: string): Promise<void> => {
+    await taskService.deleteComment(task._id, commentId);
+    // Solo actualizar el estado si la eliminación fue exitosa (si no hay error)
+    setComments(comments.filter(c => c._id !== commentId));
   };
 
   const handleDelete = async () => {
-    if (!confirm('¿Estás seguro de eliminar esta tarea?')) return;
+    const confirmed = await confirm({
+      title: '¿Eliminar tarea?',
+      message: `¿Estás seguro de que deseas eliminar la tarea "${task.title}"? Esta acción no se puede deshacer.`,
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+      variant: 'danger',
+    });
+
+    if (!confirmed) return;
     
     try {
       await deleteTask(task._id);
+      toast.success('Tarea eliminada');
       onClose();
     } catch (error) {
       console.error('Error al eliminar tarea:', error);
+      toast.error('Error al eliminar la tarea');
     }
   };
 
@@ -95,8 +101,10 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
     try {
       await updateTask(task._id, { status: newStatus });
       setCurrentStatus(newStatus);
+      toast.success('Estado actualizado');
     } catch (error) {
       console.error('Error al cambiar estado:', error);
+      toast.error('Error al cambiar el estado');
     }
   };
 
@@ -297,6 +305,9 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
           </div>
         </div>
       </div>
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog />
     </div>
   );
 }
