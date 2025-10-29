@@ -124,13 +124,13 @@ export default function BoardDetailPage() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/boards')}
-              className="p-2 hover:bg-gray-500 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-500 text-gray-700 rounded-lg transition-colors"
             >
               <ArrowLeft size={20} />
                       </button>
             <button
               onClick={() => router.push('/dashboard')}
-              className="p-2 hover:bg-gray-500 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-500 text-gray-700 rounded-lg transition-colors"
             >
               <Home size={20} />
             </button>
@@ -190,7 +190,7 @@ export default function BoardDetailPage() {
               </button>
             </div>
 
-            <button className="p-2 hover:bg-gray-500 rounded-lg transition-colors">
+            <button className="p-2 hover:bg-gray-500 text-gray-700 rounded-lg transition-colors">
               <Settings size={20} />
             </button>
           </div>

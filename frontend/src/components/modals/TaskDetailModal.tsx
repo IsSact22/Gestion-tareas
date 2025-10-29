@@ -127,7 +127,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
           <div className="flex items-center gap-2">
             <button
               onClick={onEdit}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 text-black rounded-lg transition-colors"
               title="Editar tarea"
             >
               <Edit2 size={18} />
@@ -141,7 +141,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
             </button>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 text-black rounded-lg transition-colors"
             >
               <X size={20} />
             </button>
