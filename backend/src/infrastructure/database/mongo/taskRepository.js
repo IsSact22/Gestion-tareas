@@ -97,6 +97,15 @@ export default class TaskRepository {
       .populate('comments.user', 'name email avatar');
   }
 
+  async deleteComment(taskId, commentId) {
+    return TaskModel.findByIdAndUpdate(
+      taskId,
+      { $pull: { comments: { _id: commentId } } },
+      { new: true }
+    )
+      .populate('comments.user', 'name email avatar');
+  }
+
   async addAttachment(taskId, attachment) {
     return TaskModel.findByIdAndUpdate(
       taskId,

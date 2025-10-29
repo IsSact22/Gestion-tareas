@@ -5,6 +5,7 @@ import UpdateTaskUseCase from '../../application/task/updateTaskUseCase.js';
 import DeleteTaskUseCase from '../../application/task/deleteTaskUseCase.js';
 import MoveTaskUseCase from '../../application/task/moveTaskUseCase.js';
 import AddCommentUseCase from '../../application/task/addCommentUseCase.js';
+import DeleteCommentUseCase from '../../application/task/deleteCommentUseCase.js';
 import SearchTasksUseCase from '../../application/task/searchTasksUseCase.js';
 import TaskRepository from '../../infrastructure/database/mongo/taskRepository.js';
 import ColumnRepository from '../../infrastructure/database/mongo/columnRepository.js';
@@ -23,6 +24,7 @@ const updateTaskUseCase = new UpdateTaskUseCase(taskRepository, boardRepository,
 const deleteTaskUseCase = new DeleteTaskUseCase(taskRepository, boardRepository, activityRepository);
 const moveTaskUseCase = new MoveTaskUseCase(taskRepository, columnRepository, boardRepository, activityRepository);
 const addCommentUseCase = new AddCommentUseCase(taskRepository, boardRepository, activityRepository);
+const deleteCommentUseCase = new DeleteCommentUseCase(taskRepository, boardRepository, activityRepository);
 const searchTasksUseCase = new SearchTasksUseCase(taskRepository, boardRepository);
 
 export async function createTask(req, res, next) {
@@ -131,7 +133,23 @@ export async function addComment(req, res, next) {
       text
     });
 
-    res.status(200).json({ success: true, data: task });
+    // Devolver solo el último comentario agregado
+    const lastComment = task.comments[task.comments.length - 1];
+    res.status(200).json({ success: true, data: lastComment });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteComment(req, res, next) {
+  try {
+    await deleteCommentUseCase.execute({
+      taskId: req.params.id,
+      commentId: req.params.commentId,
+      userId: req.user._id
+    });
+
+    res.status(200).json({ success: true, message: 'Comentario eliminado' });
   } catch (error) {
     next(error);
   }

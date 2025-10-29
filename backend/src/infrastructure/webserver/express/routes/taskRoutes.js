@@ -7,6 +7,7 @@ import {
   deleteTask,
   moveTask,
   addComment,
+  deleteComment,
   searchTasks,
   getMyTasks
 } from '../../../../interfaces/controllers/taskController.js';
@@ -25,5 +26,6 @@ router.put('/:id', updateTask);
 router.delete('/:id', deleteTask);
 router.post('/:id/move', moveTask);
 router.post('/:id/comments', addComment);
+router.delete('/:id/comments/:commentId', deleteComment);
 
 export default router;
