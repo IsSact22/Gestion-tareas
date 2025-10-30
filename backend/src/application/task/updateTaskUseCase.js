@@ -31,8 +31,12 @@ export default class UpdateTaskUseCase {
       updateData.description = description;
     }
     if (assignedTo !== undefined) {
-      updateData.assignedTo = assignedTo;
-      changes.assignedTo = { from: task.assignedTo, to: assignedTo };
+      // Si es un array vacío, asignar array vacío directamente
+      // Si tiene elementos, filtrar valores inválidos
+      updateData.assignedTo = Array.isArray(assignedTo) 
+        ? assignedTo.filter(id => id && id.toString().length === 24)
+        : assignedTo;
+      changes.assignedTo = { from: task.assignedTo, to: updateData.assignedTo };
     }
     if (priority !== undefined) {
       updateData.priority = priority;

@@ -130,7 +130,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
           </h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-black rounded-lg transition-colors"
+            className="p-1 hover:bg-gray-100 text-black rounded-lg transition-colors"
           >
             <X size={20} />
           </button>

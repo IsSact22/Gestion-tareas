@@ -24,7 +24,7 @@ export default function BoardDetailPage() {
 
   const { currentBoard, fetchBoardById, isLoading } = useBoardStore();
   const { fetchColumns, addColumn, removeColumn } = useColumnStore();
-  const { fetchTasks, addTask, removeTask } = useTaskStore();
+  const { fetchTasks, addTask, removeTask, updateTaskInList } = useTaskStore();
 
   // Conectar al board via Socket.IO
   const socket = useBoardSocket(boardId);
@@ -71,8 +71,15 @@ export default function BoardDetailPage() {
     });
 
     socketService.onTaskUpdated((data) => {
-      console.log('📝 Tarea actualizada:', data);
-      fetchTasks(boardId);
+      console.log('📝 Tarea actualizada vía Socket.IO:', data);
+      console.log('📝 Tarea recibida:', data.task);
+      // Actualizar solo la tarea específica en lugar de recargar todas
+      if (data.task && data.task._id) {
+        updateTaskInList(data.task);
+      } else {
+        console.warn('⚠️ Tarea sin datos completos, recargando todas las tareas');
+        fetchTasks(boardId);
+      }
     });
 
     socketService.onTaskDeleted((data) => {
@@ -82,6 +89,7 @@ export default function BoardDetailPage() {
 
     socketService.onTaskMoved((data) => {
       console.log('🔄 Tarea movida:', data);
+      // Recargar tareas para reflejar el cambio de columna y posición
       fetchTasks(boardId);
     });
 
@@ -105,7 +113,7 @@ export default function BoardDetailPage() {
       socketService.off('user:joined');
       socketService.off('user:left');
     };
-  }, [boardId, fetchColumns, fetchTasks, addColumn, removeColumn, addTask, removeTask]);
+  }, [boardId, fetchColumns, fetchTasks, addColumn, removeColumn, addTask, removeTask, updateTaskInList]);
 
   if (isLoading || !currentBoard) {
     return (

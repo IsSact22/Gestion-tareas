@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Flowly - Gestión de Proyectos",
+  title: "AuraTasks - Gestión de Proyectos",
   description: "Organiza, colabora y completa tus proyectos más rápido con tableros Kanban",
 };
 

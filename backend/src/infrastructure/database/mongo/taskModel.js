@@ -27,11 +27,10 @@ const taskSchema = new mongoose.Schema({
     required: true,
     default: 0
   },
-  assignedTo: {
+  assignedTo: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null
-  },
+    ref: 'User'
+  }],
   priority: {
     type: String,
     enum: ['low', 'medium', 'high', 'urgent'],

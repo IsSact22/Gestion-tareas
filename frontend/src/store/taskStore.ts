@@ -8,6 +8,16 @@ const getBoardId = (board: string | { _id: string; name: string }): string => {
   return typeof board === 'string' ? board : board._id;
 };
 
+// Helper para normalizar una tarea (convertir column de objeto a string)
+const normalizeTask = (task: Task): Task => {
+  return {
+    ...task,
+    column: typeof task.column === 'object' && task.column !== null
+      ? (task.column as any)._id
+      : task.column
+  };
+};
+
 interface TaskState {
   tasks: Task[];
   currentTask: Task | null;
@@ -26,6 +36,7 @@ interface TaskState {
   setTasks: (tasks: Task[]) => void;
   addTask: (task: Task) => void;
   removeTask: (id: string) => void;
+  updateTaskInList: (task: Task) => void;
   setCurrentTask: (task: Task | null) => void;
   clearTasks: () => void;
 }
@@ -42,7 +53,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       console.log('🔄 Cargando tareas para board:', boardId);
       const tasks = await taskService.getTasks(boardId);
       console.log('✅ Tareas cargadas:', tasks.length, tasks);
-      set({ tasks, isLoading: false });
+      // Normalizar todas las tareas
+      const normalizedTasks = tasks.map(normalizeTask);
+      set({ tasks: normalizedTasks, isLoading: false });
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Error al cargar tareas';
       console.error('❌ Error al cargar tareas:', error);
@@ -70,8 +83,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const newTask = await taskService.createTask(data);
       console.log('✅ Tarea creada:', newTask);
       
+      const normalizedTask = normalizeTask(newTask);
       set((state) => ({
-        tasks: [...state.tasks, newTask],
+        tasks: [...state.tasks, normalizedTask],
         isLoading: false,
       }));
 
@@ -93,9 +107,14 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const updatedTask = await taskService.updateTask(id, data);
+      console.log('✅ Tarea actualizada desde el servidor:', updatedTask);
+      
+      // Normalizar column a string si viene como objeto
+      const normalizedTask = normalizeTask(updatedTask);
+      
       set((state) => ({
-        tasks: state.tasks.map((task) => (task._id === id ? updatedTask : task)),
-        currentTask: state.currentTask?._id === id ? updatedTask : state.currentTask,
+        tasks: state.tasks.map((task) => (task._id === id ? normalizedTask : task)),
+        currentTask: state.currentTask?._id === id ? normalizedTask : state.currentTask,
         isLoading: false,
       }));
 
@@ -142,10 +161,11 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   moveTask: async (data: MoveTaskDto) => {
     try {
       const movedTask = await taskService.moveTask(data);
+      const normalizedTask = normalizeTask(movedTask);
       
       set((state) => ({
         tasks: state.tasks.map((task) => 
-          task._id === data.taskId ? movedTask : task
+          task._id === data.taskId ? normalizedTask : task
         ),
       }));
 
@@ -218,8 +238,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   setTasks: (tasks: Task[]) => set({ tasks }),
   
   addTask: (task: Task) => {
+    const normalizedTask = normalizeTask(task);
     set((state) => ({
-      tasks: [...state.tasks, task]
+      tasks: [...state.tasks, normalizedTask]
     }));
   },
 
@@ -227,6 +248,17 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     set((state) => ({
       tasks: state.tasks.filter((task) => task._id !== id)
     }));
+  },
+
+  updateTaskInList: (updatedTask: Task) => {
+    console.log('🔄 updateTaskInList llamado con:', updatedTask);
+    const normalizedTask = normalizeTask(updatedTask);
+    set((state) => {
+      console.log('📋 Tareas actuales:', state.tasks.length);
+      const newTasks = state.tasks.map((task) => task._id === normalizedTask._id ? normalizedTask : task);
+      console.log('📋 Tareas después de actualizar:', newTasks.length);
+      return { tasks: newTasks };
+    });
   },
 
   setCurrentTask: (task: Task | null) => set({ currentTask: task }),

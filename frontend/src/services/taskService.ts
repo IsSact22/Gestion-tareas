@@ -112,10 +112,9 @@ class TaskService {
    * Mover una tarea a otra columna
    */
   async moveTask(data: MoveTaskDto): Promise<Task> {
-    const response = await api.put(`/tasks/${data.taskId}/move`, {
-      fromColumnId: data.fromColumnId,
-      toColumnId: data.toColumnId,
-      position: data.position
+    const response = await api.post(`/tasks/${data.taskId}/move`, {
+      newColumnId: data.toColumnId,
+      newPosition: data.position
     });
     return response.data.data;
   }
