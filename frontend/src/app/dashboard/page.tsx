@@ -269,9 +269,51 @@ export default function DashboardPage() {
             </Button>
           </Link>
         </div>
-        
         <div className="space-y-3">
-          {/* Empty State */}
+            {boardsLoading ? (
+              <div className="text-center py-8">
+                <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+              </div>
+            ) : boards.length === 0 ? (
+              <div className="text-center py-8">
+                <Trello className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                <p className="text-gray-600 mb-4">No tienes boards aún</p>
+                <Link href="/boards">
+                  <Button variant="primary" size="sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Crear Board
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              myTasks.slice(0, 3).map((task) => (
+                <div
+                  key={task._id}
+                  onClick={() => router.push(`/boards/${task._id}`)}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div 
+                      className="w-10 h-10 rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: task.board.color || '#8B5CF6' }}
+                    >
+                      <Trello className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{task.name}</p>
+                      <p className="text-sm text-gray-500 truncate max-w-[200px]">
+                        {task.board.name}
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-gray-400" />
+                </div>
+              ))
+            )}
+          </div>
+        
+        {/* <div className="space-y-3">
+        
           <div className="text-center py-8">
             <CheckSquare className="w-12 h-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-600 mb-4">No tienes tareas asignadas</p>
@@ -280,7 +322,7 @@ export default function DashboardPage() {
               Crear Tarea
             </Button>
           </div>
-        </div>
+        </div> */}
       </Card>
 
       {/* Team Activity */}

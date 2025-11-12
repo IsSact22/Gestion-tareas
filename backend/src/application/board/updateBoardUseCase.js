@@ -5,7 +5,7 @@ export default class UpdateBoardUseCase {
     this.boardRepository = boardRepository;
   }
 
-  async execute({ boardId, userId, name, description }) {
+  async execute({ boardId, userId, name, description, color }) {
     const board = await this.boardRepository.findById(boardId);
 
     if (!board) {
@@ -20,7 +20,8 @@ export default class UpdateBoardUseCase {
 
     const updatedBoard = await this.boardRepository.update(boardId, {
       name: name || board.name,
-      description: description !== undefined ? description : board.description
+      description: description !== undefined ? description : board.description,
+      color: color || board.color
     });
 
     return updatedBoard;

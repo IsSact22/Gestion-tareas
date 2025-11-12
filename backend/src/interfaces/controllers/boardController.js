@@ -26,11 +26,12 @@ const deleteBoardUseCase = new DeleteBoardUseCase(boardRepository, columnReposit
 
 export async function createBoard(req, res, next) {
   try {
-    const { name, description, workspaceId } = req.body;
+    const { name, description, workspaceId, color } = req.body;
     const board = await createBoardUseCase.execute({
       name,
       description,
       workspaceId,
+      color,
       userId: req.user._id
     });
 
@@ -76,12 +77,13 @@ export async function getBoardById(req, res, next) {
 
 export async function updateBoard(req, res, next) {
   try {
-    const { name, description } = req.body;
+    const { name, description, color } = req.body;
     const board = await updateBoardUseCase.execute({
       boardId: req.params.id,
       userId: req.user._id,
       name,
-      description
+      description,
+      color
     });
 
     // Emitir evento Socket.IO al board y al workspace

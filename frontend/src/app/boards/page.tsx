@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trello, Plus, MoreVertical, Edit, Trash2, Star, Users, Folder } from 'lucide-react';
+import { Trello, Plus, MoreVertical, Edit, Trash2, Star, Users, Folder, Home, ArrowLeft } from 'lucide-react';
 import { useBoardStore } from '@/store/boardStore';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useRouter } from 'next/navigation';
@@ -14,10 +14,10 @@ import { Toaster } from 'react-hot-toast';
 const BOARD_COLORS = [
   { name: 'Azul', value: '#3B82F6' },
   { name: 'Púrpura', value: '#8B5CF6' },
-  { name: 'Rosa', value: '#EC4899' },
   { name: 'Verde', value: '#10B981' },
   { name: 'Naranja', value: '#F59E0B' },
   { name: 'Rojo', value: '#EF4444' },
+  { name: 'Azul', value: '#00F7EAFF' },
 ];
 
 export default function BoardsPage() {
@@ -133,22 +133,40 @@ export default function BoardsPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       
-      <div className="flex items-center justify-between mb-8">
+    
+    {/* Contenedor principal con justify-between */}
+    <div className="flex items-center justify-between mb-8">
+      {/* Contenedor izquierdo - título y botones */}
+      <div className="flex items-center space-x-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Boards</h1>
           <p className="text-gray-600">Visualiza y gestiona tus tableros Kanban</p>
         </div>
-        <button 
-          onClick={() => setIsCreateModalOpen(true)}
-          className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Nuevo Board</span>
-        </button>
+        
+        {/* Botones de navegación al lado del título */}
+        <div className="flex space-x-2">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors border border-gray-300"
+            title="Ir al Dashboard"
+          >
+            <Home size={20} />
+          </button>
+        </div>
       </div>
+  
+      {/* Botón "Nuevo Board" a la derecha */}
+      <button 
+        onClick={() => setIsCreateModalOpen(true)}
+        className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
+      >
+        <Plus className="w-5 h-5" />
+        <span>Nuevo Board</span>
+      </button>
+    </div>
 
       {boards.length === 0 ? (
         /* Empty State */
@@ -267,7 +285,7 @@ export default function BoardsPage() {
         }}
         title="Crear Nuevo Board"
       >
-        <form onSubmit={handleCreateBoard} className="space-y-6">
+        <form onSubmit={handleCreateBoard} className="space-y-6 ">
           <Input
             label="Nombre del Board"
             type="text"
@@ -282,7 +300,7 @@ export default function BoardsPage() {
               Workspace
             </label>
             <select
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               value={formData.workspaceId}
               onChange={(e) => setFormData({ ...formData, workspaceId: e.target.value })}
               required
@@ -301,7 +319,7 @@ export default function BoardsPage() {
               Descripción (opcional)
             </label>
             <textarea
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
+              className="w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
               rows={3}
               placeholder="Describe el propósito de este board..."
               value={formData.description}

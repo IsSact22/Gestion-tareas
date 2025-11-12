@@ -12,6 +12,10 @@ const boardSchema = new mongoose.Schema({
     trim: true,
     maxlength: [500, 'Description cannot exceed 500 characters']
   },
+  color: {
+    type: String,
+    default: '#8B5CF6' // Púrpura por defecto
+  },
   workspace: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Workspace',

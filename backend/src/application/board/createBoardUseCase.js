@@ -6,7 +6,7 @@ export default class CreateBoardUseCase {
     this.workspaceRepository = workspaceRepository;
   }
 
-  async execute({ name, description, workspaceId, userId }) {
+  async execute({ name, description, workspaceId, color, userId }) {
     if (!name) {
       throw new AppError('Board name is required', 400);
     }
@@ -29,6 +29,7 @@ export default class CreateBoardUseCase {
       name,
       description,
       workspace: workspaceId,
+      color,
       members: [{ user: userId, role: 'admin' }],
       columns: []
     });
