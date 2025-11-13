@@ -12,27 +12,52 @@ import {
   Settings,
   LogOut,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  UserCog,
+  User
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
-const menuItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
-  { icon: Folder, label: 'Workspaces', href: '/workspaces' },
-  { icon: Trello, label: 'Boards', href: '/boards' },
-  { icon: CheckSquare, label: 'My Tasks', href: '/tasks' },
-  { icon: Users, label: 'Team', href: '/team' },
-  { icon: Settings, label: 'Settings', href: '/settings' },
-];
+// Menús según el rol del usuario
+const getMenuItemsByRole = (role: string) => {
+  const baseItems = [
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', roles: ['admin', 'member', 'viewer'] },
+    { icon: Folder, label: 'Workspaces', href: '/workspaces', roles: [ 'member', 'viewer'] },
+    { icon: Trello, label: 'Boards', href: '/boards', roles: ['member', 'viewer'] },
+    { icon: CheckSquare, label: 'My Tasks', href: '/tasks', roles: ['member', 'viewer'] },
+  ];
+
+  const adminItems = [
+    { icon: UserCog, label: 'Manage Users', href: '/admin/users', roles: ['admin'], section: 'admin' },
+    { icon: Folder, label: 'All Workspaces', href: '/admin/workspaces', roles: ['admin'], section: 'admin' },
+    { icon: Trello, label: 'All Boards', href: '/admin/boards', roles: ['admin'], section: 'admin' },
+    { icon: CheckSquare, label: 'All Tasks', href: '/admin/tasks', roles: ['admin'], section: 'admin' },
+    { icon: Users, label: 'Team', href: '/team', roles: ['admin', 'member'] },
+  ];
+
+  const settingsItems = [
+    { icon: User, label: 'My Profile', href: '/profile', roles: ['admin', 'member', 'viewer'] },
+    { icon: Settings, label: 'Settings', href: '/settings', roles: ['admin'] },
+  ];
+
+  const allItems = [...baseItems, ...adminItems, ...settingsItems];
+  
+  return allItems.filter(item => item.roles.includes(role));
+};
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { logout, user } = useAuthStore();
+
+  // Obtener menús según el rol del usuario
+  const menuItems = useMemo(() => {
+    return getMenuItemsByRole(user?.role || 'viewer');
+  }, [user?.role]);
 
   const handleLogout = () => {
     logout();
@@ -51,19 +76,19 @@ export default function Sidebar() {
         {!collapsed ? (
           <Link href="/dashboard" className="flex items-center space-x-2">
             <Image 
-              src="/logo/flowly-logo.svg" 
-              alt="Flowly Logo" 
+              src="/logo/aura-task-logo.svg" 
+              alt="AuraTask Logo" 
               width={32} 
               height={32}
               className="w-8 h-8"
             />
-            <span className="font-bold text-gray-900">Flowly</span>
+            <span className="font-bold text-gray-900">AuraTask</span>
           </Link>
         ) : (
           <Link href="/dashboard" className="flex items-center justify-center">
             <Image 
-              src="/logo/flowly-logo.svg" 
-              alt="Flowly Logo" 
+              src="/logo/aura-task-logo.svg" 
+              alt="AuraTask Logo" 
               width={32} 
               height={32}
               className="w-8 h-8"
@@ -120,9 +145,20 @@ export default function Sidebar() {
                 <p className="text-sm font-medium text-gray-900 truncate">
                   {user?.name || 'Usuario'}
                 </p>
-                <p className="text-xs text-gray-500 truncate">
-                  {user?.email || 'email@example.com'}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xs text-gray-500 truncate">
+                    {user?.email || 'email@example.com'}
+                  </p>
+                  <span className={cn(
+                    'text-xs px-2 py-0.5 rounded-full font-medium',
+                    user?.role === 'admin' ? 'bg-purple-100 text-purple-700' :
+                    user?.role === 'member' ? 'bg-blue-100 text-blue-700' :
+                    'bg-gray-100 text-gray-700'
+                  )}>
+                    {user?.role === 'admin' ? 'Admin' : 
+                     user?.role === 'member' ? 'Member' : 'Viewer'}
+                  </span>
+                </div>
               </div>
             </div>
             <button

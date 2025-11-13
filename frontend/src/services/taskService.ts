@@ -5,7 +5,7 @@ export interface Task {
   title: string;
   description?: string;
   column: string;
-  board: string | { _id: string; name: string };
+  board: string | { _id: string; name: string; color: string };
   position: number;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   status: 'todo' | 'in_progress' | 'review' | 'done';

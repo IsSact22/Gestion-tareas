@@ -64,7 +64,7 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">
-          ¡Hola, {user?.name || 'Usuario'}! 👋
+          ¡Hola, {user?.name || 'Usuario'}!
         </h1>
         <p className="text-gray-600 mt-1">
           Aquí tienes un resumen de tus proyectos y tareas
@@ -286,29 +286,47 @@ export default function DashboardPage() {
                 </Link>
               </div>
             ) : (
-              myTasks.slice(0, 3).map((task) => (
-                <div
-                  key={task._id}
-                  onClick={() => router.push(`/boards/${task._id}`)}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div 
-                      className="w-10 h-10 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: task.board.color || '#8B5CF6' }}
-                    >
-                      <Trello className="w-5 h-5 text-white" />
+              myTasks.slice(0, 3).map((task) => {
+                // Obtener el boardId correctamente (puede ser string o objeto)
+                const boardId = typeof task.board === 'string' ? task.board : task.board._id;
+                const boardName = typeof task.board === 'string' ? 'Board' : task.board.name;
+                const boardColor = typeof task.board === 'string' ? '#8B5CF6' : (task.board.color || '#8B5CF6');
+                
+                return (
+                  <div
+                    key={task._id}
+                    onClick={() => router.push(`/boards/${boardId}`)}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div 
+                        className="w-10 h-10 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: boardColor }}
+                      >
+                        <Trello className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">{task.title}</p>
+                        <p className="text-sm text-gray-500">{task.description || 'Sin descripción'}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`text-xs px-2 py-1 rounded ${
+                            task.priority === 'urgent' ? 'bg-red-100 text-red-700' :
+                            task.priority === 'high' ? 'bg-orange-100 text-orange-700' :
+                            task.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-gray-100 text-gray-700'
+                          }`}>
+                            {task.priority}
+                          </span>
+                          <span className="text-xs text-gray-500 truncate max-w-[150px]">
+                            {boardName}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{task.name}</p>
-                      <p className="text-sm text-gray-500 truncate max-w-[200px]">
-                        {task.board.name}
-                      </p>
-                    </div>
+                    <ArrowRight className="w-5 h-5 text-gray-400" />
                   </div>
-                  <ArrowRight className="w-5 h-5 text-gray-400" />
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         
