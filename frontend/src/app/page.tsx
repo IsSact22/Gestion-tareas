@@ -10,11 +10,11 @@ export default function Home() {
         <nav className="flex items-center justify-between mb-16">
           <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <Image 
-              src="/logo/isotipo-aura.svg" 
+              src="/logo/logo-aura.svg" 
               alt="AuraTasks Logo" 
-              width={40} 
-              height={40}
-              className="w-10 h-10"
+              width={60} 
+              height={60}
+              className="w-35 h-35"
             />
             <span className="text-2xl font-bold text-gray-900">AuraTasks</span>
           </Link>
@@ -193,12 +193,12 @@ export default function Home() {
         {/* Footer */}
         <footer className="border-t border-gray-200 pt-12 pb-8 mt-20">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <Image 
-              src="/logo/isotipo-aura.svg" 
+             <Image 
+              src="/logo/logo-aura.svg" 
               alt="AuraTasks Logo" 
-              width={32} 
-              height={32}
-              className="w-8 h-8"
+              width={60} 
+              height={60}
+              className="w-35 h-35"
             />
             <span className="text-xl font-bold text-gray-900">AuraTasks</span>
           </div>

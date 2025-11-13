@@ -11,6 +11,7 @@ import Input from '@/components/ui/Input';
 import Card from '@/components/ui/Card';
 import toast, { Toaster } from 'react-hot-toast';
 
+
 export default function RegisterPage() {
   const router = useRouter();
   const { register, isLoading } = useAuthStore();
@@ -90,12 +91,12 @@ export default function RegisterPage() {
         {/* Logo y Título */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
-            <Image 
-              src="/logo/flowly-logo.svg" 
-              alt="Flowly Logo" 
-              width={64} 
-              height={64}
-              className="w-16 h-16"
+           <Image 
+               src="/logo/logo-aura.svg" 
+               alt="AuraTasks Logo" 
+               width={60} 
+               height={60}
+               className="w-35 h-35"
             />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">

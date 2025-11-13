@@ -75,23 +75,23 @@ export default function Sidebar() {
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
         {!collapsed ? (
           <Link href="/dashboard" className="flex items-center space-x-2">
-            <Image 
-              src="/logo/aura-task-logo.svg" 
-              alt="AuraTask Logo" 
-              width={32} 
-              height={32}
-              className="w-8 h-8"
-            />
+             <Image 
+                src="/logo/logo-aura.svg" 
+                alt="AuraTasks Logo" 
+                width={60} 
+                height={60}
+                className="w-12 h-12"
+              />
             <span className="font-bold text-gray-900">AuraTask</span>
           </Link>
         ) : (
           <Link href="/dashboard" className="flex items-center justify-center">
             <Image 
-              src="/logo/aura-task-logo.svg" 
+              src="/logo/logo-aura.svg" 
               alt="AuraTask Logo" 
               width={32} 
               height={32}
-              className="w-8 h-8"
+              className="w-12 h-12"
             />
           </Link>
         )}
