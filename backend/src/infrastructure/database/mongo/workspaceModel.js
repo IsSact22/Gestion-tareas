@@ -33,6 +33,17 @@ const workspaceSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Virtual para obtener los boards de este workspace
+workspaceSchema.virtual('boards', {
+  ref: 'Board',
+  localField: '_id',
+  foreignField: 'workspace'
+});
+
+// Asegurar que los virtuals se incluyan en JSON
+workspaceSchema.set('toJSON', { virtuals: true });
+workspaceSchema.set('toObject', { virtuals: true });
+
 // Índices para mejorar el rendimiento
 workspaceSchema.index({ owner: 1 });
 workspaceSchema.index({ 'members.user': 1 });

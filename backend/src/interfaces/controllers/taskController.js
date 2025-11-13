@@ -53,7 +53,8 @@ export async function getTasks(req, res, next) {
     const tasks = await getTasksUseCase.execute({
       boardId,
       columnId,
-      userId: req.user._id
+      userId: req.user._id,
+      userRole: req.user.role
     });
 
     res.status(200).json({ success: true, data: tasks });
@@ -173,6 +174,16 @@ export async function searchTasks(req, res, next) {
 export async function getMyTasks(req, res, next) {
   try {
     const tasks = await taskRepository.findByAssignedUser(req.user._id);
+    res.status(200).json({ success: true, data: tasks });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Admin: Obtener TODAS las tareas del sistema
+export async function getAllTasksAdmin(req, res, next) {
+  try {
+    const tasks = await taskRepository.findAll();
     res.status(200).json({ success: true, data: tasks });
   } catch (error) {
     next(error);

@@ -101,7 +101,8 @@ export async function addMember(req, res, next) {
       workspaceId: req.params.id,
       userId: req.user._id,
       memberEmail: email,
-      role
+      role,
+      userRole: req.user.role
     });
 
     res.status(200).json({ success: true, data: workspace });
@@ -115,6 +116,16 @@ export async function removeMember(req, res, next) {
     const { userId } = req.params;
     const workspace = await workspaceRepository.removeMember(req.params.id, userId);
     res.status(200).json({ success: true, data: workspace });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Admin: Obtener TODOS los workspaces del sistema
+export async function getAllWorkspacesAdmin(req, res, next) {
+  try {
+    const workspaces = await workspaceRepository.findAll();
+    res.status(200).json({ success: true, data: workspaces });
   } catch (error) {
     next(error);
   }

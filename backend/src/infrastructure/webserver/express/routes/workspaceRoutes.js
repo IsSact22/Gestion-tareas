@@ -6,13 +6,18 @@ import {
   updateWorkspace,
   deleteWorkspace,
   addMember,
-  removeMember
+  removeMember,
+  getAllWorkspacesAdmin
 } from '../../../../interfaces/controllers/workspaceController.js';
 import { protect } from '../../../../middleware/authMiddleware.js';
+import { isAdmin } from '../../../../middleware/authorizationMiddleware.js';
 
 const router = express.Router();
 
 router.use(protect); // Todas las rutas requieren autenticación
+
+// Ruta admin para obtener TODOS los workspaces
+router.get('/admin/all', isAdmin, getAllWorkspacesAdmin);
 
 router.post('/', createWorkspace);
 router.get('/', getWorkspaces);

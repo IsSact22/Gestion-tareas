@@ -8,6 +8,7 @@ import WorkspaceRepository from '../../infrastructure/database/mongo/workspaceRe
 import ColumnRepository from '../../infrastructure/database/mongo/columnRepository.js';
 import TaskRepository from '../../infrastructure/database/mongo/taskRepository.js';
 import ActivityRepository from '../../infrastructure/database/mongo/activityRepository.js';
+import UserRepository from '../../infrastructure/database/mongo/userRepository.js';
 import { emitToBoard, emitToWorkspace, getIO } from '../../socket/index.js';
 import CreateBoardUseCase from '../../application/board/createBoardUseCase.js';
 
@@ -17,6 +18,7 @@ const workspaceRepository = new WorkspaceRepository();
 const columnRepository = new ColumnRepository();
 const taskRepository = new TaskRepository();
 const activityRepository = new ActivityRepository();
+const userRepository = new UserRepository();
 
 const createBoardUseCase = new CreateBoardUseCase(boardRepository, workspaceRepository);
 const getBoardsUseCase = new GetBoardsUseCase(boardRepository);
@@ -66,7 +68,8 @@ export async function getBoardById(req, res, next) {
   try {
     const board = await getBoardByIdUseCase.execute({
       boardId: req.params.id,
-      userId: req.user._id
+      userId: req.user._id,
+      userRole: req.user.role
     });
 
     res.status(200).json({ success: true, data: board });
@@ -132,7 +135,15 @@ export async function deleteBoard(req, res, next) {
 
 export async function addMember(req, res, next) {
   try {
-    const { userId, role } = req.body;
+    const { email, role } = req.body;
+    
+    // Buscar usuario por email
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+    }
+    
+    const userId = user._id;
     const board = await boardRepository.addMember(req.params.id, userId, role);
     
     // Crear notificación para el usuario agregado
@@ -169,6 +180,16 @@ export async function removeMember(req, res, next) {
     const { userId } = req.params;
     const board = await boardRepository.removeMember(req.params.id, userId);
     res.status(200).json({ success: true, data: board });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Admin: Obtener TODOS los boards del sistema
+export async function getAllBoardsAdmin(req, res, next) {
+  try {
+    const boards = await boardRepository.findAll();
+    res.status(200).json({ success: true, data: boards });
   } catch (error) {
     next(error);
   }

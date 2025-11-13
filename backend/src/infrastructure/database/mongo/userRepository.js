@@ -1,4 +1,5 @@
 import UserModel from "./userModel.js";
+import bcrypt from "bcryptjs";
 
 export default class UserRepository {
   async findById(id) {
@@ -27,6 +28,12 @@ export default class UserRepository {
   }
 
   async update(id, data) {
+    // Si se está actualizando la contraseña, hashearla primero
+    if (data.password) {
+      const salt = await bcrypt.genSalt(10);
+      data.password = await bcrypt.hash(data.password, salt);
+    }
+    
     return UserModel.findByIdAndUpdate(id, data, { 
       new: true, 
       runValidators: true 

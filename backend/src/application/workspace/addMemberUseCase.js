@@ -6,19 +6,20 @@ export default class AddMemberUseCase {
     this.userRepository = userRepository;
   }
 
-  async execute({ workspaceId, userId, memberEmail, role = 'member' }) {
+  async execute({ workspaceId, userId, memberEmail, role = 'member', userRole }) {
     const workspace = await this.workspaceRepository.findById(workspaceId);
 
     if (!workspace) {
       throw new AppError('Workspace not found', 404);
     }
 
-    // Verificar que el usuario sea el owner o admin
+    // Verificar que el usuario sea el owner, admin del workspace, o admin del sistema
     const isOwner = workspace.owner._id.toString() === userId.toString();
     const userMember = workspace.members.find(m => m.user._id.toString() === userId.toString());
-    const isAdmin = userMember && userMember.role === 'admin';
+    const isWorkspaceAdmin = userMember && userMember.role === 'admin';
+    const isSystemAdmin = userRole === 'admin';
 
-    if (!isOwner && !isAdmin) {
+    if (!isOwner && !isWorkspaceAdmin && !isSystemAdmin) {
       throw new AppError('Only owners and admins can add members', 403);
     }
 

@@ -38,7 +38,8 @@ export async function getColumns(req, res, next) {
     const { boardId } = req.query;
     const columns = await getColumnsUseCase.execute({
       boardId,
-      userId: req.user._id
+      userId: req.user._id,
+      userRole: req.user.role
     });
 
     res.status(200).json({ success: true, data: columns });

@@ -11,6 +11,7 @@ export default class WorkspaceRepository {
     return WorkspaceModel.find()
       .populate('owner', 'name email avatar')
       .populate('members.user', 'name email avatar')
+      .populate('boards')
       .sort({ createdAt: -1 });
   }
 
