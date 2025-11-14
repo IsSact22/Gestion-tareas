@@ -4,11 +4,13 @@ import { Search, Plus } from 'lucide-react';
 import { useState, useCallback } from 'react';
 import Button from '@/components/ui/Button';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const router = useRouter();
 
   // Función para realizar la búsqueda
   const performSearch = useCallback(async (query: string) => {
@@ -124,11 +126,15 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center space-x-3">
-          <Button variant="primary" size="md" className="flex items-center space-x-2">
-            <Plus className="w-4 h-4" />
-            <span className="hidden md:inline">Nueva Tarea</span>
+          <Button 
+            variant="primary" 
+            size="md" 
+            className="flex items-center space-x-2"
+            onClick={() => router.push('/tasks')}
+          >
+          <Plus className="w-4 h-4" />
+              <span className="hidden md:inline">Nueva Tarea</span>
           </Button>
-
           {/* Notifications */}
           <NotificationBell />
         </div>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
-import { User, Mail, Lock, Shield } from 'lucide-react';
+import { User, Mail, Lock, Shield, ArrowLeft } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -21,6 +21,11 @@ export default function ProfilePage() {
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Si no está en modo edición, no hacer nada
+    if (!isEditing) {
+      return;
+    }
 
     if (formData.password && formData.password !== formData.confirmPassword) {
       toast.error('Las contraseñas no coinciden');
@@ -67,25 +72,43 @@ export default function ProfilePage() {
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
-      <Toaster position="top-right" />
+      <Toaster position="top-center" />
       
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Mi Perfil</h1>
-        <p className="text-gray-600">Administra tu información personal</p>
+      {/* Header Centrado */}
+      <div className="mb-8 flex items-center justify-between">
+
+      <Button
+          type="button"
+          variant="primary"
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Regresar
+        </Button>
+
+
+        <div className="text-center flex-1">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Mi Perfil</h1>
+          <p className="text-gray-600">Administra tu información personal</p>
+        </div>
+ <div className="w-24"></div>
       </div>
 
-      <div className="max-w-3xl">
+      <div className="max-w-3xl mx-auto ">
         {/* Profile Card */}
         <Card className="mb-6">
-          <div className="flex items-center gap-6 p-6 border-b border-gray-200">
+          {/* Avatar y Info del Usuario - Centrado */}
+          <div className="flex flex-col items-center gap-6 p-6 border-b border-gray-200 text-center">
             <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-3xl font-bold">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
             </div>
-            <div className="flex-1">
+            <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">{user?.name}</h2>
               <p className="text-gray-600 mb-3">{user?.email}</p>
-              {getRoleBadge(user?.role || 'viewer')}
+              <div className="flex justify-center">
+                {getRoleBadge(user?.role || 'viewer')}
+              </div>
             </div>
           </div>
 
@@ -94,7 +117,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Nombre */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
                   <User className="w-4 h-4 inline mr-2" />
                   Nombre
                 </label>
@@ -103,14 +126,14 @@ export default function ProfilePage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   disabled={!isEditing}
-                  className={!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}
+                  className={`w-full ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                   required
                 />
               </div>
 
               {/* Email (No editable) */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
                   <Mail className="w-4 h-4 inline mr-2" />
                   Email
                   <span className="ml-2 text-xs text-gray-500">(No editable)</span>
@@ -119,7 +142,7 @@ export default function ProfilePage() {
                   type="email"
                   value={formData.email}
                   disabled
-                  className="bg-gray-100 cursor-not-allowed"
+                  className="w-full bg-gray-100 cursor-not-allowed"
                 />
               </div>
             </div>
@@ -127,7 +150,7 @@ export default function ProfilePage() {
             {/* Cambiar Contraseña */}
             {isEditing && (
               <div className="border-t border-gray-200 pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
                   <Lock className="w-5 h-5 inline mr-2" />
                   Cambiar Contraseña
                 </h3>
@@ -138,6 +161,7 @@ export default function ProfilePage() {
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="Dejar en blanco para no cambiar"
+                    className="w-full"
                   />
                   <Input
                     label="Confirmar Contraseña"
@@ -145,6 +169,7 @@ export default function ProfilePage() {
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     placeholder="Confirmar nueva contraseña"
+                    className="w-full"
                   />
                 </div>
               </div>
@@ -152,38 +177,47 @@ export default function ProfilePage() {
 
             {/* Información del Rol */}
             <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
                 <Shield className="w-5 h-5 inline mr-2" />
                 Información del Rol
               </h3>
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 text-center">
                 <p className="text-sm text-gray-600 mb-2">
-                  <strong>Rol actual:</strong> {getRoleBadge(user?.role || 'viewer')}
+                  <strong>Rol actual:</strong> 
                 </p>
-                <p className="text-sm text-gray-500">
+                <div className="flex justify-center mb-3">
+                  {getRoleBadge(user?.role || 'viewer')}
+                </div>
+                <p className="text-sm text-gray-500 mb-2">
                   {user?.role === 'admin' && 'Tienes acceso completo al sistema y puedes gestionar usuarios.'}
                   {user?.role === 'member' && 'Puedes colaborar en workspaces y boards, crear tareas y agregar comentarios.'}
                   {user?.role === 'viewer' && 'Solo puedes visualizar boards y tareas donde estés invitado.'}
                 </p>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-gray-400">
                   * El rol solo puede ser modificado por un administrador
                 </p>
               </div>
             </div>
+          </form>
 
-            {/* Botones de Acción */}
-            <div className="flex gap-3 pt-4">
+          {/* Botones - Centrados */}
+          <div className="px-6 pb-6">
+            <div className="flex gap-3 pt-4 border-t border-gray-200 justify-center">
               {!isEditing ? (
                 <Button
                   type="button"
                   onClick={() => setIsEditing(true)}
-                  className="flex-1"
+                  className="px-8"
                 >
                   Editar Perfil
                 </Button>
               ) : (
                 <>
-                  <Button type="submit" className="flex-1">
+                  <Button 
+                    type="button" 
+                    onClick={handleUpdateProfile}
+                    className="px-8"
+                  >
                     Guardar Cambios
                   </Button>
                   <Button
@@ -198,20 +232,21 @@ export default function ProfilePage() {
                         confirmPassword: '',
                       });
                     }}
+                    className="px-8"
                   >
                     Cancelar
                   </Button>
                 </>
               )}
             </div>
-          </form>
+          </div>
         </Card>
 
-        {/* Información Adicional */}
+        {/* Información Adicional - Centrada */}
         <Card>
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Información de la Cuenta</h3>
-            <div className="space-y-3 text-sm">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Información de la Cuenta</h3>
+            <div className="space-y-3 text-sm max-w-md mx-auto">
               <div className="flex justify-between py-2 border-b border-gray-100">
                 <span className="text-gray-600">Fecha de registro:</span>
                 <span className="font-medium text-gray-900">
