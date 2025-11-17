@@ -129,14 +129,39 @@ export default class ActivityRepository {
      * Crear activity
      */
     async create(data) {
+        // Convertir formato MongoDB (action/entity) a formato Prisma (type/description)
+        let type = data.type;
+        let description = data.description;
+        let taskId = data.task || data.entityId;
+
+        // Si viene en formato MongoDB (action + entity)
+        if (data.action && data.entity) {
+            type = `${data.entity}_${data.action}`; // e.g., "task_created"
+            
+            // Generar descripción basada en la acción
+            const entityName = data.entity === 'task' ? 'tarea' : data.entity;
+            const actionText = {
+                'created': 'creó',
+                'updated': 'actualizó',
+                'deleted': 'eliminó',
+                'moved': 'movió',
+                'commented': 'comentó en'
+            }[data.action] || data.action;
+            
+            description = `${actionText} ${entityName}`;
+            if (data.details?.title) {
+                description += ` "${data.details.title}"`;
+            }
+        }
+
         return prisma.activity.create({
             data: {
-                type: data.type,
-                description: data.description,
+                type: type,
+                description: description,
                 userId: data.user,
                 boardId: data.board,
-                taskId: data.task,
-                metadata: data.metadata || null
+                taskId: taskId,
+                metadata: data.details || data.metadata || null
             },
             include: {
                 user: {

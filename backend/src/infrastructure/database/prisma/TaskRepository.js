@@ -6,10 +6,29 @@ import prisma from "./client.js";
  */
 export default class TaskRepository {
     /**
+     * Transformar task de Prisma a formato compatible con frontend
+     * Convierte assignedTo de TaskAssignment[] a User[]
+     */
+    _transformTask(task) {
+        if (!task) return task;
+        
+        return {
+            ...task,
+            assignedTo: task.assignedTo?.map(assignment => assignment.user) || []
+        };
+    }
+
+    /**
+     * Transformar array de tasks
+     */
+    _transformTasks(tasks) {
+        return tasks.map(task => this._transformTask(task));
+    }
+    /**
      * Buscar task por ID con relaciones
      */
     async findById(id) {
-        return prisma.task.findUnique({
+        const task = await prisma.task.findUnique({
             where: { id },
             include: {
                 column: {
@@ -56,13 +75,14 @@ export default class TaskRepository {
                 }
             }
         });
+        return this._transformTask(task);
     }
 
     /**
      * Obtener todas las tasks
      */
     async findAll() {
-        return prisma.task.findMany({
+        const tasks = await prisma.task.findMany({
             include: {
                 assignedTo: {
                     include: {
@@ -89,13 +109,14 @@ export default class TaskRepository {
                 position: 'asc'
             }
         });
+        return this._transformTasks(tasks);
     }
 
     /**
      * Buscar tasks por board
      */
     async findByBoardId(boardId) {
-        return prisma.task.findMany({
+        const tasks = await prisma.task.findMany({
             where: {
                 boardId: boardId
             },
@@ -126,13 +147,14 @@ export default class TaskRepository {
                 position: 'asc'
             }
         });
+        return this._transformTasks(tasks);
     }
 
     /**
      * Buscar tasks por columna
      */
     async findByColumnId(columnId) {
-        return prisma.task.findMany({
+        const tasks = await prisma.task.findMany({
             where: { columnId },
             include: {
                 assignedTo: {
@@ -160,13 +182,14 @@ export default class TaskRepository {
                 position: 'asc'
             }
         });
+        return this._transformTasks(tasks);
     }
 
     /**
      * Buscar tasks asignadas a un usuario
      */
     async findByAssignedUser(userId) {
-        return prisma.task.findMany({
+        const tasks = await prisma.task.findMany({
             where: {
                 assignedTo: {
                     some: {
@@ -194,6 +217,7 @@ export default class TaskRepository {
                 dueDate: 'asc'
             }
         });
+        return this._transformTasks(tasks);
     }
 
     /**
@@ -206,7 +230,7 @@ export default class TaskRepository {
             dueDate = new Date(dueDate + 'T00:00:00.000Z').toISOString();
         }
 
-        return prisma.task.create({
+        const task = await prisma.task.create({
             data: {
                 title: data.title,
                 description: data.description,
@@ -250,6 +274,7 @@ export default class TaskRepository {
                 }
             }
         });
+        return this._transformTask(task);
     }
 
     /**
@@ -273,7 +298,7 @@ export default class TaskRepository {
             ...(data.attachments && { attachments: data.attachments })
         };
 
-        return prisma.task.update({
+        const task = await prisma.task.update({
             where: { id },
             data: updateData,
             include: {
@@ -312,6 +337,7 @@ export default class TaskRepository {
                 }
             }
         });
+        return this._transformTask(task);
     }
 
     /**
@@ -327,7 +353,7 @@ export default class TaskRepository {
      * Mover task a otra columna
      */
     async moveToColumn(taskId, newColumnId, newPosition) {
-        return prisma.task.update({
+        const task = await prisma.task.update({
             where: { id: taskId },
             data: {
                 columnId: newColumnId,
@@ -349,6 +375,7 @@ export default class TaskRepository {
                 }
             }
         });
+        return this._transformTask(task);
     }
 
     /**
@@ -434,7 +461,7 @@ export default class TaskRepository {
      * Buscar tasks por board con query
      */
     async searchByBoard(boardId, query) {
-        return prisma.task.findMany({
+        const tasks = await prisma.task.findMany({
             where: {
                 boardId: boardId,
                 OR: [
@@ -465,13 +492,14 @@ export default class TaskRepository {
             },
             take: 20
         });
+        return this._transformTasks(tasks);
     }
 
     /**
      * Obtener tasks vencidas
      */
     async getOverdueTasks(boardId) {
-        return prisma.task.findMany({
+        const tasks = await prisma.task.findMany({
             where: {
                 boardId: boardId,
                 dueDate: {
@@ -502,5 +530,6 @@ export default class TaskRepository {
                 dueDate: 'asc'
             }
         });
+        return this._transformTasks(tasks);
     }
 }
