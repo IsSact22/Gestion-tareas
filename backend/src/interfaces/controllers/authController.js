@@ -1,9 +1,9 @@
 import RegisterUseCase from '../../application/auth/registerUseCase.js';
 import LoginUseCase from '../../application/auth/loginUseCase.js';
 import GetMeUseCase from '../../application/auth/getMeUseCase.js';
-import UserRepository from '../../infrastructure/database/mongo/userRepository.js';
+import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
 
-const userRepository = new UserRepository();
+const userRepository = repositoryFactory.getUserRepository();
 const registerUseCase = new RegisterUseCase(userRepository);
 const loginUseCase = new LoginUseCase(userRepository);
 const getMeUseCase = new GetMeUseCase(userRepository);

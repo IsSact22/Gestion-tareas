@@ -1,9 +1,8 @@
 import GetActivitiesUseCase from '../../application/activity/getActivitiesUseCase.js';
-import ActivityRepository from '../../infrastructure/database/mongo/activityRepository.js';
-import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
+import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
 
-const activityRepository = new ActivityRepository();
-const boardRepository = new BoardRepository();
+const activityRepository = repositoryFactory.getActivityRepository();
+const boardRepository = repositoryFactory.getBoardRepository();
 
 const getActivitiesUseCase = new GetActivitiesUseCase(activityRepository, boardRepository);
 

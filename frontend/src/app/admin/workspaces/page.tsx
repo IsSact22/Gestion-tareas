@@ -10,6 +10,7 @@ import api from '@/lib/api';
 import AssignMembersModal from '@/components/admin/AssignMembersModal';
 
 interface Workspace {
+  id: string;
   _id: string;
   name: string;
   description?: string;

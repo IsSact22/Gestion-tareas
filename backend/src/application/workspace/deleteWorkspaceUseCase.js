@@ -1,4 +1,5 @@
 import AppError from '../../core/AppError.js';
+import { toStringId } from '../../core/idUtils.js';
 
 export default class DeleteWorkspaceUseCase {
   constructor(workspaceRepository, boardRepository) {
@@ -14,14 +15,17 @@ export default class DeleteWorkspaceUseCase {
     }
 
     // Verificar que el usuario sea el owner
-    if (workspace.owner._id.toString() !== userId.toString()) {
+    const ownerId = toStringId(workspace.ownerId || workspace.owner?._id || workspace.owner);
+    const userIdStr = toStringId(userId);
+    
+    if (ownerId !== userIdStr) {
       throw new AppError('Only the owner can delete this workspace', 403);
     }
 
     // Eliminar todos los boards del workspace
     const boards = await this.boardRepository.findByWorkspaceId(workspaceId);
     for (const board of boards) {
-      await this.boardRepository.delete(board._id);
+      await this.boardRepository.delete(board.id || board._id);
     }
 
     // Eliminar workspace

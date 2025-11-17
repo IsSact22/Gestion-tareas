@@ -1,6 +1,7 @@
 import api from '../lib/api';
 
 export interface Task {
+  id: string;
   _id: string;
   title: string;
   description?: string;

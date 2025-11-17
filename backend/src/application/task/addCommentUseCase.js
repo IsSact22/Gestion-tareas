@@ -1,4 +1,5 @@
 import AppError from '../../core/AppError.js';
+import { toStringId } from '../../core/idUtils.js';
 
 export default class AddCommentUseCase {
   constructor(taskRepository, boardRepository, activityRepository) {
@@ -19,7 +20,10 @@ export default class AddCommentUseCase {
 
     // Verificar acceso
     const board = await this.boardRepository.findById(task.board._id);
-    const isMember = board.members.some(m => m.user._id.toString() === userId.toString());
+    const isMember = board.members.some(m => {
+      const memberId = toStringId(m.userId || m.user?._id || m.user);
+      return memberId === userId;
+    });
     if (!isMember) {
       throw new AppError('You do not have access to this task', 403);
     }
@@ -32,7 +36,8 @@ export default class AddCommentUseCase {
       action: 'commented',
       entity: 'task',
       entityId: taskId,
-      board: task.board._id,
+      board: task.board._id, 
+      workspace: task.board.workspace._id,
       details: { title: task.title, comment: text.substring(0, 50) }
     });
 

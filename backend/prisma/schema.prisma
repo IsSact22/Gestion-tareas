@@ -1,0 +1,213 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USER ====================
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  avatar    String?
+  role      String   @default("member") // 'admin' | 'member' | 'viewer'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  ownedWorkspaces    Workspace[]        @relation("WorkspaceOwner")
+  workspaceMembers   WorkspaceMember[]
+  boardMembers       BoardMember[]
+  assignedTasks      TaskAssignment[]
+  createdTasks       Task[]             @relation("TaskCreator")
+  comments           Comment[]
+  activities         Activity[]
+  notifications      Notification[]
+
+  @@map("users")
+}
+
+// ==================== WORKSPACE ====================
+model Workspace {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  owner   User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members WorkspaceMember[]
+  boards  Board[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String   @id @default(uuid())
+  workspaceId String
+  userId      String
+  role        String   @default("member") // 'admin' | 'member' | 'viewer'
+  joinedAt    DateTime @default(now())
+
+  // Relaciones
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@map("workspace_members")
+}
+
+// ==================== BOARD ====================
+model Board {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  color       String   @default("#8B5CF6")
+  workspaceId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  workspace Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members   BoardMember[]
+  columns   Column[]
+  tasks     Task[]
+  activities Activity[]
+
+  @@map("boards")
+}
+
+model BoardMember {
+  id       String   @id @default(uuid())
+  boardId  String
+  userId   String
+  role     String   @default("member") // 'admin' | 'member' | 'viewer'
+  joinedAt DateTime @default(now())
+
+  // Relaciones
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([boardId, userId])
+  @@map("board_members")
+}
+
+// ==================== COLUMN ====================
+model Column {
+  id        String   @id @default(uuid())
+  name      String
+  boardId   String
+  position  Int      @default(0)
+  color     String   @default("#6B7280")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  board Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tasks Task[]
+
+  @@map("columns")
+}
+
+// ==================== TASK ====================
+model Task {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  columnId    String
+  boardId     String
+  position    Int       @default(0)
+  createdBy   String
+  priority    String    @default("medium") // 'low' | 'medium' | 'high' | 'urgent'
+  dueDate     DateTime?
+  tags        String[]  @default([])
+  attachments Json[]    @default([])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relaciones
+  column       Column           @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  board        Board            @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  creator      User             @relation("TaskCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+  assignedTo   TaskAssignment[]
+  comments     Comment[]
+  activities   Activity[]
+
+  @@map("tasks")
+}
+
+// Tabla intermedia para múltiples usuarios asignados
+model TaskAssignment {
+  id        String   @id @default(uuid())
+  taskId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  // Relaciones
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+  @@map("task_assignments")
+}
+
+// ==================== COMMENT ====================
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  taskId    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+// ==================== ACTIVITY ====================
+model Activity {
+  id          String   @id @default(uuid())
+  type        String // 'task_created' | 'task_updated' | 'task_moved' | 'comment_added' | etc.
+  description String
+  userId      String
+  boardId     String?
+  taskId      String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  // Relaciones
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  board Board? @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  task  Task?  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("activities")
+}
+
+// ==================== NOTIFICATION ====================
+model Notification {
+  id        String   @id @default(uuid())
+  type      String // 'task_assigned' | 'comment_added' | 'due_date_reminder' | etc.
+  title     String
+  message   String
+  userId    String
+  read      Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+
+  // Relaciones
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}

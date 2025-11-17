@@ -3,14 +3,13 @@ import GetWorkspacesUseCase from '../../application/workspace/getWorkspacesUseCa
 import UpdateWorkspaceUseCase from '../../application/workspace/updateWorkspaceUseCase.js';
 import DeleteWorkspaceUseCase from '../../application/workspace/deleteWorkspaceUseCase.js';
 import AddMemberUseCase from '../../application/workspace/addMemberUseCase.js';
-import WorkspaceRepository from '../../infrastructure/database/mongo/workspaceRepository.js';
-import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
-import UserRepository from '../../infrastructure/database/mongo/userRepository.js';
+import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
 import { emitToWorkspace } from '../../socket/index.js';
+import { toStringId } from '../../core/idUtils.js';
 
-const workspaceRepository = new WorkspaceRepository();
-const boardRepository = new BoardRepository();
-const userRepository = new UserRepository();
+const workspaceRepository = repositoryFactory.getWorkspaceRepository();
+const boardRepository = repositoryFactory.getBoardRepository();
+const userRepository = repositoryFactory.getUserRepository();
 
 const createWorkspaceUseCase = new CreateWorkspaceUseCase(workspaceRepository);
 const getWorkspacesUseCase = new GetWorkspacesUseCase(workspaceRepository);
@@ -28,9 +27,9 @@ export async function createWorkspace(req, res, next) {
     });
 
     // Emitir evento Socket.IO
-    emitToWorkspace(workspace._id.toString(), 'workspace:updated', {
+    emitToWorkspace(toStringId(workspace.id || workspace._id), 'workspace:created', {
       workspace,
-      userId: req.user._id,
+      userId: toStringId(req.user.id || req.user._id),
       timestamp: new Date()
     });
 
@@ -69,9 +68,9 @@ export async function updateWorkspace(req, res, next) {
     });
 
     // Emitir evento Socket.IO
-    emitToWorkspace(workspace._id.toString(), 'workspace:updated', {
+    emitToWorkspace(toStringId(workspace.id || workspace._id), 'workspace:updated', {
       workspace,
-      userId: req.user._id,
+      userId: toStringId(req.user.id || req.user._id),
       timestamp: new Date()
     });
 

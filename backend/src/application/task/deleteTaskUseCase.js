@@ -1,4 +1,5 @@
 import AppError from '../../core/AppError.js';
+import { toStringId } from '../../core/idUtils.js';
 
 export default class DeleteTaskUseCase {
   constructor(taskRepository, boardRepository, activityRepository) {
@@ -14,9 +15,14 @@ export default class DeleteTaskUseCase {
     }
 
     // Verificar permisos
-    const board = await this.boardRepository.findById(task.board._id);
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
-    if (!member || member.role === 'viewer') {
+    const boardId = task.boardId || task.board?._id || task.board;
+    const board = await this.boardRepository.findById(boardId);
+    const userIdStr = toStringId(userId);
+    const isMember = board.members?.some(m => {
+      const memberId = toStringId(m.userId || m.user?._id || m.user);
+      return memberId === userIdStr;
+    });
+    if (!isMember) {
       throw new AppError('You do not have permission to delete tasks', 403);
     }
 
@@ -26,7 +32,7 @@ export default class DeleteTaskUseCase {
       action: 'deleted',
       entity: 'task',
       entityId: taskId,
-      board: task.board._id,
+      board: boardId,
       details: { title: task.title }
     });
 

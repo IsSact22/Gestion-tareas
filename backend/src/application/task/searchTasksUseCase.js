@@ -1,4 +1,5 @@
 import AppError from '../../core/AppError.js';
+import { toStringId } from '../../core/idUtils.js';
 
 export default class SearchTasksUseCase {
   constructor(taskRepository, boardRepository) {
@@ -17,7 +18,11 @@ export default class SearchTasksUseCase {
       throw new AppError('Board not found', 404);
     }
 
-    const isMember = board.members.some(m => m.user._id.toString() === userId.toString());
+    const userIdStr = toStringId(userId);
+    const isMember = board.members?.some(m => {
+      const memberId = toStringId(m.userId || m.user?._id || m.user);
+      return memberId === userIdStr;
+    });
     if (!isMember) {
       throw new AppError('You do not have access to this board', 403);
     }

@@ -179,8 +179,8 @@ export default function DashboardPage() {
             ) : (
               workspaces.slice(0, 3).map((workspace) => (
                 <div
-                  key={workspace._id}
-                  onClick={() => router.push(`/workspaces/${workspace._id}`)}
+                  key={workspace._id || workspace.id}
+                  onClick={() => router.push(`/workspaces/${workspace._id || workspace.id}`)}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center space-x-3">
@@ -232,8 +232,8 @@ export default function DashboardPage() {
             ) : (
               boards.slice(0, 3).map((board) => (
                 <div
-                  key={board._id}
-                  onClick={() => router.push(`/boards/${board._id}`)}
+                  key={board._id || board.id}
+                  onClick={() => router.push(`/boards/${board._id || board.id}`)}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center space-x-3">
@@ -294,7 +294,7 @@ export default function DashboardPage() {
                 
                 return (
                   <div
-                    key={task._id}
+                    key={task._id || task.id}
                     onClick={() => router.push(`/boards/${boardId}`)}
                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                   >

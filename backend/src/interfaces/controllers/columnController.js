@@ -3,13 +3,11 @@ import GetColumnsUseCase from '../../application/column/getColumnsUseCase.js';
 import UpdateColumnUseCase from '../../application/column/updateColumnUseCase.js';
 import DeleteColumnUseCase from '../../application/column/deleteColumnUseCase.js';
 import ReorderColumnsUseCase from '../../application/column/reorderColumnsUseCase.js';
-import ColumnRepository from '../../infrastructure/database/mongo/columnRepository.js';
-import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
-import TaskRepository from '../../infrastructure/database/mongo/taskRepository.js';
+import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
 
-const columnRepository = new ColumnRepository();
-const boardRepository = new BoardRepository();
-const taskRepository = new TaskRepository();
+const columnRepository = repositoryFactory.getColumnRepository();
+const boardRepository = repositoryFactory.getBoardRepository();
+const taskRepository = repositoryFactory.getTaskRepository();
 
 const createColumnUseCase = new CreateColumnUseCase(columnRepository, boardRepository);
 const getColumnsUseCase = new GetColumnsUseCase(columnRepository, boardRepository);

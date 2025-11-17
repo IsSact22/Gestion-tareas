@@ -1,4 +1,5 @@
 import AppError from '../../core/AppError.js';
+import { toStringId } from '../../core/idUtils.js';
 
 export default class GetColumnsUseCase {
   constructor(columnRepository, boardRepository) {
@@ -14,7 +15,11 @@ export default class GetColumnsUseCase {
     }
 
     // Permitir acceso a miembros del board o admins del sistema
-    const isMember = board.members.some(m => m.user._id.toString() === userId.toString());
+    const userIdStr = toStringId(userId);
+    const isMember = board.members?.some(m => {
+      const memberId = toStringId(m.userId || m.user?._id || m.user);
+      return memberId === userIdStr;
+    });
     const isSystemAdmin = userRole === 'admin';
     
     if (!isMember && !isSystemAdmin) {

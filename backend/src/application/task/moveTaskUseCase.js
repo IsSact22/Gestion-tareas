@@ -1,4 +1,5 @@
 import AppError from '../../core/AppError.js';
+import { toStringId } from '../../core/idUtils.js';
 
 export default class MoveTaskUseCase {
   constructor(taskRepository, columnRepository, boardRepository, activityRepository) {
@@ -20,13 +21,18 @@ export default class MoveTaskUseCase {
     }
 
     // Verificar permisos
-    const board = await this.boardRepository.findById(task.board._id);
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
-    if (!member || member.role === 'viewer') {
+    const boardId = task.boardId || task.board?._id || task.board;
+    const board = await this.boardRepository.findById(boardId);
+    const userIdStr = toStringId(userId);
+    const isMember = board.members?.some(m => {
+      const memberId = toStringId(m.userId || m.user?._id || m.user);
+      return memberId === userIdStr;
+    });
+    if (!isMember) {
       throw new AppError('You do not have permission to move tasks', 403);
     }
 
-    const oldColumnId = task.column._id;
+    const oldColumnId = task.columnId || task.column?._id || task.column;
 
     // Mover tarea
     await this.taskRepository.moveToColumn(taskId, newColumnId, newPosition);
@@ -37,7 +43,7 @@ export default class MoveTaskUseCase {
       action: 'moved',
       entity: 'task',
       entityId: taskId,
-      board: task.board._id,
+      board: boardId,
       details: {
         title: task.title,
         from: oldColumnId,

@@ -20,7 +20,7 @@ export default class ColumnRepository {
 
   async update(id, data) {
     return ColumnModel.findByIdAndUpdate(id, data, {
-      new: true,
+      new: true,  
       runValidators: true
     });
   }

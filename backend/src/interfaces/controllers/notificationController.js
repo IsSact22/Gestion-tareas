@@ -1,6 +1,6 @@
-import NotificationRepository from '../../infrastructure/database/mongo/notificationRepository.js';
+import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
 
-const notificationRepository = new NotificationRepository();
+const notificationRepository = repositoryFactory.getNotificationRepository();
 
 export async function getNotifications(req, res, next) {
   try {

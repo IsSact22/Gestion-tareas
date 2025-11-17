@@ -7,15 +7,12 @@ import MoveTaskUseCase from '../../application/task/moveTaskUseCase.js';
 import AddCommentUseCase from '../../application/task/addCommentUseCase.js';
 import DeleteCommentUseCase from '../../application/task/deleteCommentUseCase.js';
 import SearchTasksUseCase from '../../application/task/searchTasksUseCase.js';
-import TaskRepository from '../../infrastructure/database/mongo/taskRepository.js';
-import ColumnRepository from '../../infrastructure/database/mongo/columnRepository.js';
-import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
-import ActivityRepository from '../../infrastructure/database/mongo/activityRepository.js';
+import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
 
-const taskRepository = new TaskRepository();
-const columnRepository = new ColumnRepository();
-const boardRepository = new BoardRepository();
-const activityRepository = new ActivityRepository();
+const taskRepository = repositoryFactory.getTaskRepository();
+const columnRepository = repositoryFactory.getColumnRepository();
+const boardRepository = repositoryFactory.getBoardRepository();
+const activityRepository = repositoryFactory.getActivityRepository();
 
 const createTaskUseCase = new CreateTaskUseCase(taskRepository, columnRepository, boardRepository, activityRepository);
 const getTasksUseCase = new GetTasksUseCase(taskRepository, boardRepository);

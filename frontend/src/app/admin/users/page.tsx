@@ -12,6 +12,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import api from '@/lib/api';
 
 interface User {
+  id: string;
   _id: string;
   name: string;
   email: string;
@@ -198,7 +199,7 @@ export default function ManageUsersPage() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {users.map((user) => (
-                <tr key={user._id} className="hover:bg-gray-50">
+                <tr key={user._id || user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">

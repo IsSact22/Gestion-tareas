@@ -47,7 +47,7 @@ export default function BoardsPage() {
     if (workspaces.length > 0) {
       // Unirse a todos los workspaces
       workspaces.forEach(workspace => {
-        socketService.joinWorkspace(workspace._id);
+        socketService.joinWorkspace(workspace._id || workspace.id);
         console.log(`🏢 Uniéndose al workspace: ${workspace.name}`);
       });
     }
@@ -307,7 +307,7 @@ export default function BoardsPage() {
             >
               <option value="">Selecciona un workspace</option>
               {workspaces.map((workspace) => (
-                <option key={workspace._id} value={workspace._id}>
+                <option key={workspace._id || workspace.id} value={workspace._id || workspace.id}>
                   {workspace.name}
                 </option>
               ))}

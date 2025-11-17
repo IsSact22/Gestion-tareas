@@ -1,6 +1,6 @@
-import UserRepository from "../../infrastructure/database/mongo/userRepository.js";
+import repositoryFactory from "../../infrastructure/database/repositoryFactory.js";
 
-const userRepository = new UserRepository();
+const userRepository = repositoryFactory.getUserRepository();
 
 export async function getAllUsers(req, res, next) {
   try {

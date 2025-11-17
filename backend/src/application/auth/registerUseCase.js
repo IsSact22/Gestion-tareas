@@ -37,12 +37,13 @@ export default class RegisterUseCase {
       role: role || 'member'
     });
 
-    // Generar token
-    const token = generateToken(user._id);
+    // Generar token (usar id o _id para compatibilidad)
+    const userId = user.id || user._id;
+    const token = generateToken(userId);
 
     return {
       user: {
-        id: user._id,
+        id: userId,
         name: user.name,
         email: user.email,
         avatar: user.avatar,

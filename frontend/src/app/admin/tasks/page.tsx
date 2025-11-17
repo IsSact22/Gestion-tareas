@@ -10,6 +10,7 @@ import api from '@/lib/api';
 import QuickTaskActions from '@/components/admin/QuickTaskActions';
 
 interface Task {
+  id: string;
   _id: string;
   title: string;
   description?: string;
@@ -310,7 +311,7 @@ export default function AdminTasksPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredTasks.map((task) => (
                 <tr
-                  key={task._id}
+                  key={task._id || task.id}
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={() => {
                     const boardId = typeof task.board === 'string' ? task.board : task.board._id;

@@ -79,7 +79,7 @@ export default function TasksPage() {
       // Actualizar el estado local
       setMyTasks(prevTasks =>
         prevTasks.map(task =>
-          task._id === taskId ? { ...task, status: newStatus } : task
+          (task._id || task.id) === taskId ? { ...task, status: newStatus } : task
         )
       );
       
@@ -230,7 +230,7 @@ export default function TasksPage() {
         <div className="grid gap-4">
           {filteredTasks.map((task) => (
               <Card 
-                key={task._id} 
+                key={task._id || task.id} 
                 variant="bordered" 
                 className="p-5 hover:shadow-lg transition-all"
               >

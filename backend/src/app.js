@@ -16,10 +16,11 @@ import columnRoutes from "./infrastructure/webserver/express/routes/columnRoutes
 import taskRoutes from "./infrastructure/webserver/express/routes/taskRoutes.js";
 import activityRoutes from "./infrastructure/webserver/express/routes/activityRoutes.js";
 import notificationRoutes from "./infrastructure/webserver/express/routes/notificationRoutes.js";
+import normalizeResponse from "./middleware/normalizeResponse.js";
 
 const app = express();
 
-// 🧱 Middlewares base
+// Middlewares base
 app.use(helmet());
 app.use(cors({
   origin: config.frontendUrl,
@@ -29,7 +30,10 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 📚 Swagger Documentation
+// Normalizar respuestas (MongoDB/Prisma compatibility)
+app.use(normalizeResponse);
+
+// Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'AuraTask API Documentation',

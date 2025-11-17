@@ -1,4 +1,5 @@
 import AppError from '../../core/AppError.js';
+import { toStringId } from '../../core/idUtils.js';
 
 export default class UpdateTaskUseCase {
   constructor(taskRepository, boardRepository, activityRepository) {
@@ -14,9 +15,14 @@ export default class UpdateTaskUseCase {
     }
 
     // Verificar permisos
-    const board = await this.boardRepository.findById(task.board._id);
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
-    if (!member || member.role === 'viewer') {
+    const boardId = task.boardId || task.board?._id || task.board;
+    const board = await this.boardRepository.findById(boardId);
+    const userIdStr = toStringId(userId);
+    const isMember = board.members?.some(m => {
+      const memberId = toStringId(m.userId || m.user?._id || m.user);
+      return memberId === userIdStr;
+    });
+    if (!isMember) {
       throw new AppError('You do not have permission to update tasks', 403);
     }
 
@@ -31,11 +37,7 @@ export default class UpdateTaskUseCase {
       updateData.description = description;
     }
     if (assignedTo !== undefined) {
-      // Si es un array vacío, asignar array vacío directamente
-      // Si tiene elementos, filtrar valores inválidos
-      updateData.assignedTo = Array.isArray(assignedTo) 
-        ? assignedTo.filter(id => id && id.toString().length === 24)
-        : assignedTo;
+      updateData.assignedTo = assignedTo;
       changes.assignedTo = { from: task.assignedTo, to: updateData.assignedTo };
     }
     if (priority !== undefined) {
@@ -59,7 +61,7 @@ export default class UpdateTaskUseCase {
         action: 'updated',
         entity: 'task',
         entityId: taskId,
-        board: task.board._id,
+        board: boardId,
         details: changes
       });
     }

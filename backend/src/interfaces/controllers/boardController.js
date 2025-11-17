@@ -2,23 +2,18 @@ import GetBoardsUseCase from '../../application/board/getBoardsUseCase.js';
 import GetBoardByIdUseCase from '../../application/board/getBoardByIdUseCase.js';
 import UpdateBoardUseCase from '../../application/board/updateBoardUseCase.js';
 import DeleteBoardUseCase from '../../application/board/deleteBoardUseCase.js';
-import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
-import NotificationRepository from '../../infrastructure/database/mongo/notificationRepository.js';
-import WorkspaceRepository from '../../infrastructure/database/mongo/workspaceRepository.js';
-import ColumnRepository from '../../infrastructure/database/mongo/columnRepository.js';
-import TaskRepository from '../../infrastructure/database/mongo/taskRepository.js';
-import ActivityRepository from '../../infrastructure/database/mongo/activityRepository.js';
-import UserRepository from '../../infrastructure/database/mongo/userRepository.js';
+import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
 import { emitToBoard, emitToWorkspace, getIO } from '../../socket/index.js';
 import CreateBoardUseCase from '../../application/board/createBoardUseCase.js';
+import { toStringId } from '../../core/idUtils.js';
 
-const boardRepository = new BoardRepository();
-const notificationRepository = new NotificationRepository();
-const workspaceRepository = new WorkspaceRepository();
-const columnRepository = new ColumnRepository();
-const taskRepository = new TaskRepository();
-const activityRepository = new ActivityRepository();
-const userRepository = new UserRepository();
+const boardRepository = repositoryFactory.getBoardRepository();
+const notificationRepository = repositoryFactory.getNotificationRepository();
+const workspaceRepository = repositoryFactory.getWorkspaceRepository();
+const columnRepository = repositoryFactory.getColumnRepository();
+const taskRepository = repositoryFactory.getTaskRepository();
+const activityRepository = repositoryFactory.getActivityRepository();
+const userRepository = repositoryFactory.getUserRepository();
 
 const createBoardUseCase = new CreateBoardUseCase(boardRepository, workspaceRepository);
 const getBoardsUseCase = new GetBoardsUseCase(boardRepository);
@@ -90,15 +85,15 @@ export async function updateBoard(req, res, next) {
     });
 
     // Emitir evento Socket.IO al board y al workspace
-    emitToBoard(board._id.toString(), 'board:updated', {
+    emitToBoard(toStringId(board.id || board._id), 'board:created', {
       board,
-      userId: req.user._id,
+      userId: toStringId(req.user.id || req.user._id),
       timestamp: new Date()
     });
 
-    emitToWorkspace(board.workspace.toString(), 'board:updated', {
+    emitToWorkspace(toStringId(board.workspaceId || board.workspace), 'board:created', {
       board,
-      userId: req.user._id,
+      userId: toStringId(req.user.id || req.user._id),
       timestamp: new Date()
     });
 
@@ -120,9 +115,9 @@ export async function deleteBoard(req, res, next) {
 
     // Emitir evento Socket.IO de eliminación
     if (board) {
-      emitToWorkspace(board.workspace.toString(), 'board:deleted', {
+      emitToWorkspace(toStringId(board.workspaceId || board.workspace), 'board:deleted', {
         boardId: req.params.id,
-        userId: req.user._id,
+        userId: toStringId(req.user.id || req.user._id),
         timestamp: new Date()
       });
     }

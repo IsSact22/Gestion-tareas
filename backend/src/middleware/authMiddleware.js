@@ -1,8 +1,8 @@
 import { verifyToken } from '../core/jwtUtils.js';
-import UserRepository from '../infrastructure/database/mongo/userRepository.js';
+import repositoryFactory from '../infrastructure/database/repositoryFactory.js';
 import AppError from '../core/AppError.js';
 
-const userRepository = new UserRepository();
+const userRepository = repositoryFactory.getUserRepository();
 
 export const protect = async (req, res, next) => {
   try {
@@ -28,7 +28,12 @@ export const protect = async (req, res, next) => {
     }
 
     // Agregar usuario al request
-    req.user = user;
+    // Normalizar: MongoDB usa _id, Prisma usa id
+    req.user = {
+      ...user,
+      _id: user.id || user._id, // Compatibilidad con código existente
+      id: user.id || user._id    // Asegurar que siempre existe id
+    };
     next();
   } catch (error) {
     next(error);
