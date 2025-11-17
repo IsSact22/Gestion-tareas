@@ -2,8 +2,10 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
 import config from "./config/index.js";
 import connectDB from "./config/database.js";
+import swaggerSpec from "./config/swagger.js";
 
 // Importar rutas
 import authRoutes from "./infrastructure/webserver/express/routes/authRoutes.js";
@@ -26,6 +28,19 @@ app.use(cors({
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// 📚 Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'AuraTask API Documentation',
+  customfavIcon: '/favicon.ico',
+}));
+
+// Ruta para obtener el spec en JSON
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 // 📦 Rutas principales
 app.use("/api/auth", authRoutes);

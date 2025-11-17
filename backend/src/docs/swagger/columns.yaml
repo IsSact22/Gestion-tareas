@@ -1,0 +1,202 @@
+paths:
+  /columns:
+    get:
+      summary: Obtener columnas de un board
+      description: Devuelve todas las columnas de un board específico ordenadas por posición
+      tags:
+        - Columns
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: boardId
+          required: true
+          schema:
+            type: string
+          description: ID del board
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Lista de columnas obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Column'
+        '403':
+          description: No tienes acceso a este board
+
+    post:
+      summary: Crear columna
+      description: Crea una nueva columna en un board (solo admin y member)
+      tags:
+        - Columns
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - boardId
+              properties:
+                name:
+                  type: string
+                  example: To Do
+                  description: Nombre de la columna
+                boardId:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                  description: ID del board donde se creará la columna
+                color:
+                  type: string
+                  example: '#3B82F6'
+                  description: Color de la columna en formato hexadecimal
+      responses:
+        '201':
+          description: Columna creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Column'
+        '403':
+          description: Los viewers no pueden crear columnas
+
+  /columns/{id}:
+    put:
+      summary: Actualizar columna
+      description: Actualiza el nombre y color de una columna (solo admin y member)
+      tags:
+        - Columns
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la columna
+          example: 507f1f77bcf86cd799439011
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: In Progress
+                  description: Nuevo nombre de la columna
+                color:
+                  type: string
+                  example: '#F59E0B'
+                  description: Nuevo color de la columna
+      responses:
+        '200':
+          description: Columna actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Column'
+        '403':
+          description: Los viewers no pueden editar columnas
+
+    delete:
+      summary: Eliminar columna
+      description: Elimina una columna y todas sus tareas (solo admin y member)
+      tags:
+        - Columns
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la columna
+      responses:
+        '200':
+          description: Columna eliminada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Columna eliminada exitosamente
+        '403':
+          description: Los viewers no pueden eliminar columnas
+
+  /columns/reorder:
+    post:
+      summary: Reordenar columnas
+      description: Cambia el orden de las columnas en un board (solo admin y member)
+      tags:
+        - Columns
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - boardId
+                - newOrder
+              properties:
+                boardId:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                  description: ID del board
+                newOrder:
+                  type: array
+                  items:
+                    type: string
+                  example: ['col1_id', 'col2_id', 'col3_id']
+                  description: Array con los IDs de las columnas en el nuevo orden
+      responses:
+        '200':
+          description: Columnas reordenadas exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Columnas reordenadas exitosamente
+        '403':
+          description: Los viewers no pueden reordenar columnas

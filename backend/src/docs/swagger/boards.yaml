@@ -1,0 +1,308 @@
+paths:
+  /boards:
+    get:
+      summary: Obtener mis boards
+      description: Devuelve todos los boards donde el usuario es miembro
+      tags:
+        - Boards
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: workspaceId
+          schema:
+            type: string
+          description: Filtrar boards por workspace (opcional)
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Lista de boards obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Board'
+
+    post:
+      summary: Crear board
+      description: Crea un nuevo board en un workspace (el usuario se convierte en admin del board automáticamente)
+      tags:
+        - Boards
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - workspaceId
+              properties:
+                name:
+                  type: string
+                  example: Sprint 1
+                  description: Nombre del board
+                description:
+                  type: string
+                  example: Board para el primer sprint del proyecto
+                workspaceId:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                  description: ID del workspace al que pertenece
+                color:
+                  type: string
+                  example: '#8B5CF6'
+                  description: Color del board en formato hexadecimal
+      responses:
+        '201':
+          description: Board creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Board'
+        '403':
+          description: Debes ser miembro del workspace para crear boards
+
+  /boards/admin/all:
+    get:
+      summary: Obtener todos los boards (Solo Admin)
+      description: Devuelve TODOS los boards del sistema sin filtrar por membresía
+      tags:
+        - Boards
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista completa de boards
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Board'
+        '403':
+          description: No tienes permisos (solo admin)
+
+  /boards/{id}:
+    get:
+      summary: Obtener board por ID
+      description: Devuelve la información de un board específico con sus columnas
+      tags:
+        - Boards
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del board
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Board obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Board'
+        '404':
+          description: Board no encontrado
+        '403':
+          description: No tienes acceso a este board
+
+    put:
+      summary: Actualizar board
+      description: Actualiza nombre, descripción y color del board (solo admin del board o admin del sistema)
+      tags:
+        - Boards
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del board
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Sprint 1 Updated
+                description:
+                  type: string
+                  example: Nueva descripción del board
+                color:
+                  type: string
+                  example: '#3B82F6'
+      responses:
+        '200':
+          description: Board actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Board'
+        '403':
+          description: Solo admins del board pueden actualizarlo
+
+    delete:
+      summary: Eliminar board
+      description: Elimina un board y todas sus columnas y tareas (solo admin del sistema)
+      tags:
+        - Boards
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del board
+      responses:
+        '200':
+          description: Board eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Board eliminado exitosamente
+        '403':
+          description: Solo admin puede eliminar boards
+
+  /boards/{id}/members:
+    post:
+      summary: Agregar miembro al board
+      description: Agrega un nuevo miembro al board (solo admin del board o admin del sistema)
+      tags:
+        - Boards
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del board
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: newmember@test.com
+                  description: Email del usuario a agregar
+                role:
+                  type: string
+                  enum: [admin, member, viewer]
+                  default: member
+                  example: member
+                  description: Rol del miembro en el board
+      responses:
+        '200':
+          description: Miembro agregado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Board'
+        '400':
+          description: El usuario ya es miembro
+        '403':
+          description: Solo admins del board pueden agregar miembros
+        '404':
+          description: Usuario no encontrado
+
+  /boards/{id}/members/{userId}:
+    delete:
+      summary: Eliminar miembro del board
+      description: Elimina un miembro del board (solo admin del board)
+      tags:
+        - Boards
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del board
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: ID del usuario a eliminar
+      responses:
+        '200':
+          description: Miembro eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Board'
+        '403':
+          description: Solo admins del board pueden eliminar miembros

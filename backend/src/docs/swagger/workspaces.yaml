@@ -1,0 +1,287 @@
+paths:
+  /workspaces:
+    get:
+      summary: Obtener mis workspaces
+      description: Devuelve todos los workspaces donde el usuario es owner o miembro
+      tags:
+        - Workspaces
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de workspaces obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Workspace'
+
+    post:
+      summary: Crear workspace
+      description: Crea un nuevo workspace (el usuario se convierte en owner automáticamente)
+      tags:
+        - Workspaces
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Proyecto Alpha
+                  description: Nombre del workspace
+                description:
+                  type: string
+                  example: Workspace para el desarrollo del proyecto Alpha
+      responses:
+        '201':
+          description: Workspace creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Workspace'
+
+  /workspaces/admin/all:
+    get:
+      summary: Obtener todos los workspaces (Solo Admin)
+      description: Devuelve TODOS los workspaces del sistema sin filtrar por membresía
+      tags:
+        - Workspaces
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista completa de workspaces
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Workspace'
+        '403':
+          description: No tienes permisos (solo admin)
+
+  /workspaces/{id}:
+    get:
+      summary: Obtener workspace por ID
+      description: Devuelve la información de un workspace específico
+      tags:
+        - Workspaces
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del workspace
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Workspace obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Workspace'
+        '404':
+          description: Workspace no encontrado
+        '403':
+          description: No tienes acceso a este workspace
+
+    put:
+      summary: Actualizar workspace
+      description: Actualiza nombre y descripción del workspace (solo owner o admin del workspace)
+      tags:
+        - Workspaces
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Proyecto Alpha Updated
+                description:
+                  type: string
+                  example: Nueva descripción del workspace
+      responses:
+        '200':
+          description: Workspace actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Workspace'
+        '403':
+          description: Solo el owner puede actualizar el workspace
+
+    delete:
+      summary: Eliminar workspace
+      description: Elimina un workspace y todos sus boards (solo owner o admin del sistema)
+      tags:
+        - Workspaces
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del workspace
+      responses:
+        '200':
+          description: Workspace eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Workspace eliminado exitosamente
+        '403':
+          description: Solo el owner puede eliminar el workspace
+
+  /workspaces/{id}/members:
+    post:
+      summary: Agregar miembro al workspace
+      description: Agrega un nuevo miembro al workspace (solo owner, admin del workspace, o admin del sistema)
+      tags:
+        - Workspaces
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: newmember@test.com
+                  description: Email del usuario a agregar
+                role:
+                  type: string
+                  enum: [admin, member, viewer]
+                  default: member
+                  example: member
+                  description: Rol del miembro en el workspace
+      responses:
+        '200':
+          description: Miembro agregado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Workspace'
+        '400':
+          description: El usuario ya es miembro
+        '403':
+          description: Solo owners y admins pueden agregar miembros
+        '404':
+          description: Usuario no encontrado
+
+  /workspaces/{id}/members/{userId}:
+    delete:
+      summary: Eliminar miembro del workspace
+      description: Elimina un miembro del workspace (solo owner o admin del workspace)
+      tags:
+        - Workspaces
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del workspace
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: ID del usuario a eliminar
+      responses:
+        '200':
+          description: Miembro eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Workspace'
+        '403':
+          description: Solo owners y admins pueden eliminar miembros

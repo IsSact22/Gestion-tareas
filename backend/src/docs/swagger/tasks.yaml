@@ -1,0 +1,463 @@
+paths:
+  /tasks:
+    get:
+      summary: Obtener tareas de un board
+      description: Devuelve todas las tareas de un board o columna específica
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: boardId
+          required: true
+          schema:
+            type: string
+          description: ID del board
+          example: 507f1f77bcf86cd799439011
+        - in: query
+          name: columnId
+          schema:
+            type: string
+          description: ID de la columna (opcional, filtra por columna)
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Lista de tareas obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+        '403':
+          description: No tienes acceso a este board
+
+    post:
+      summary: Crear tarea
+      description: Crea una nueva tarea en una columna (solo admin y member)
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - columnId
+              properties:
+                title:
+                  type: string
+                  example: Implementar autenticación
+                  description: Título de la tarea
+                description:
+                  type: string
+                  example: Implementar sistema de login con JWT
+                  description: Descripción detallada de la tarea
+                columnId:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                  description: ID de la columna donde se creará la tarea
+                assignedTo:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                  description: ID del usuario asignado (opcional)
+                priority:
+                  type: string
+                  enum: [low, medium, high]
+                  default: medium
+                  example: high
+                  description: Prioridad de la tarea
+                dueDate:
+                  type: string
+                  format: date-time
+                  example: '2024-12-31T23:59:59Z'
+                  description: Fecha límite (opcional)
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ['backend', 'security']
+                  description: Etiquetas de la tarea
+      responses:
+        '201':
+          description: Tarea creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '403':
+          description: Los viewers no pueden crear tareas
+
+  /tasks/admin/all:
+    get:
+      summary: Obtener todas las tareas (Solo Admin)
+      description: Devuelve TODAS las tareas del sistema sin filtrar por board
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista completa de tareas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+        '403':
+          description: No tienes permisos (solo admin)
+
+  /tasks/my-tasks:
+    get:
+      summary: Obtener mis tareas asignadas
+      description: Devuelve todas las tareas asignadas al usuario autenticado
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de tareas asignadas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+
+  /tasks/search:
+    get:
+      summary: Buscar tareas
+      description: Busca tareas por título o descripción en un board específico
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: boardId
+          required: true
+          schema:
+            type: string
+          description: ID del board donde buscar
+          example: 507f1f77bcf86cd799439011
+        - in: query
+          name: q
+          required: true
+          schema:
+            type: string
+          description: Término de búsqueda
+          example: autenticación
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+
+  /tasks/{id}:
+    get:
+      summary: Obtener tarea por ID
+      description: Devuelve la información completa de una tarea incluyendo comentarios
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la tarea
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Tarea obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '404':
+          description: Tarea no encontrada
+        '403':
+          description: No tienes acceso a esta tarea
+
+    put:
+      summary: Actualizar tarea
+      description: Actualiza los datos de una tarea (solo admin y member)
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la tarea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Implementar autenticación JWT
+                description:
+                  type: string
+                  example: Actualizar descripción de la tarea
+                status:
+                  type: string
+                  enum: [todo, in-progress, done]
+                  example: in-progress
+                priority:
+                  type: string
+                  enum: [low, medium, high]
+                  example: high
+                assignedTo:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                dueDate:
+                  type: string
+                  format: date-time
+                  example: '2024-12-31T23:59:59Z'
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ['backend', 'security', 'urgent']
+      responses:
+        '200':
+          description: Tarea actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '403':
+          description: Los viewers no pueden editar tareas
+
+    delete:
+      summary: Eliminar tarea
+      description: Elimina una tarea (solo admin o el creador de la tarea)
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la tarea
+      responses:
+        '200':
+          description: Tarea eliminada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Tarea eliminada exitosamente
+        '403':
+          description: Solo el creador o admin puede eliminar la tarea
+
+  /tasks/{id}/move:
+    post:
+      summary: Mover tarea a otra columna
+      description: Cambia la tarea de columna (solo admin y member)
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la tarea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newColumnId
+              properties:
+                newColumnId:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                  description: ID de la nueva columna
+                newPosition:
+                  type: number
+                  example: 0
+                  description: Posición en la nueva columna (opcional)
+      responses:
+        '200':
+          description: Tarea movida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '403':
+          description: Los viewers no pueden mover tareas
+
+  /tasks/{id}/comments:
+    post:
+      summary: Agregar comentario a una tarea
+      description: Agrega un nuevo comentario a la tarea (solo admin y member)
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la tarea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  example: Este es un comentario sobre la tarea
+                  description: Texto del comentario
+      responses:
+        '200':
+          description: Comentario agregado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      user:
+                        type: string
+                      text:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: date-time
+        '403':
+          description: Los viewers no pueden agregar comentarios
+
+  /tasks/{id}/comments/{commentId}:
+    delete:
+      summary: Eliminar comentario
+      description: Elimina un comentario de la tarea (solo admin o el autor del comentario)
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la tarea
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: string
+          description: ID del comentario
+      responses:
+        '200':
+          description: Comentario eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Comentario eliminado
+        '403':
+          description: Solo el autor o admin puede eliminar el comentario

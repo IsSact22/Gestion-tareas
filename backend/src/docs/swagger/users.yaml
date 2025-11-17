@@ -1,0 +1,221 @@
+paths:
+  /users:
+    get:
+      summary: Obtener todos los usuarios (Solo Admin)
+      description: Devuelve una lista de todos los usuarios del sistema
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuarios obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '403':
+          description: No tienes permisos (solo admin)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/search:
+    get:
+      summary: Buscar usuarios
+      description: Busca usuarios por nombre o email
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema:
+            type: string
+          description: Término de búsqueda (nombre o email)
+          example: isaac
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+
+  /users/profile:
+    put:
+      summary: Actualizar propio perfil
+      description: Permite al usuario actualizar su nombre y contraseña (NO puede cambiar su rol)
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Isaac Tovar Updated
+                password:
+                  type: string
+                  format: password
+                  example: newpassword123
+                  description: Nueva contraseña (opcional)
+                avatar:
+                  type: string
+                  example: https://example.com/avatar.jpg
+      responses:
+        '200':
+          description: Perfil actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    get:
+      summary: Obtener usuario por ID
+      description: Devuelve la información de un usuario específico
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del usuario
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Usuario obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Actualizar usuario (Solo Admin)
+      description: Permite al admin actualizar cualquier usuario, incluyendo cambiar su rol
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Isaac Tovar
+                password:
+                  type: string
+                  format: password
+                  example: newpassword123
+                role:
+                  type: string
+                  enum: [admin, member, viewer]
+                  example: admin
+                  description: Solo admin puede cambiar roles
+                avatar:
+                  type: string
+                  example: https://example.com/avatar.jpg
+      responses:
+        '200':
+          description: Usuario actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/User'
+        '403':
+          description: No tienes permisos (solo admin)
+
+    delete:
+      summary: Eliminar usuario (Solo Admin)
+      description: Elimina un usuario del sistema
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del usuario
+      responses:
+        '200':
+          description: Usuario eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Usuario eliminado exitosamente
+        '403':
+          description: No tienes permisos (solo admin)
