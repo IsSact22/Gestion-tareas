@@ -1,9 +1,9 @@
 import RegisterUseCase from '../../application/auth/registerUseCase.js';
 import LoginUseCase from '../../application/auth/loginUseCase.js';
 import GetMeUseCase from '../../application/auth/getMeUseCase.js';
-import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
+import UserRepository from '../../infrastructure/database/prisma/userRepository.js';
 
-const userRepository = repositoryFactory.getUserRepository();
+const userRepository = new UserRepository();
 const registerUseCase = new RegisterUseCase(userRepository);
 const loginUseCase = new LoginUseCase(userRepository);
 const getMeUseCase = new GetMeUseCase(userRepository);
@@ -38,7 +38,7 @@ export async function login(req, res, next) {
 
 export async function getMe(req, res, next) {
   try {
-    const user = await getMeUseCase.execute(req.user._id);
+    const user = await getMeUseCase.execute(req.user.id);
     
     res.status(200).json({
       success: true,

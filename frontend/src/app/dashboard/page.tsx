@@ -53,7 +53,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (workspaces.length > 0) {
       workspaces.forEach(workspace => {
-        socketService.joinWorkspace(workspace._id);
+        socketService.joinWorkspace(workspace.id);
         console.log(`🏢 Uniéndose al workspace: ${workspace.name}`);
       });
     }
@@ -179,13 +179,13 @@ export default function DashboardPage() {
             ) : (
               workspaces.slice(0, 3).map((workspace) => (
                 <div
-                  key={workspace._id || workspace.id}
-                  onClick={() => router.push(`/workspaces/${workspace._id || workspace.id}`)}
+                  key={workspace.id}
+                  onClick={() => router.push(`/workspaces/${workspace.id}`)}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Folder className="w-5 h-5 text-blue-600" />
+                      <Folder className="w-5 h-5 text-blue-600" />  
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">{workspace.name}</p>
@@ -232,8 +232,8 @@ export default function DashboardPage() {
             ) : (
               boards.slice(0, 3).map((board) => (
                 <div
-                  key={board._id || board.id}
-                  onClick={() => router.push(`/boards/${board._id || board.id}`)}
+                  key={board.id}
+                  onClick={() => router.push(`/boards/${board.id}`)}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center space-x-3">
@@ -287,14 +287,22 @@ export default function DashboardPage() {
               </div>
             ) : (
               myTasks.slice(0, 3).map((task) => {
-                // Obtener el boardId correctamente (puede ser string o objeto)
-                const boardId = typeof task.board === 'string' ? task.board : task.board._id;
-                const boardName = typeof task.board === 'string' ? 'Board' : task.board.name;
-                const boardColor = typeof task.board === 'string' ? '#8B5CF6' : (task.board.color || '#8B5CF6');
+                // 1. Extraemos board para no repetir task.board
+                const board = task.board;
+
+                // 2. Validaciones seguras
+                // Si board es null/undefined, usamos el operador ?. para que no explote
+                const boardId = typeof board === 'string' ? board : board?.id;
+                
+                // Si no hay boardId, no renderizamos este item o mostramos un fallback
+                if (!boardId) return null; 
+
+                const boardName = typeof board === 'string' ? 'Board' : (board?.name || 'Sin tablero');
+                const boardColor = typeof board === 'string' ? '#8B5CF6' : (board?.color || '#8B5CF6');
                 
                 return (
                   <div
-                    key={task._id || task.id}
+                    key={task.id}
                     onClick={() => router.push(`/boards/${boardId}`)}
                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                   >
@@ -330,7 +338,7 @@ export default function DashboardPage() {
             )}
           </div>
         
-        {/* <div className="space-y-3">
+        <div className="space-y-3">
         
           <div className="text-center py-8">
             <CheckSquare className="w-12 h-12 text-gray-400 mx-auto mb-3" />
@@ -340,7 +348,7 @@ export default function DashboardPage() {
               Crear Tarea
             </Button>
           </div>
-        </div> */}
+        </div>
       </Card>
 
       {/* Team Activity */}

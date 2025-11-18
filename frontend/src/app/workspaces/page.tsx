@@ -39,7 +39,7 @@ export default function WorkspacesPage() {
   const handleEditWorkspace = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedWorkspace) {
-      const result = await updateWorkspace(selectedWorkspace._id, formData);
+      const result = await updateWorkspace(selectedWorkspace.id, formData);
       if (result) {
         setIsEditModalOpen(false);
         setSelectedWorkspace(null);
@@ -135,8 +135,8 @@ export default function WorkspacesPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                     {workspaces.map((workspace) => (
                         <div
-                            key={workspace._id || workspace.id}
-                            onClick={() => router.push(`/workspaces/${workspace._id || workspace.id}`)}
+                            key={workspace.id}
+                            onClick={() => router.push(`/workspaces/${workspace.id}`)}
                             className="group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-xl hover:scale-[1.01] transition-all cursor-pointer relative"
                         >
                             <div className="flex items-start justify-between mb-4">
@@ -160,7 +160,7 @@ export default function WorkspacesPage() {
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setShowDropdown(
-                                                showDropdown === workspace._id || workspace.id ? null : workspace._id || workspace.id
+                                                showDropdown === workspace.id ? null : workspace.id
                                             );
                                         }}
                                         className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -168,7 +168,7 @@ export default function WorkspacesPage() {
                                         <MoreVertical className="w-5 h-5 text-gray-500" />
                                     </button>
 
-                                    {showDropdown === workspace._id || workspace.id && (
+                                    {showDropdown === workspace.id && (
                                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20 animate-fadeIn">
                                             <button
                                                 onClick={() => openEditModal(workspace)}
@@ -178,7 +178,7 @@ export default function WorkspacesPage() {
                                                 <span>Editar</span>
                                             </button>
                                             <button
-                                                onClick={() => handleDeleteWorkspace(workspace._id || workspace.id)}
+                                                onClick={() => handleDeleteWorkspace(workspace.id)}
                                                 className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center gap-2"
                                             >
                                                 <Trash2 className="w-4 h-4" />

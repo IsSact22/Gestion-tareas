@@ -48,7 +48,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
         priority: task.priority,
         tags: Array.isArray(task.tags) ? task.tags : [],
         dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
-        assignedTo: Array.isArray(task.assignedTo) ? task.assignedTo.map(u => u._id) : [],
+        assignedTo: Array.isArray(task.assignedTo) ? task.assignedTo.map(u => u.id) : [],
       });
     } else {
       setFormData({
@@ -70,7 +70,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
 
     if (task) {
       // Editar tarea existente
-      await updateTask(task._id, {
+      await updateTask(task.id, {
         title: formData.title,
         description: formData.description,
         priority: formData.priority,
@@ -181,7 +181,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
               >
                 <option value="">Selecciona una columna</option>
                 {columns.map((column) => (
-                  <option key={column._id} value={column._id}>
+                  <option key={column.id} value={column.id}>
                     {column.name}
                   </option>
                 ))}
@@ -191,7 +191,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
 
           {/* Prioridad */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2 items-center gap-2">
               <AlertCircle size={16} />
               Prioridad
             </label>
@@ -215,7 +215,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
 
           {/* Etiquetas */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2 items-center gap-2">
               <Tag size={16} />
               Etiquetas
             </label>
@@ -263,29 +263,29 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
 
           {/* Asignar a */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2 items-center gap-2">
               <UserPlus size={16} />
               Asignar a
             </label>
             <div className="space-y-2">
               {currentBoard?.members?.map((member, index) => (
                 <label
-                  key={`${member.user._id}-${index}`}
+                  key={`${member.user.id}-${index}`}
                   className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <input
                     type="checkbox"
-                    checked={formData.assignedTo.includes(member.user._id)}
+                    checked={formData.assignedTo.includes(member.user.id)}
                     onChange={(e) => {
                       if (e.target.checked) {
                         setFormData({
                           ...formData,
-                          assignedTo: [...formData.assignedTo, member.user._id],
+                          assignedTo: [...formData.assignedTo, member.user.id],
                         });
                       } else {
                         setFormData({
                           ...formData,
-                          assignedTo: formData.assignedTo.filter(id => id !== member.user._id),
+                          assignedTo: formData.assignedTo.filter(id => id !== member.user.id),
                         });
                       }
                     }}
@@ -324,7 +324,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
 
           {/* Fecha de vencimiento */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2 items-center gap-2">
               <Calendar size={16} />
               Fecha de vencimiento
             </label>

@@ -2,7 +2,6 @@ import api from '../lib/api';
 
 export interface Column {
   id: string;
-  _id: string;
   name: string;
   board: string;
   position: number;

@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class UpdateColumnUseCase {
   constructor(columnRepository, boardRepository) {
@@ -14,13 +13,9 @@ export default class UpdateColumnUseCase {
     }
 
     // Verificar permisos
-    const boardId = column.boardId || column.board?._id || column.board;
+    const boardId = column.boardId;
     const board = await this.boardRepository.findById(boardId);
-    const userIdStr = toStringId(userId);
-    const isMember = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isMember = board.members?.some(m => m.userId === userId);
     if (!isMember) {
       throw new AppError('You do not have permission to update columns', 403);
     }

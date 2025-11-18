@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,7 +9,7 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
 interface User {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   role: string;
@@ -16,7 +17,7 @@ interface User {
 
 interface Member {
   user: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
   };
@@ -67,7 +68,7 @@ export default function AssignMembersModal({
       setIsLoading(true);
       
       // Buscar el email del usuario
-      const user = allUsers.find(u => u._id === userId);
+      const user = allUsers.find(u => u.id === userId);
       if (!user) {
         toast.error('Usuario no encontrado');
         return;
@@ -131,7 +132,7 @@ export default function AssignMembersModal({
   };
 
   const filteredUsers = allUsers.filter((user) => {
-    const isMember = currentMembers.some((m) => m.user._id === user._id);
+    const isMember = currentMembers.some((m) => m.user.id === user.id);
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchQuery.toLowerCase());
     return !isMember && matchesSearch;
@@ -158,7 +159,7 @@ export default function AssignMembersModal({
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {currentMembers.map((member) => (
               <div
-                key={member.user._id}
+                key={member.user.id}
                 className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
               >
                 <div className="flex items-center gap-3">
@@ -174,7 +175,7 @@ export default function AssignMembersModal({
                   <select
                     className={`px-3 py-1 rounded-full text-xs font-medium border-0 ${getRoleBadge(member.role)}`}
                     value={member.role}
-                    onChange={(e) => handleChangeRole(member.user._id, e.target.value as any)}
+                    onChange={(e) => handleChangeRole(member.user.id, e.target.value as any)}
                     disabled={isLoading}
                   >
                     <option value="admin">Admin</option>
@@ -182,7 +183,7 @@ export default function AssignMembersModal({
                     <option value="viewer">Viewer</option>
                   </select>
                   <button
-                    onClick={() => handleRemoveMember(member.user._id)}
+                    onClick={() => handleRemoveMember(member.user.id)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     disabled={isLoading}
                     title="Eliminar miembro"
@@ -204,23 +205,23 @@ export default function AssignMembersModal({
 
           {/* Search */}
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-700" />
             <input
               type="text"
               placeholder="Buscar usuarios..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
 
           {/* Role Selection */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm text-black font-medium mb-2">
               Rol a asignar
             </label>
             <select
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value as any)}
             >
@@ -239,7 +240,7 @@ export default function AssignMembersModal({
             ) : (
               filteredUsers.map((user) => (
                 <div
-                  key={user._id}
+                  key={user.id}
                   className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:border-purple-300 transition-colors"
                 >
                   <div className="flex items-center gap-3">
@@ -252,7 +253,7 @@ export default function AssignMembersModal({
                     </div>
                   </div>
                   <Button
-                    onClick={() => handleAddMember(user._id)}
+                    onClick={() => handleAddMember(user.id)}
                     disabled={isLoading}
                     size="sm"
                   >

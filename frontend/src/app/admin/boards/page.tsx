@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -10,18 +11,18 @@ import api from '@/lib/api';
 import AssignMembersModal from '@/components/admin/AssignMembersModal';
 
 interface Board {
+  archived: any;
   id: string;
-  _id: string;
   name: string;
   description?: string;
   color: string;
   workspace: {
-    _id: string;
+    id: string;
     name: string;
   };
   members: Array<{
     user: {
-      _id: string;
+      id: string;
       name: string;
       email: string;
     };
@@ -155,9 +156,9 @@ export default function AdminBoardsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {boards.map((board) => (
           <Card
-            key={board._id}
+            key={board.id}
             className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => router.push(`/boards/${board._id}`)}
+            onClick={() => router.push(`/boards/${board.id}`)}
           >
             <div
               className="h-32 rounded-t-lg"
@@ -276,7 +277,7 @@ export default function AdminBoardsPage() {
             setSelectedBoard(null);
           }}
           resourceType="board"
-          resourceId={selectedBoard._id}
+          resourceId={selectedBoard.id}
           resourceName={selectedBoard.name}
           currentMembers={selectedBoard.members}
           onMembersUpdated={fetchBoards}

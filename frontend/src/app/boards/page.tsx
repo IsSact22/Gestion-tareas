@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -47,7 +48,7 @@ export default function BoardsPage() {
     if (workspaces.length > 0) {
       // Unirse a todos los workspaces
       workspaces.forEach(workspace => {
-        socketService.joinWorkspace(workspace._id || workspace.id);
+        socketService.joinWorkspace(workspace.id);
         console.log(`🏢 Uniéndose al workspace: ${workspace.name}`);
       });
     }
@@ -84,7 +85,7 @@ export default function BoardsPage() {
   const handleEditBoard = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedBoard) {
-      const result = await updateBoard(selectedBoard._id, {
+      const result = await updateBoard(selectedBoard.id, {
         name: formData.name,
         description: formData.description,
         color: formData.color,
@@ -109,7 +110,7 @@ export default function BoardsPage() {
     setFormData({
       name: board.name,
       description: board.description || '',
-      workspaceId: board.workspace._id,
+      workspaceId: board.workspace.id,
       color: board.color || BOARD_COLORS[0].value,
     });
     setIsEditModalOpen(true);
@@ -193,17 +194,17 @@ export default function BoardsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {boards.map((board) => (
             <div
-              key={board._id}
+              key={board.id}
               className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
             >
               {/* Board Color Header */}
               <div 
                 className="h-24 relative"
                 style={{ backgroundColor: board.color || '#8B5CF6' }}
-                onClick={() => router.push(`/boards/${board._id}`)}
+                onClick={() => router.push(`/boards/${board.id}`)}
               >
                 <button
-                  onClick={(e) => handleToggleFavorite(e, board._id)}
+                  onClick={(e) => handleToggleFavorite(e, board.id)}
                   className="absolute top-3 right-3 p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
                 >
                   <Star 
@@ -216,7 +217,7 @@ export default function BoardsPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div 
                     className="flex-1"
-                    onClick={() => router.push(`/boards/${board._id}`)}
+                    onClick={() => router.push(`/boards/${board.id}`)}
                   >
                     <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
                       {board.name}
@@ -232,14 +233,14 @@ export default function BoardsPage() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setShowDropdown(showDropdown === board._id ? null : board._id);
+                        setShowDropdown(showDropdown === board.id ? null : board.id);
                       }}
                       className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
                     >
                       <MoreVertical className="w-5 h-5 text-gray-500" />
                     </button>
                     
-                    {showDropdown === board._id && (
+                    {showDropdown === board.id && (
                       <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10">
                         <button
                           onClick={() => openEditModal(board)}
@@ -249,7 +250,7 @@ export default function BoardsPage() {
                           <span>Editar</span>
                         </button>
                         <button
-                          onClick={() => handleDeleteBoard(board._id)}
+                          onClick={() => handleDeleteBoard(board.id)}
                           className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center space-x-2"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -307,7 +308,7 @@ export default function BoardsPage() {
             >
               <option value="">Selecciona un workspace</option>
               {workspaces.map((workspace) => (
-                <option key={workspace._id || workspace.id} value={workspace._id || workspace.id}>
+                <option key={workspace.id} value={workspace.id}>
                   {workspace.name}
                 </option>
               ))}

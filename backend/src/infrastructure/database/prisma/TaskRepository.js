@@ -8,13 +8,18 @@ export default class TaskRepository {
     /**
      * Transformar task de Prisma a formato compatible con frontend
      * Convierte assignedTo de TaskAssignment[] a User[]
+     * Convierte comments.content a comments.text
      */
     _transformTask(task) {
         if (!task) return task;
         
         return {
             ...task,
-            assignedTo: task.assignedTo?.map(assignment => assignment.user) || []
+            assignedTo: task.assignedTo?.map(assignment => assignment.user) || [],
+            comments: task.comments?.map(comment => ({
+                ...comment,
+                text: comment.content
+            })) || []
         };
     }
 
@@ -141,6 +146,21 @@ export default class TaskRepository {
                         email: true,
                         avatar: true
                     }
+                },
+                comments: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                avatar: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'asc'
+                    }
                 }
             },
             orderBy: {
@@ -175,6 +195,21 @@ export default class TaskRepository {
                         name: true,
                         email: true,
                         avatar: true
+                    }
+                },
+                comments: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                avatar: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'asc'
                     }
                 }
             },
@@ -298,6 +333,23 @@ export default class TaskRepository {
             ...(data.attachments && { attachments: data.attachments })
         };
 
+        // Manejar assignedTo si está presente
+        if (data.assignedTo !== undefined) {
+            // Primero eliminar todas las asignaciones existentes
+            await prisma.taskAssignment.deleteMany({
+                where: { taskId: id }
+            });
+
+            // Luego crear las nuevas asignaciones si hay usuarios
+            if (data.assignedTo && data.assignedTo.length > 0) {
+                updateData.assignedTo = {
+                    create: data.assignedTo.map(userId => ({
+                        userId: userId
+                    }))
+                };
+            }
+        }
+
         const task = await prisma.task.update({
             where: { id },
             data: updateData,
@@ -371,6 +423,29 @@ export default class TaskRepository {
                                 avatar: true
                             }
                         }
+                    }
+                },
+                creator: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        avatar: true
+                    }
+                },
+                comments: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                avatar: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'asc'
                     }
                 }
             }

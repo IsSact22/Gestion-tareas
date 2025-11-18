@@ -74,7 +74,7 @@ export default function BoardDetailPage() {
       console.log('📝 Tarea actualizada vía Socket.IO:', data);
       console.log('📝 Tarea recibida:', data.task);
       // Actualizar solo la tarea específica en lugar de recargar todas
-      if (data.task && data.task._id) {
+      if (data.task && data.task.id) {
         updateTaskInList(data.task);
       } else {
         console.warn('⚠️ Tarea sin datos completos, recargando todas las tareas');
@@ -164,7 +164,7 @@ export default function BoardDetailPage() {
             <div className="flex -space-x-2">
               {currentBoard.members?.slice(0, 5).map((member, index) => (
                 <div
-                  key={`${member.user._id}-${index}`}
+                  key={`${member.user.id}-${index}`}
                   className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-medium border-2 border-white"
                   title={member.user.name}
                 >

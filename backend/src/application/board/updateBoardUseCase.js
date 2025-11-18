@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class UpdateBoardUseCase {
   constructor(boardRepository) {
@@ -14,11 +13,7 @@ export default class UpdateBoardUseCase {
     }
 
     // Verificar permisos
-    const userIdStr = toStringId(userId);
-    const isMember = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isMember = board.members?.some(m => m.userId === userId);
     if (!isMember) {
       throw new AppError('You do not have permission to update this board', 403);
     }

@@ -6,6 +6,10 @@ export default class BoardRepository {
    * Buscar board por ID con relaciones
    */
     async findById(id) {
+        if (!id) {
+            console.error("Error: Se intentó buscar un Board sin ID");
+            return null; // O lanza un error: throw new Error("Board ID is required");
+        }
         return prisma.board.findUnique({
             where: { id },
             include: {

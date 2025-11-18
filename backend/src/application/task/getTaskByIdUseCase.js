@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class GetTaskByIdUseCase {
   constructor(taskRepository, boardRepository) {
@@ -14,13 +13,9 @@ export default class GetTaskByIdUseCase {
     }
 
     // Verificar acceso
-    const boardId = task.boardId || task.board?._id || task.board;
+    const boardId = task.boardId;
     const board = await this.boardRepository.findById(boardId);
-    const userIdStr = toStringId(userId);
-    const isMember = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isMember = board.members?.some(m => m.userId === userId);
     if (!isMember) {
       throw new AppError('You do not have access to this task', 403);
     }

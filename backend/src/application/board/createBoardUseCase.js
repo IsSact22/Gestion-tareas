@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class CreateBoardUseCase {
   constructor(boardRepository, workspaceRepository) {
@@ -19,15 +18,10 @@ export default class CreateBoardUseCase {
     }
 
     // Verificar que el usuario sea miembro del workspace
-    // Compatibilidad MongoDB (owner._id) y Prisma (ownerId)
-    const ownerId = toStringId(workspace.ownerId || workspace.owner?._id || workspace.owner);
-    const userIdStr = toStringId(userId);
+    const ownerId = workspace.ownerId;
     
-    const isOwner = ownerId === userIdStr;
-    const isMember = workspace.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isOwner = ownerId === userId;
+    const isMember = workspace.members?.some(m => m.userId === userId);
 
     if (!isOwner && !isMember) {
       throw new AppError('You must be a member of the workspace', 403);
@@ -35,7 +29,7 @@ export default class CreateBoardUseCase {
 
     const board = await this.boardRepository.create({
       name,
-      description,
+      description,  
       workspace: workspaceId,
       color,
       members: [{ user: userId, role: 'admin' }],

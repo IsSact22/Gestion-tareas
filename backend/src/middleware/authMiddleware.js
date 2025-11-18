@@ -1,8 +1,8 @@
 import { verifyToken } from '../core/jwtUtils.js';
-import repositoryFactory from '../infrastructure/database/repositoryFactory.js';
+import UserRepository from '../infrastructure/database/prisma/userRepository.js';
 import AppError from '../core/AppError.js';
 
-const userRepository = repositoryFactory.getUserRepository();
+const userRepository = new UserRepository();
 
 export const protect = async (req, res, next) => {
   try {
@@ -27,13 +27,8 @@ export const protect = async (req, res, next) => {
       throw new AppError('User not found', 404);
     }
 
-    // Agregar usuario al request
-    // Normalizar: MongoDB usa _id, Prisma usa id
-    req.user = {
-      ...user,
-      _id: user.id || user._id, // Compatibilidad con código existente
-      id: user.id || user._id    // Asegurar que siempre existe id
-    };
+    // Agregar usuario al request (Prisma usa id directamente)
+    req.user = user;
     next();
   } catch (error) {
     next(error);

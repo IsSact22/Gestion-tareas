@@ -1,4 +1,3 @@
-import { toStringId } from '../../core/idUtils.js';
 
 export default class DeleteCommentUseCase {
   constructor(taskRepository, boardRepository, activityRepository) {
@@ -15,35 +14,27 @@ export default class DeleteCommentUseCase {
     }
 
     // Verificar que el board existe y el usuario tiene acceso
-    const boardId = task.boardId || task.board?._id || task.board;
+    const boardId = task.boardId;
     const board = await this.boardRepository.findById(boardId);
     if (!board) {
       throw new Error('Board no encontrado');
     }
 
-    const userIdStr = toStringId(userId);
-    const isMember = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isMember = board.members?.some(m => m.userId === userId);
     if (!isMember) {
       throw new Error('No tienes permiso para eliminar comentarios en este board');
     }
 
     // Encontrar el comentario
-    const comment = task.comments?.find(c => toStringId(c.id || c._id) === toStringId(commentId));
+    const comment = task.comments?.find(c => c.id || c._id === commentId);
     if (!comment) {
       throw new Error('Comentario no encontrado');
     }
 
     // Verificar que el usuario es el autor del comentario o admin del board
-    const commentUserId = toStringId(comment.userId || comment.user?._id || comment.user);
-    const isAuthor = commentUserId === userIdStr;
-    const isAdmin = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr && m.role === 'admin';
-    });
-
+    const commentUserId = comment.userId || comment.user?._id || comment.user;
+    const isAuthor = commentUserId === userId;
+    const isAdmin = board.members?.some(m => m.userId === userId);
     if (!isAuthor && !isAdmin) {
       throw new Error('No tienes permiso para eliminar este comentario');
     }

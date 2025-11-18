@@ -2,18 +2,23 @@ import GetBoardsUseCase from '../../application/board/getBoardsUseCase.js';
 import GetBoardByIdUseCase from '../../application/board/getBoardByIdUseCase.js';
 import UpdateBoardUseCase from '../../application/board/updateBoardUseCase.js';
 import DeleteBoardUseCase from '../../application/board/deleteBoardUseCase.js';
-import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
 import { emitToBoard, emitToWorkspace, getIO } from '../../socket/index.js';
 import CreateBoardUseCase from '../../application/board/createBoardUseCase.js';
-import { toStringId } from '../../core/idUtils.js';
+import BoardRepository from '../../infrastructure/database/prisma/BoardRepository.js';
+import NotificationRepository from '../../infrastructure/database/prisma/NotificationRepository.js';
+import WorkspaceRepository from '../../infrastructure/database/prisma/workspaceRepository.js';
+import ColumnRepository from '../../infrastructure/database/prisma/ColumnRepository.js';
+import TaskRepository from '../../infrastructure/database/prisma/TaskRepository.js';
+import ActivityRepository from '../../infrastructure/database/prisma/ActivityRepository.js';
+import UserRepository from '../../infrastructure/database/prisma/userRepository.js';
 
-const boardRepository = repositoryFactory.getBoardRepository();
-const notificationRepository = repositoryFactory.getNotificationRepository();
-const workspaceRepository = repositoryFactory.getWorkspaceRepository();
-const columnRepository = repositoryFactory.getColumnRepository();
-const taskRepository = repositoryFactory.getTaskRepository();
-const activityRepository = repositoryFactory.getActivityRepository();
-const userRepository = repositoryFactory.getUserRepository();
+const boardRepository = new BoardRepository();
+const notificationRepository = new NotificationRepository();
+const workspaceRepository = new WorkspaceRepository();
+const columnRepository = new ColumnRepository();
+const taskRepository = new TaskRepository();
+const activityRepository = new ActivityRepository();
+const userRepository = new UserRepository();
 
 const createBoardUseCase = new CreateBoardUseCase(boardRepository, workspaceRepository);
 const getBoardsUseCase = new GetBoardsUseCase(boardRepository);
@@ -29,13 +34,13 @@ export async function createBoard(req, res, next) {
       description,
       workspaceId,
       color,
-      userId: req.user._id
+      userId: req.user.id
     });
 
     // Emitir evento Socket.IO a todos los usuarios del workspace
     emitToWorkspace(workspaceId, 'board:updated', {
       board,
-      userId: req.user._id,
+      userId: req.user.id,
       timestamp: new Date()
     });
 
@@ -50,7 +55,7 @@ export async function getBoards(req, res, next) {
     const { workspaceId } = req.query;
     const boards = await getBoardsUseCase.execute({
       workspaceId,
-      userId: req.user._id
+      userId: req.user.id
     });
 
     res.status(200).json({ success: true, data: boards });
@@ -63,7 +68,7 @@ export async function getBoardById(req, res, next) {
   try {
     const board = await getBoardByIdUseCase.execute({
       boardId: req.params.id,
-      userId: req.user._id,
+      userId: req.user.id,
       userRole: req.user.role
     });
 
@@ -78,22 +83,22 @@ export async function updateBoard(req, res, next) {
     const { name, description, color } = req.body;
     const board = await updateBoardUseCase.execute({
       boardId: req.params.id,
-      userId: req.user._id,
+      userId: req.user.id,
       name,
       description,
       color
     });
 
     // Emitir evento Socket.IO al board y al workspace
-    emitToBoard(toStringId(board.id || board._id), 'board:created', {
+    emitToBoard(board.id, 'board:created', {
       board,
-      userId: toStringId(req.user.id || req.user._id),
+      userId: req.user.id,
       timestamp: new Date()
     });
 
-    emitToWorkspace(toStringId(board.workspaceId || board.workspace), 'board:created', {
+    emitToWorkspace(board.workspaceId, 'board:created', {
       board,
-      userId: toStringId(req.user.id || req.user._id),
+      userId: req.user.id,
       timestamp: new Date()
     });
 
@@ -110,14 +115,14 @@ export async function deleteBoard(req, res, next) {
     
     const result = await deleteBoardUseCase.execute({
       boardId: req.params.id,
-      userId: req.user._id
+      userId: req.user.id
     });
 
     // Emitir evento Socket.IO de eliminación
     if (board) {
-      emitToWorkspace(toStringId(board.workspaceId || board.workspace), 'board:deleted', {
+      emitToWorkspace(board.workspaceId, 'board:deleted', {
         boardId: req.params.id,
-        userId: toStringId(req.user.id || req.user._id),
+        userId: req.user.id,
         timestamp: new Date()
       });
     }
@@ -138,7 +143,7 @@ export async function addMember(req, res, next) {
       return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
     }
     
-    const userId = user._id;
+    const userId = user.id;
     const board = await boardRepository.addMember(req.params.id, userId, role);
     
     // Crear notificación para el usuario agregado
@@ -148,10 +153,10 @@ export async function addMember(req, res, next) {
       title: 'Te agregaron a un board',
       message: `Has sido agregado al board "${board.name}" como ${role === 'admin' ? 'administrador' : role === 'member' ? 'miembro' : 'visualizador'}`,
       data: {
-        boardId: board._id,
-        fromUser: req.user._id
+        boardId: board.id,
+        fromUser: req.user.id
       },
-      link: `/boards/${board._id}`
+      link: `/boards/${board.id}`
     });
 
     // Emitir notificación en tiempo real al usuario
@@ -159,8 +164,8 @@ export async function addMember(req, res, next) {
     io.to(`user:${userId}`).emit('notification', notification);
     
     // Emitir actualización del board a todos los miembros
-    io.to(`board:${board._id}`).emit('board:member-added', {
-      boardId: board._id,
+    io.to(`board:${board.id}`).emit('board:member-added', {
+      boardId: board.id,
       member: { user: userId, role }
     });
     

@@ -1,11 +1,11 @@
-import repositoryFactory from '../../infrastructure/database/repositoryFactory.js';
+import NotificationRepository from '../../infrastructure/database/prisma/NotificationRepository.js';
 
-const notificationRepository = repositoryFactory.getNotificationRepository();
+const notificationRepository = new NotificationRepository();
 
 export async function getNotifications(req, res, next) {
   try {
     const limit = parseInt(req.query.limit) || 20;
-    const notifications = await notificationRepository.findByUserId(req.user._id, limit);
+    const notifications = await notificationRepository.findByUserId(req.user.id, limit);
     res.status(200).json({ success: true, data: notifications });
   } catch (error) {
     next(error);
@@ -14,7 +14,7 @@ export async function getNotifications(req, res, next) {
 
 export async function getUnreadNotifications(req, res, next) {
   try {
-    const notifications = await notificationRepository.findUnreadByUserId(req.user._id);
+    const notifications = await notificationRepository.findUnreadByUserId(req.user.id);
     res.status(200).json({ success: true, data: notifications });
   } catch (error) {
     next(error);
@@ -23,7 +23,7 @@ export async function getUnreadNotifications(req, res, next) {
 
 export async function getUnreadCount(req, res, next) {
   try {
-    const count = await notificationRepository.countUnread(req.user._id);
+    const count = await notificationRepository.countUnread(req.user.id);
     res.status(200).json({ success: true, data: { count } });
   } catch (error) {
     next(error);
@@ -41,7 +41,7 @@ export async function markAsRead(req, res, next) {
 
 export async function markAllAsRead(req, res, next) {
   try {
-    await notificationRepository.markAllAsRead(req.user._id);
+    await notificationRepository.markAllAsRead(req.user.id);
     res.status(200).json({ success: true, message: 'Todas las notificaciones marcadas como leídas' });
   } catch (error) {
     next(error);

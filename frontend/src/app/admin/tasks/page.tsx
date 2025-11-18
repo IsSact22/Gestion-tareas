@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -10,27 +11,26 @@ import api from '@/lib/api';
 import QuickTaskActions from '@/components/admin/QuickTaskActions';
 
 interface Task {
-  id: string;
-  _id: string;
+  id: string;  
   title: string;
   description?: string;
   status: 'todo' | 'in-progress' | 'done';
   priority: 'low' | 'medium' | 'high';
   board: {
-    _id: string;
+    id: string;
     name: string;
   };
   column: {
-    _id: string;
+    id: string;
     name: string;
   };
   assignedTo?: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
   };
   createdBy: {
-    _id: string;
+    id: string;
     name: string;
   };
   dueDate?: string;
@@ -311,10 +311,10 @@ export default function AdminTasksPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredTasks.map((task) => (
                 <tr
-                  key={task._id || task.id}
+                  key={task.id}
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={() => {
-                    const boardId = typeof task.board === 'string' ? task.board : task.board._id;
+                    const boardId = typeof task.board === 'string' ? task.board : task.board.id;
                     router.push(`/boards/${boardId}`);
                   }}
                 >
@@ -366,7 +366,7 @@ export default function AdminTasksPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <QuickTaskActions
-                      taskId={task._id}
+                      taskId={task.id}
                       currentStatus={task.status}
                       currentPriority={task.priority}
                       onUpdate={fetchAllTasks}

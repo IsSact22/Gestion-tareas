@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,17 +12,16 @@ import AssignMembersModal from '@/components/admin/AssignMembersModal';
 
 interface Workspace {
   id: string;
-  _id: string;
   name: string;
   description?: string;
   owner: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
   };
   members: Array<{
     user: {
-      _id: string;
+      id: string;
       name: string;
       email: string;
     };
@@ -151,9 +151,9 @@ export default function AdminWorkspacesPage() {
       <div className="space-y-4">
         {workspaces.map((workspace) => (
           <Card
-            key={workspace._id}
+            key={workspace.id}
             className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => router.push(`/workspaces/${workspace._id}`)}
+            onClick={() => router.push(`/workspaces/${workspace.id}`)}
           >
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
@@ -282,7 +282,7 @@ export default function AdminWorkspacesPage() {
             setSelectedWorkspace(null);
           }}
           resourceType="workspace"
-          resourceId={selectedWorkspace._id}
+          resourceId={selectedWorkspace.id}
           resourceName={selectedWorkspace.name}
           currentMembers={selectedWorkspace.members}
           onMembersUpdated={fetchWorkspaces}

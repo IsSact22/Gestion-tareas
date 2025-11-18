@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class GetBoardByIdUseCase {
   constructor(boardRepository) {
@@ -14,11 +13,7 @@ export default class GetBoardByIdUseCase {
     }
 
     // Verificar que el usuario sea miembro o admin del sistema
-    const userIdStr = toStringId(userId);
-    const isMember = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isMember = board.members?.some(m => m.userId === userId);
     const isSystemAdmin = userRole === 'admin';
     
     if (!isMember && !isSystemAdmin) {

@@ -39,6 +39,10 @@ export default class UserRepository {
    * Buscar usuario por email (sin password)
    */
   async findByEmail(email) {
+    if (!email) {
+        console.error("Error: findByEmail llamado sin email.");
+        return null; // Retorna null si no se proporciona email
+    }
     return prisma.user.findUnique({
       where: { email },
       select: {
@@ -57,6 +61,10 @@ export default class UserRepository {
    * Buscar usuario por email (con password)
    */
   async findByEmailWithPassword(email) {
+    if (!email) {
+        console.error("Error: findByEmailWithPassword llamado sin email.");
+        return null; // Retorna null si no se proporciona email
+    }
     const user = await prisma.user.findUnique({
       where: { email }
     });

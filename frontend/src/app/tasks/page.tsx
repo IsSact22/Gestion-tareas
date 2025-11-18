@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -79,7 +80,7 @@ export default function TasksPage() {
       // Actualizar el estado local
       setMyTasks(prevTasks =>
         prevTasks.map(task =>
-          (task._id || task.id) === taskId ? { ...task, status: newStatus } : task
+          (task.id) === taskId ? { ...task, status: newStatus } : task
         )
       );
       
@@ -230,7 +231,7 @@ export default function TasksPage() {
         <div className="grid gap-4">
           {filteredTasks.map((task) => (
               <Card 
-                key={task._id || task.id} 
+                key={task.id} 
                 variant="bordered" 
                 className="p-5 hover:shadow-lg transition-all"
               >
@@ -274,7 +275,7 @@ export default function TasksPage() {
                     </div>
 
                     <button 
-                      onClick={() => router.push(`/boards/${typeof task.board === 'string' ? task.board : task.board._id}`)}
+                      onClick={() => router.push(`/boards/${typeof task.board === 'string' ? task.board : task.board.id}`)}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       title="Ver en el board"
                     >
@@ -292,7 +293,7 @@ export default function TasksPage() {
                           key={status}
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleStatusChange(task._id, status);
+                            handleStatusChange(task.id, status);
                           }}
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                             task.status === status

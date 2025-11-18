@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class CreateTaskUseCase {
   constructor(taskRepository, columnRepository, boardRepository, activityRepository) {
@@ -21,13 +20,9 @@ export default class CreateTaskUseCase {
     }
 
     // Verificar permisos
-    const boardId = column.boardId || column.board?._id || column.board;
+    const boardId = column.boardId;
     const board = await this.boardRepository.findById(boardId);
-    const userIdStr = toStringId(userId);
-    const isMember = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isMember = board.members?.some(m => m.userId === userId);
     if (!isMember) {
       throw new AppError('You do not have permission to create tasks', 403);
     }
@@ -51,7 +46,7 @@ export default class CreateTaskUseCase {
     });
 
     // Registrar actividad
-    const taskId = task.id || task._id;
+    const taskId = task.id;
     await this.activityRepository.create({
       user: userId,
       action: 'created',

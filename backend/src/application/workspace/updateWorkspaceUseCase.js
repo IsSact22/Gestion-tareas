@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class UpdateWorkspaceUseCase {
   constructor(workspaceRepository) {
@@ -14,10 +13,9 @@ export default class UpdateWorkspaceUseCase {
     }
 
     // Verificar que el usuario sea el owner
-    const ownerId = toStringId(workspace.ownerId || workspace.owner?._id || workspace.owner);
-    const userIdStr = toStringId(userId);
+    const ownerId = workspace.ownerId || workspace.owner?._id || workspace.owner;
     
-    if (ownerId !== userIdStr) {
+    if (ownerId !== userId) {
       throw new AppError('Only the owner can update this workspace', 403);
     }
 

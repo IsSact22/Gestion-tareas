@@ -1,17 +1,22 @@
+/* eslint-disable import/no-anonymous-default-export */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '../lib/api';
 
 export interface Task {
   id: string;
-  _id: string;
   title: string;
   description?: string;
   column: string;
-  board: string | { _id: string; name: string; color: string };
+  board: string | {
+    id: string;
+    name: string;
+    color: string 
+};
   position: number;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   status: 'todo' | 'in_progress' | 'review' | 'done';
   assignedTo: {
-    _id: string;
+    id: string | null | undefined;
     name: string;
     email: string;
     avatar?: string;
@@ -21,7 +26,7 @@ export interface Task {
   attachments: string[];
   comments: Comment[];
   createdBy: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
   };
@@ -30,9 +35,9 @@ export interface Task {
 }
 
 export interface Comment {
-  _id: string;
+  id: string;
   user: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
     avatar?: string;
@@ -151,5 +156,6 @@ class TaskService {
     return response.data.data;
   }
 }
+
 
 export default new TaskService();

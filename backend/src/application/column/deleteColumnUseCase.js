@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class DeleteColumnUseCase {
   constructor(columnRepository, boardRepository, taskRepository) {
@@ -15,13 +14,9 @@ export default class DeleteColumnUseCase {
     }
 
     // Verificar permisos
-    const boardId = column.boardId || column.board?._id || column.board;
+    const boardId = column.boardId;
     const board = await this.boardRepository.findById(boardId);
-    const userIdStr = toStringId(userId);
-    const isMember = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isMember = board.members?.some(m => m.userId === userId);
     if (!isMember) {
       throw new AppError('You do not have permission to delete columns', 403);
     }
@@ -29,7 +24,7 @@ export default class DeleteColumnUseCase {
     // Eliminar todas las tareas de la columna
     const tasks = await this.taskRepository.findByColumnId(columnId);
     for (const task of tasks) {
-      await this.taskRepository.delete(task.id || task._id);
+      await this.taskRepository.delete(task.id);
     }
 
     // Con Prisma, la relación se actualiza automáticamente al eliminar la columna

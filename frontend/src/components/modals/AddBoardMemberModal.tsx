@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import { X, UserPlus, Search } from 'lucide-react';
 import { useBoardStore } from '@/store/boardStore';
@@ -39,7 +41,7 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
       if (user) {
         // Verificar si el usuario ya es miembro del board
         const isAlreadyMember = currentBoard?.members?.some(
-          (member) => member.user._id === user._id
+          (member) => member.user.id === user.id
         );
 
         if (isAlreadyMember) {
@@ -72,7 +74,7 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
 
     // Verificar nuevamente antes de enviar
     const isAlreadyMember = currentBoard?.members?.some(
-      (member) => member.user._id === foundUser._id
+      (member) => member.user.id === foundUser.id
     );
 
     if (isAlreadyMember) {
@@ -82,7 +84,7 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
 
     setIsLoading(true);
     try {
-      await boardService.addMember(boardId, foundUser._id, role);
+      await boardService.addMember(boardId, foundUser.email, role);
       
       // Recargar el board para mostrar el nuevo miembro
       await fetchBoardById(boardId);

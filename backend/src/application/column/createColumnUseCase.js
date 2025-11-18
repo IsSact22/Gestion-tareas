@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class CreateColumnUseCase {
   constructor(columnRepository, boardRepository) {
@@ -18,11 +17,7 @@ export default class CreateColumnUseCase {
       throw new AppError('Board not found', 404);
     }
 
-    const userIdStr = toStringId(userId);
-    const isMember = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isMember = board.members?.some(m => m.userId === userId);
     if (!isMember) {
       throw new AppError('You do not have permission to create columns', 403);
     }

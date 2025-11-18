@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
 import { X, Calendar, Tag, AlertCircle, User, MessageSquare, Edit2, Trash2, CheckCircle2, Clock, PlayCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -60,7 +61,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
   const handleAddComment = async (content: string) => {
     setIsLoadingComments(true);
     try {
-      const newComment = await taskService.addComment(task._id, content);
+      const newComment = await taskService.addComment(task.id, content);
       setComments([...comments, newComment]);
     } catch (error) {
       console.error('Error al agregar comentario:', error);
@@ -71,9 +72,9 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
   };
 
   const handleDeleteComment = async (commentId: string): Promise<void> => {
-    await taskService.deleteComment(task._id, commentId);
+    await taskService.deleteComment(task.id, commentId);
     // Solo actualizar el estado si la eliminación fue exitosa (si no hay error)
-    setComments(comments.filter(c => c._id !== commentId));
+    setComments(comments.filter(c => c.id !== commentId));
   };
 
   const handleDelete = async () => {
@@ -88,7 +89,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
     if (!confirmed) return;
     
     try {
-      await deleteTask(task._id);
+      await deleteTask(task.id);
       toast.success('Tarea eliminada');
       onClose();
     } catch (error) {
@@ -99,7 +100,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
 
   const handleStatusChange = async (newStatus: 'todo' | 'in_progress' | 'review' | 'done') => {
     try {
-      await updateTask(task._id, { status: newStatus });
+      await updateTask(task.id, { status: newStatus });
       setCurrentStatus(newStatus);
       toast.success('Estado actualizado');
     } catch (error) {
@@ -242,7 +243,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
               </h3>
               <div className="space-y-2">
                 {task.assignedTo.map((user) => (
-                  <div key={user._id} className="flex items-center gap-2">
+                  <div key={user.id} className="flex items-center gap-2">
                     {user.avatar ? (
                       <img
                         src={user.avatar}

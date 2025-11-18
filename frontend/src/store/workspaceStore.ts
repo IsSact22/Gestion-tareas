@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
 import workspaceService, { Workspace, CreateWorkspaceDto, UpdateWorkspaceDto } from '@/services/workspaceService';
 import socketService from '@/services/socketService';
@@ -73,9 +74,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       const updatedWorkspace = await workspaceService.updateWorkspace(id, data);
       set((state) => ({
         workspaces: state.workspaces.map((w) =>
-          w._id === id ? updatedWorkspace : w
+          w.id === id ? updatedWorkspace : w
         ),
-        currentWorkspace: state.currentWorkspace?._id === id ? updatedWorkspace : state.currentWorkspace,
+        currentWorkspace: state.currentWorkspace?.id === id ? updatedWorkspace : state.currentWorkspace,
         isLoading: false,
       }));
       toast.success('Workspace actualizado exitosamente');
@@ -93,8 +94,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     try {
       await workspaceService.deleteWorkspace(id);
       set((state) => ({
-        workspaces: state.workspaces.filter((w) => w._id !== id),
-        currentWorkspace: state.currentWorkspace?._id === id ? null : state.currentWorkspace,
+        workspaces: state.workspaces.filter((w) => w.id !== id),
+        currentWorkspace: state.currentWorkspace?.id === id ? null : state.currentWorkspace,
         isLoading: false,
       }));
       toast.success('Workspace eliminado exitosamente');

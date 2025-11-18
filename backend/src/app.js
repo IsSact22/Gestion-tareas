@@ -16,7 +16,6 @@ import columnRoutes from "./infrastructure/webserver/express/routes/columnRoutes
 import taskRoutes from "./infrastructure/webserver/express/routes/taskRoutes.js";
 import activityRoutes from "./infrastructure/webserver/express/routes/activityRoutes.js";
 import notificationRoutes from "./infrastructure/webserver/express/routes/notificationRoutes.js";
-import normalizeResponse from "./middleware/normalizeResponse.js";
 
 const app = express();
 
@@ -29,9 +28,6 @@ app.use(cors({
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Normalizar respuestas (MongoDB/Prisma compatibility)
-app.use(normalizeResponse);
 
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {

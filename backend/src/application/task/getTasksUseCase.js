@@ -1,5 +1,4 @@
 import AppError from '../../core/AppError.js';
-import { toStringId } from '../../core/idUtils.js';
 
 export default class GetTasksUseCase {
   constructor(taskRepository, boardRepository) {
@@ -15,11 +14,7 @@ export default class GetTasksUseCase {
     }
 
     // Permitir acceso a miembros del board o admins del sistema
-    const userIdStr = toStringId(userId);
-    const isMember = board.members?.some(m => {
-      const memberId = toStringId(m.userId || m.user?._id || m.user);
-      return memberId === userIdStr;
-    });
+    const isMember = board.members?.some(m => m.userId === userId);
     const isSystemAdmin = userRole === 'admin';
     
     if (!isMember && !isSystemAdmin) {
