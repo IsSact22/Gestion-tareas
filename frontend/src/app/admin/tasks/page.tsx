@@ -4,11 +4,12 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
-import { CheckSquare, AlertCircle, Clock, CheckCircle2, Calendar } from 'lucide-react';
+import { CheckSquare, AlertCircle, Clock, CheckCircle2, Calendar, ArrowLeft } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import toast, { Toaster } from 'react-hot-toast';
 import api from '@/lib/api';
 import QuickTaskActions from '@/components/admin/QuickTaskActions';
+import Button from '@/components/ui/Button';
 
 interface Task {
   id: string;  
@@ -162,11 +163,26 @@ export default function AdminTasksPage() {
     <div className="p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Tareas</h1>
-        <p className="text-gray-600">Vista general de todas las tareas del sistema</p>
-      </div>
+      {/* Header Centrado */}
+      <div className="mb-8 flex items-center justify-between">
+
+      <Button
+          type="button"
+          variant="primary"
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Regresar
+        </Button>
+
+
+        <div className="text-center flex-1">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Tareas</h1>
+          <p className="text-gray-600">Vista general de todas las tareas del sistema</p>
+        </div>
+      <div className="w-24"></div>
+    </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -212,7 +228,18 @@ export default function AdminTasksPage() {
       </div>
 
       {/* Priority Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-4 gap-4 mb-8">
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-gray-600 mb-1">Prioridad Urgente</p>
+              <p className="text-2xl font-bold text-orange-600">{stats.high}</p>
+            </div>
+            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+              <AlertCircle className="w-6 h-6 text-orange-600" />
+            </div>
+          </div>
+        </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>

@@ -4,11 +4,12 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
-import { Trello, Users, Eye, Calendar, UserPlus } from 'lucide-react';
+import { Trello, Users, Eye, Calendar, UserPlus, ArrowLeft } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import toast, { Toaster } from 'react-hot-toast';
 import api from '@/lib/api';
 import AssignMembersModal from '@/components/admin/AssignMembersModal';
+import Button from '@/components/ui/Button';
 
 interface Board {
   archived: any;
@@ -107,11 +108,26 @@ export default function AdminBoardsPage() {
     <div className="p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Boards</h1>
-        <p className="text-gray-600">Vista general de todos los boards del sistema</p>
-      </div>
+       {/* Header Centrado */}
+      <div className="mb-8 flex items-center justify-between">
+
+      <Button
+          type="button"
+          variant="primary"
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Regresar
+        </Button>
+
+
+        <div className="text-center flex-1">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Boards</h1>
+          <p className="text-gray-600">Vista general de todas los boards del sistema</p>
+        </div>
+      <div className="w-24"></div>
+    </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

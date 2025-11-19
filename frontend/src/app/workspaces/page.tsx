@@ -23,6 +23,8 @@ export default function WorkspacesPage() {
     name: '',
     description: '',
   });
+  const [newMemberEmail, setNewMemberEmail] = useState('');
+  const [memberRole, setMemberRole] = useState('member');
 
   useEffect(() => {
     fetchWorkspaces();
@@ -89,26 +91,37 @@ export default function WorkspacesPage() {
         <div className="p-8 min-h-screen bg-gray-50">
             <Toaster position="top-right" />
 
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10 gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Workspaces</h1>
-                    <p className="text-gray-600">Organiza tus proyectos en espacios de trabajo</p>
-                </div>
-                <button
-                    onClick={() => setIsCreateModalOpen(true)}
-                    className="bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm hover:shadow-md"
+            <div className="mb-8 flex items-center justify-between">
+  
+            {/* 1. IZQUIERDA: Botón Regresar */}
+            <div className="w-48 flex justify-start"> {/* Contenedor para asegurar alineación */}
+                <Button
+                type="button"
+                variant="primary"
+                onClick={() => window.history.back()}
+                className="flex items-center gap-2"
                 >
-                    <Plus className="w-5 h-5" />
-                    <span>Nuevo Workspace</span>
-                </button>
+                <ArrowLeft className="w-4 h-4" />
+                Regresar
+                </Button>
+            </div>
+
+            {/* 2. CENTRO: Título */}
+            <div className="text-center flex-1 px-4">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Workspaces</h1>
+                <p className="text-gray-600">Organiza tus proyectos en espacios de trabajo</p>
+            </div>
+
+            {/* 3. DERECHA: Botón Nuevo Workspace */}
+            <div className="w-48 flex justify-end"> {/* Contenedor del mismo ancho que el izquierdo para centrar perfecto el título */}
                 <button
-                    onClick={() => router.push("/dashboard")}
-                    className="flex items-center text-gray-600 hover:text-blue-600 transition-colors mb-4"
-                    >
-                    <ArrowLeft className="w-5 h-5 mr-2" />
-                    <span>Volver al Dashboard</span>
-                    </button>
+                onClick={() => setIsCreateModalOpen(true)}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm"                >
+                <Plus className="w-4 h-4" />
+                <span>Nuevo Workspace</span>
+                </button>
+            </div>
+
             </div>
 
             {/* Empty State */}
@@ -125,7 +138,7 @@ export default function WorkspacesPage() {
                     </p>
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm"
                     >
                         <Plus className="w-5 h-5" />
                         <span>Crear Workspace</span>
@@ -137,7 +150,7 @@ export default function WorkspacesPage() {
                     {workspaces.map((workspace) => (
                         <div
                             key={workspace.id}
-                            onClick={() => router.push(`/workspaces/${workspace.id}`)}
+                            onClick={() => openEditModal(workspace)}
                             className="group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-xl hover:scale-[1.01] transition-all cursor-pointer relative"
                         >
                             <div className="flex items-start justify-between mb-4">
@@ -228,11 +241,11 @@ export default function WorkspacesPage() {
                     />
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-800 mb-2">
                             Descripción (opcional)
                         </label>
                         <textarea
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                            className="w-full px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
                             rows={4}
                             placeholder="Describe el propósito de este workspace..."
                             value={formData.description}
@@ -266,6 +279,8 @@ export default function WorkspacesPage() {
                     setIsEditModalOpen(false);
                     setSelectedWorkspace(null);
                     setFormData({ name: "", description: "" });
+                    setNewMemberEmail('');
+                    setMemberRole('member');
                 }}
                 title="Editar Workspace"
             >
@@ -282,11 +297,11 @@ export default function WorkspacesPage() {
                     />
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-800 mb-2">
                             Descripción (opcional)
                         </label>
                         <textarea
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                            className="w-full px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
                             rows={4}
                             placeholder="Describe el propósito de este workspace..."
                             value={formData.description}
@@ -294,6 +309,56 @@ export default function WorkspacesPage() {
                                 setFormData({ ...formData, description: e.target.value })
                             }
                         />
+                    </div>
+
+                    {/* Miembros */}
+                    <div className="border-t pt-4">
+                        <h3 className="text-sm font-semibold text-gray-900 mb-3">Miembros ({selectedWorkspace?.members?.length || 0})</h3>
+                        
+                        {/* Lista de miembros */}
+                        <div className="space-y-2 mb-4 max-h-48 overflow-y-auto">
+                            {selectedWorkspace?.members?.map((member: any) => (
+                                <div key={member.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-900">{member.user?.name}</p>
+                                        <p className="text-xs text-gray-500">{member.user?.email}</p>
+                                    </div>
+                                    <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded capitalize">
+                                        {member.role}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Agregar miembro */}
+                        <div className="flex gap-2">
+                            <Input
+                                type="email"
+                                placeholder="Email del miembro"
+                                value={newMemberEmail}
+                                onChange={(e) => setNewMemberEmail(e.target.value)}
+                            />
+                            <select
+                                value={memberRole}
+                                onChange={(e) => setMemberRole(e.target.value)}
+                                className="px-3 py-2 border text-gray-800 border-gray-300 rounded-lg text-sm"
+                            >
+                                <option value="member">Miembro</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => {
+                                    if (newMemberEmail) {
+                                        // Aquí iría la lógica para agregar miembro
+                                        setNewMemberEmail('');
+                                    }
+                                }}
+                            >
+                                Agregar
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -307,6 +372,8 @@ export default function WorkspacesPage() {
                                 setIsEditModalOpen(false);
                                 setSelectedWorkspace(null);
                                 setFormData({ name: "", description: "" });
+                                setNewMemberEmail('');
+                                setMemberRole('member');
                             }}
                         >
                             Cancelar

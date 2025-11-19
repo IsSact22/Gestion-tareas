@@ -81,10 +81,14 @@ export default function TasksPage() {
         )
       );
       
-      toast.success(`Estado actualizado a "${statusLabels[newStatus]}"`);
+      toast.success(`Estado actualizado a "${statusLabels[newStatus]}"`, {
+        duration: 3000,
+      });
     } catch (error: any) {
       console.error('Error al cambiar estado:', error);
-      toast.error(error.response?.data?.message || 'Error al cambiar estado');
+      toast.error(error.response?.data?.message || 'Error al cambiar estado', {
+        duration: 3000,
+      });
     }
   };
 
