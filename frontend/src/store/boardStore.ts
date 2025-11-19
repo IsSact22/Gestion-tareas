@@ -21,7 +21,7 @@ interface BoardState {
   clearError: () => void;
 }
 
-export const useBoardStore = create<BoardState>((set, get) => ({
+export const useBoardStore = create<BoardState>((set) => ({
   boards: [],
   currentBoard: null,
   isLoading: false,

@@ -9,7 +9,6 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
 import { useColumnStore } from '@/store/columnStore';
 import { useTaskStore } from '@/store/taskStore';
 import { Task } from '@/services/taskService';
@@ -62,7 +61,7 @@ export default function KanbanBoard({
     };
     
     loadData();
-  }, [boardId]);
+  }, [boardId, columns.length, fetchColumns, fetchTasks, tasks.length]);
 
   // Obtener tareas por columna
   const getTasksByColumn = (columnId: string) => {

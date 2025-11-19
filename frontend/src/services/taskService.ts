@@ -1,5 +1,4 @@
 /* eslint-disable import/no-anonymous-default-export */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '../lib/api';
 
 export interface Task {
@@ -14,9 +13,9 @@ export interface Task {
 };
   position: number;
   priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'todo' | 'in_progress' | 'review' | 'done';
+  status: 'todo' | 'in-progress' | 'done';
   assignedTo: {
-    id: string | null | undefined;
+    id: string;
     name: string;
     email: string;
     avatar?: string;
@@ -61,7 +60,7 @@ export interface UpdateTaskDto {
   title?: string;
   description?: string;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
-  status?: 'todo' | 'in_progress' | 'review' | 'done';
+  status?: 'todo' | 'in-progress'| 'done';
   assignedTo?: string[];
   tags?: string[];
   dueDate?: string;

@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
-import { UserCog, Plus, Edit, Trash2, Shield, User as UserIcon, Eye } from 'lucide-react';
+import { Plus, Edit, Trash2, Shield, User as UserIcon, Eye } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';

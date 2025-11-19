@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
 import workspaceService, { Workspace, CreateWorkspaceDto, UpdateWorkspaceDto } from '@/services/workspaceService';
-import socketService from '@/services/socketService';
+// import socketService from '@/services/socketService';
 import toast from 'react-hot-toast';
 
 interface WorkspaceState {
@@ -20,7 +20,7 @@ interface WorkspaceState {
   clearError: () => void;
 }
 
-export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
+export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   workspaces: [],
   currentWorkspace: null,
   isLoading: false,

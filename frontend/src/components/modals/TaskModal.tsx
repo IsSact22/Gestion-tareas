@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import { X, Calendar, Tag, AlertCircle, User, UserPlus } from 'lucide-react';
 import { Task } from '@/services/taskService';

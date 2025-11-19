@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { X, Users, Trash2, Shield, Eye, UserCog } from 'lucide-react';
 import toast from 'react-hot-toast';

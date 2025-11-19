@@ -15,6 +15,7 @@ export default class TaskRepository {
         
         return {
             ...task,
+            status: task.status || 'todo',
             assignedTo: task.assignedTo?.map(assignment => assignment.user) || [],
             comments: task.comments?.map(comment => ({
                 ...comment,

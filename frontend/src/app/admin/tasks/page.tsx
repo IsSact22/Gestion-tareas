@@ -48,7 +48,7 @@ export default function AdminTasksPage() {
   const [stats, setStats] = useState({
     total: 0,
     todo: 0,
-    inProgress: 0,
+    in_progress: 0,
     done: 0,
     high: 0,
     medium: 0,
@@ -79,7 +79,7 @@ export default function AdminTasksPage() {
       setStats({
         total: tasksData.length,
         todo: tasksData.filter((t: Task) => t.status === 'todo').length,
-        inProgress: tasksData.filter((t: Task) => t.status === 'in-progress').length,
+        in_progress: tasksData.filter((t: Task) => t.status === 'in-progress').length,
         done: tasksData.filter((t: Task) => t.status === 'done').length,
         high: tasksData.filter((t: Task) => t.priority === 'high').length,
         medium: tasksData.filter((t: Task) => t.priority === 'medium').length,
@@ -112,22 +112,28 @@ export default function AdminTasksPage() {
     );
   };
 
-  const getStatusBadge = (status: string) => {
-    const styles = {
+  const getStatusBadge = (status: string | undefined) => {
+    
+    const styles: Record<string, string> = {
       'todo': 'bg-gray-100 text-gray-700',
-      'in_progress': 'bg-blue-100 text-blue-700',
+      'in-progress': 'bg-blue-100 text-blue-700',
       'done': 'bg-green-100 text-green-700',
     };
     
-    const labels = {
+    const labels: Record<string, string> = {
       'todo': 'Por hacer',
-      'in_progress': 'En progreso',
+      'in-progress': 'En progreso',
       'done': 'Completada',
     };
     
+    const safeStatus = status || 'todo';
+    
+    const style = styles[safeStatus] || 'bg-gray-100 text-gray-700';
+    const label = labels[safeStatus] || 'Por hacer';
+    
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status as keyof typeof styles]}`}>
-        {labels[status as keyof typeof labels]}
+      <span className={`px-2 py-1 rounded-full text-xs font-medium ${style}`}>
+        {label}
       </span>
     );
   };
@@ -186,7 +192,7 @@ export default function AdminTasksPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-600 mb-1">En progreso</p>
-              <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
+              <p className="text-2xl font-bold text-blue-600">{stats.in_progress}</p>
             </div>
             <AlertCircle className="w-8 h-8 text-blue-400" />
           </div>
@@ -256,7 +262,7 @@ export default function AdminTasksPage() {
             >
               <option value="all">Todos</option>
               <option value="todo">Por hacer</option>
-              <option value="in_progress">En progreso</option>
+              <option value="in-progress">En progreso</option>
               <option value="done">Completadas</option>
             </select>
           </div>

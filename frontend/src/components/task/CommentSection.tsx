@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Send, Trash2, User } from 'lucide-react';
 import toast from 'react-hot-toast';

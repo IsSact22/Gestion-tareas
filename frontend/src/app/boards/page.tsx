@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trello, Plus, MoreVertical, Edit, Trash2, Star, Users, Folder, Home, ArrowLeft } from 'lucide-react';
+import { Trello, Plus, MoreVertical, Edit, Trash2, Star, Users, Folder, Home } from 'lucide-react';
 import { useBoardStore } from '@/store/boardStore';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useRouter } from 'next/navigation';

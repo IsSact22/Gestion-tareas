@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Bell, Check, Trash2, X } from 'lucide-react';
+import { Bell, Trash2, X } from 'lucide-react';
 import { useNotificationStore } from '@/store/notificationStore';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';

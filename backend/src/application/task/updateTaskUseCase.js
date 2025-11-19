@@ -40,8 +40,10 @@ export default class UpdateTaskUseCase {
       changes.priority = { from: task.priority, to: priority };
     }
     if (status !== undefined) {
-      updateData.status = status;
-      changes.status = { from: task.status, to: status };
+      // Normalizar status: convertir 'in_progress' a 'in-progress'
+      const normalizedStatus = (status || 'todo').replace('_', '-');
+      updateData.status = normalizedStatus;
+      changes.status = { from: task.status, to: normalizedStatus };
     }
     if (dueDate !== undefined) {
       updateData.dueDate = dueDate;

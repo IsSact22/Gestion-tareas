@@ -58,6 +58,7 @@ export default function AssignMembersModal({
     try {
       const response = await api.get('/users');
       setAllUsers(response.data.data);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error('Error al cargar usuarios');
     }

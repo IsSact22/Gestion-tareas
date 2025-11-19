@@ -27,22 +27,19 @@ const priorityLabels = {
 
 const statusLabels = {
   todo: 'Por hacer',
-  in_progress: 'En progreso',
-  review: 'En revisión',
+  'in-progress': 'En progreso',
   done: 'Completado',
 };
 
 const statusColors = {
   todo: 'bg-gray-100 text-gray-800',
-  in_progress: 'bg-blue-100 text-blue-800',
-  review: 'bg-yellow-100 text-yellow-800',
+  'in-progress': 'bg-blue-100 text-blue-800',
   done: 'bg-green-100 text-green-800',
 };
 
 const statusIcons = {
   todo: Clock,
-  in_progress: PlayCircle,
-  review: AlertCircle,
+  'in-progress': PlayCircle,
   done: CheckCircle2,
 };
 
@@ -50,7 +47,7 @@ export default function TasksPage() {
   const router = useRouter();
   const { fetchBoards } = useBoardStore();
   const [myTasks, setMyTasks] = useState<Task[]>([]);
-  const [filter, setFilter] = useState<'all' | 'todo' | 'in_progress' | 'done'>('all');
+  const [filter, setFilter] = useState<'all' | 'todo' | 'in-progress' | 'done'>('all');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -73,7 +70,7 @@ export default function TasksPage() {
     loadMyTasks();
   }, [fetchBoards]);
 
-  const handleStatusChange = async (taskId: string, newStatus: 'todo' | 'in_progress' | 'review' | 'done') => {
+  const handleStatusChange = async (taskId: string, newStatus: 'todo' | 'in-progress' | 'done') => {
     try {
       await taskService.updateTask(taskId, { status: newStatus });
       
@@ -98,8 +95,7 @@ export default function TasksPage() {
 
   const tasksByStatus = {
     todo: myTasks.filter(t => t.status === 'todo').length,
-    in_progress: myTasks.filter(t => t.status === 'in_progress').length,
-    review: myTasks.filter(t => t.status === 'review').length,
+    'in-progress': myTasks.filter(t => t.status === 'in-progress').length,
     done: myTasks.filter(t => t.status === 'done').length,
   };
 
@@ -149,7 +145,7 @@ export default function TasksPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">En progreso</p>
-              <p className="text-2xl font-bold text-blue-600">{tasksByStatus.in_progress}</p>
+              <p className="text-2xl font-bold text-blue-600">{tasksByStatus['in-progress']}</p>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <AlertCircle className="w-6 h-6 text-blue-600" />
@@ -157,17 +153,6 @@ export default function TasksPage() {
           </div>
         </Card>
 
-        <Card variant="bordered" className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">En revisión</p>
-              <p className="text-2xl font-bold text-orange-600">{tasksByStatus.review}</p>
-            </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-orange-600" />
-            </div>
-          </div>
-        </Card>
 
         <Card variant="bordered" className="p-4">
           <div className="flex items-center justify-between">
@@ -205,14 +190,14 @@ export default function TasksPage() {
           Por hacer ({tasksByStatus.todo})
         </button>
         <button
-          onClick={() => setFilter('in_progress')}
+          onClick={() => setFilter('in-progress')}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            filter === 'in_progress'
+            filter === 'in-progress'
               ? 'bg-blue-600 text-white'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          En progreso ({tasksByStatus.in_progress})
+          En progreso ({tasksByStatus['in-progress']})
         </button>
         <button
           onClick={() => setFilter('done')}

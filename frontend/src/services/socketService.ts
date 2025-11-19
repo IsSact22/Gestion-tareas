@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { io, Socket } from 'socket.io-client';
 import toast from 'react-hot-toast';

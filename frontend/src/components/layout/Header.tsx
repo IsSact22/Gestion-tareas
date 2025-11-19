@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, Search, User } from 'lucide-react';
+import { Search} from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import NotificationBell from '@/components/notifications/NotificationBell';
 

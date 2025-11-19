@@ -78,19 +78,19 @@ export default function AdminBoardsPage() {
     }
   };
 
-  const getRoleBadge = (role: string) => {
-    const styles = {
-      admin: 'bg-purple-100 text-purple-700',
-      member: 'bg-blue-100 text-blue-700',
-      viewer: 'bg-gray-100 text-gray-700',
-    };
+  // const getRoleBadge = (role: string) => {
+  //   const styles = {
+  //     admin: 'bg-purple-100 text-purple-700',
+  //     member: 'bg-blue-100 text-blue-700',
+  //     viewer: 'bg-gray-100 text-gray-700',
+  //   };
     
-    return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[role as keyof typeof styles]}`}>
-        {role}
-      </span>
-    );
-  };
+  //   return (
+  //     <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[role as keyof typeof styles]}`}>
+  //       {role}
+  //     </span>
+  //   );
+  // };
 
   if (isLoading) {
     return (
