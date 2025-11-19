@@ -1,17 +1,18 @@
+/* eslint-disable import/no-anonymous-default-export */
 import api from '@/lib/api';
 
 export interface Workspace {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   owner: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
   };
   members: Array<{
     user: {
-      _id: string;
+      id: string;
       name: string;
       email: string;
     };

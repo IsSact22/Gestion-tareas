@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 
 export default function WorkspaceDetailPage() {
   const router = useRouter();
-  const params = useParams();
+  const params = useParams(); 
   const workspaceId = params.id as string;
 
   useEffect(() => {

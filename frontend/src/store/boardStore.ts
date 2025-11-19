@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
 import boardService, { Board, CreateBoardDto, UpdateBoardDto } from '@/services/boardService';
 import socketService from '@/services/socketService';
@@ -20,7 +21,7 @@ interface BoardState {
   clearError: () => void;
 }
 
-export const useBoardStore = create<BoardState>((set, get) => ({
+export const useBoardStore = create<BoardState>((set) => ({
   boards: [],
   currentBoard: null,
   isLoading: false,
@@ -60,7 +61,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       }));
       
       // Emitir evento Socket.IO
-      socketService.emitBoardUpdated(newBoard._id, newBoard, data.workspaceId);
+      socketService.emitBoardUpdated(newBoard.id, newBoard, data.workspaceId);
       
       toast.success('Board creado exitosamente');
       return newBoard;
@@ -77,13 +78,13 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     try {
       const updatedBoard = await boardService.updateBoard(id, data);
       set((state) => ({
-        boards: state.boards.map((b) => (b._id === id ? updatedBoard : b)),
-        currentBoard: state.currentBoard?._id === id ? updatedBoard : state.currentBoard,
+        boards: state.boards.map((b) => (b.id === id ? updatedBoard : b)),
+        currentBoard: state.currentBoard?.id === id ? updatedBoard : state.currentBoard,
         isLoading: false,
       }));
       
       // Emitir evento Socket.IO
-      socketService.emitBoardUpdated(id, updatedBoard, updatedBoard.workspace._id);
+      socketService.emitBoardUpdated(id, updatedBoard, updatedBoard.workspace.id);
       
       toast.success('Board actualizado exitosamente');
       return updatedBoard;
@@ -100,8 +101,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     try {
       await boardService.deleteBoard(id);
       set((state) => ({
-        boards: state.boards.filter((b) => b._id !== id),
-        currentBoard: state.currentBoard?._id === id ? null : state.currentBoard,
+        boards: state.boards.filter((b) => b.id !== id),
+        currentBoard: state.currentBoard?.id === id ? null : state.currentBoard,
         isLoading: false,
       }));
       toast.success('Board eliminado exitosamente');
@@ -118,8 +119,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     try {
       const updatedBoard = await boardService.toggleFavorite(id);
       set((state) => ({
-        boards: state.boards.map((b) => (b._id === id ? updatedBoard : b)),
-        currentBoard: state.currentBoard?._id === id ? updatedBoard : state.currentBoard,
+        boards: state.boards.map((b) => (b.id === id ? updatedBoard : b)),
+        currentBoard: state.currentBoard?.id === id ? updatedBoard : state.currentBoard,
       }));
       toast.success(updatedBoard.isFavorite ? 'Agregado a favoritos' : 'Removido de favoritos');
     } catch (error: any) {
@@ -146,7 +147,7 @@ socketService.on('board:member-added', (data: { boardId: string; member: any }) 
   state.fetchBoards();
   
   // Si estamos viendo ese board, recargarlo
-  if (state.currentBoard?._id === data.boardId) {
+  if (state.currentBoard?.id === data.boardId) {
     state.fetchBoardById(data.boardId);
   }
 });

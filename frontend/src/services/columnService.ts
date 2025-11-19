@@ -1,7 +1,8 @@
+/* eslint-disable import/no-anonymous-default-export */
 import api from '../lib/api';
 
 export interface Column {
-  _id: string;
+  id: string;
   name: string;
   board: string;
   position: number;

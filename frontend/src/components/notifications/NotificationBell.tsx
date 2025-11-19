@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Bell, Check, Trash2, X } from 'lucide-react';
+import { Bell, Trash2, X } from 'lucide-react';
 import { useNotificationStore } from '@/store/notificationStore';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
@@ -46,7 +47,7 @@ export default function NotificationBell() {
 
   const handleNotificationClick = async (notification: any) => {
     if (!notification.read) {
-      await markAsRead(notification._id);
+      await markAsRead(notification.id);
     }
     
     if (notification.link) {
@@ -134,7 +135,7 @@ export default function NotificationBell() {
               <div className="divide-y divide-gray-100">
                 {notifications.map((notification) => (
                   <div
-                    key={notification._id}
+                    key={notification.id}
                     onClick={() => handleNotificationClick(notification)}
                     className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
                       !notification.read ? 'bg-blue-50' : ''
@@ -158,9 +159,9 @@ export default function NotificationBell() {
                             </p>
                             
                             {/* From User */}
-                            {notification.data.fromUser && (
+                            {notification.data?.fromUser && (
                               <p className="text-xs text-gray-500 mt-1">
-                                De: {notification.data.fromUser.name}
+                                De: {notification.data?.fromUser.name}
                               </p>
                             )}
                             
@@ -179,7 +180,7 @@ export default function NotificationBell() {
                               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             )}
                             <button
-                              onClick={(e) => handleDeleteNotification(e, notification._id)}
+                              onClick={(e) => handleDeleteNotification(e, notification.id)}
                               className="p-1 hover:bg-gray-200 rounded transition-colors"
                             >
                               <Trash2 size={14} className="text-gray-400" />

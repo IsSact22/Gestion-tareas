@@ -20,13 +20,14 @@ export default class MoveTaskUseCase {
     }
 
     // Verificar permisos
-    const board = await this.boardRepository.findById(task.board._id);
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
-    if (!member || member.role === 'viewer') {
+    const boardId = task.boardId;
+    const board = await this.boardRepository.findById(boardId);
+    const isMember = board.members?.some(m => m.userId === userId);
+    if (!isMember) {
       throw new AppError('You do not have permission to move tasks', 403);
     }
 
-    const oldColumnId = task.column._id;
+    const oldColumnId = task.columnId;
 
     // Mover tarea
     await this.taskRepository.moveToColumn(taskId, newColumnId, newPosition);
@@ -37,7 +38,7 @@ export default class MoveTaskUseCase {
       action: 'moved',
       entity: 'task',
       entityId: taskId,
-      board: task.board._id,
+      board: boardId,
       details: {
         title: task.title,
         from: oldColumnId,

@@ -13,7 +13,8 @@ export default class GetActivitiesUseCase {
       throw new AppError('Board not found', 404);
     }
 
-    const isMember = board.members.some(m => m.user._id.toString() === userId.toString());
+    const isMember = board.members?.some(m => m.userId === userId);
+    
     if (!isMember) {
       throw new AppError('You do not have access to this board', 403);
     }

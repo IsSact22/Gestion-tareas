@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
 import notificationService, { Notification } from '@/services/notificationService';
 import socketService from '@/services/socketService';
@@ -19,7 +20,7 @@ interface NotificationState {
   clearNotifications: () => void;
 }
 
-export const useNotificationStore = create<NotificationState>((set, get) => ({
+export const useNotificationStore = create<NotificationState>((set) => ({
   notifications: [],
   unreadCount: 0,
   isLoading: false,
@@ -50,7 +51,7 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
       await notificationService.markAsRead(id);
       set((state) => ({
         notifications: state.notifications.map((n) =>
-          n._id === id ? { ...n, read: true } : n
+          n.id === id ? { ...n, read: true } : n
         ),
         unreadCount: Math.max(0, state.unreadCount - 1),
       }));
@@ -78,9 +79,9 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
     try {
       await notificationService.deleteNotification(id);
       set((state) => {
-        const notification = state.notifications.find((n) => n._id === id);
+        const notification = state.notifications.find((n) => n.id === id);
         return {
-          notifications: state.notifications.filter((n) => n._id !== id),
+          notifications: state.notifications.filter((n) => n.id !== id),
           unreadCount: notification && !notification.read 
             ? Math.max(0, state.unreadCount - 1) 
             : state.unreadCount,

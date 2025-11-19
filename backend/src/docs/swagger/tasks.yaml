@@ -412,7 +412,7 @@ paths:
                   data:
                     type: object
                     properties:
-                      _id:
+                      id:
                         type: string
                       user:
                         type: string

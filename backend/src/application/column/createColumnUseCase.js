@@ -17,8 +17,8 @@ export default class CreateColumnUseCase {
       throw new AppError('Board not found', 404);
     }
 
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
-    if (!member || member.role === 'viewer') {
+    const isMember = board.members?.some(m => m.userId === userId);
+    if (!isMember) {
       throw new AppError('You do not have permission to create columns', 403);
     }
 
@@ -32,8 +32,8 @@ export default class CreateColumnUseCase {
       color: color || '#6B7280'
     });
 
-    // Agregar columna al board
-    await this.boardRepository.addColumn(boardId, column._id);
+    // Con Prisma, la relación ya se establece al crear la columna con boardId
+    // No es necesario hacer un update adicional al board
 
     return column;
   }

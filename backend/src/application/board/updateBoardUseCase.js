@@ -13,8 +13,8 @@ export default class UpdateBoardUseCase {
     }
 
     // Verificar permisos
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
-    if (!member || member.role === 'viewer') {
+    const isMember = board.members?.some(m => m.userId === userId);
+    if (!isMember) {
       throw new AppError('You do not have permission to update this board', 403);
     }
 

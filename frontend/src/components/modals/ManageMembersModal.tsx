@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { X, Users, Trash2, Shield, Eye, UserCog } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -98,7 +99,7 @@ export default function ManageMembersModal({ isOpen, onClose, boardId }: ManageM
               const RoleIcon = roleIcons[member.role];
               return (
                 <div
-                  key={`${member.user._id}-${member.role}`}
+                  key={`${member.user.id}-${member.role}`}
                   className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   {/* Avatar */}
@@ -120,12 +121,12 @@ export default function ManageMembersModal({ isOpen, onClose, boardId }: ManageM
 
                   {/* Delete Button */}
                   <button
-                    onClick={() => handleRemoveMember(member.user._id, member.user.name)}
-                    disabled={isDeleting === member.user._id}
+                    onClick={() => handleRemoveMember(member.user.id, member.user.name)}
+                    disabled={isDeleting === member.user.id}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Eliminar miembro"
                   >
-                    {isDeleting === member.user._id ? (
+                    {isDeleting === member.user.id ? (
                       <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <Trash2 size={18} />

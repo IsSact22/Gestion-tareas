@@ -1,19 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
 import taskService, { Task, CreateTaskDto, UpdateTaskDto, MoveTaskDto } from '@/services/taskService';
 import socketService from '@/services/socketService';
 import toast from 'react-hot-toast';
 
 // Helper para obtener el boardId de una tarea
-const getBoardId = (board: string | { _id: string; name: string }): string => {
-  return typeof board === 'string' ? board : board._id;
-};
+function getBoardId(board: string | { id: string; name: string; } | undefined): string {
+  // 1. Verificar si board es null o undefined. Si lo es, devolvemos null o un string vacío.
+  if (!board) {
+    console.warn("getBoardId llamado con valor nulo o indefinido.");
+    return "";
+  }
+
+  // 2. Ejecutar la lógica original.
+  return typeof board === 'string' ? board : board.id;
+}
 
 // Helper para normalizar una tarea (convertir column de objeto a string)
 const normalizeTask = (task: Task): Task => {
   return {
     ...task,
     column: typeof task.column === 'object' && task.column !== null
-      ? (task.column as any)._id
+      ? (task.column as any).id
       : task.column
   };
 };
@@ -113,13 +121,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const normalizedTask = normalizeTask(updatedTask);
       
       set((state) => ({
-        tasks: state.tasks.map((task) => (task._id === id ? normalizedTask : task)),
-        currentTask: state.currentTask?._id === id ? normalizedTask : state.currentTask,
+        tasks: state.tasks.map((task) => (task.id === id ? normalizedTask : task)),
+        currentTask: state.currentTask?.id === id ? normalizedTask : state.currentTask,
         isLoading: false,
       }));
 
       // Emitir evento Socket.IO
-      const task = get().tasks.find(t => t._id === id);
+      const task = get().tasks.find(t => t.id === id);
       if (task) {
         socketService.emitTaskUpdated(getBoardId(task.board), updatedTask);
       }
@@ -137,11 +145,11 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   deleteTask: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const task = get().tasks.find(t => t._id === id);
+      const task = get().tasks.find(t => t.id === id);
       await taskService.deleteTask(id);
       
       set((state) => ({
-        tasks: state.tasks.filter((task) => task._id !== id),
+        tasks: state.tasks.filter((task) => task.id !== id),
         isLoading: false,
       }));
 
@@ -165,20 +173,23 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       
       set((state) => ({
         tasks: state.tasks.map((task) => 
-          task._id === data.taskId ? normalizedTask : task
+          task.id === data.taskId ? normalizedTask : task
         ),
       }));
 
       // Emitir evento Socket.IO
-      const task = get().tasks.find(t => t._id === data.taskId);
-      if (task) {
-        socketService.emitTaskMoved(
-          getBoardId(task.board),
-          data.taskId,
-          data.fromColumnId,
-          data.toColumnId,
-          data.position
-        );
+      const task = get().tasks.find(t => t.id === data.taskId);
+
+      // 1. Obtener el boardId de forma segura
+      const boardId = task ? getBoardId(task.board) : null;
+      if (task && boardId) { // Solo emitimos si tenemos la tarea Y un boardId válido
+            socketService.emitTaskMoved(
+                boardId, // Usamos la variable segura
+                data.taskId,
+                data.fromColumnId,
+                data.toColumnId,
+                data.position
+            );
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Error al mover tarea';
@@ -197,11 +208,11 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       
       set((state) => ({
         tasks: state.tasks.map((task) =>
-          task._id === taskId
+          task.id === taskId
             ? { ...task, comments: [...task.comments, newComment] }
             : task
         ),
-        currentTask: state.currentTask?._id === taskId
+        currentTask: state.currentTask?.id === taskId
           ? { ...state.currentTask, comments: [...state.currentTask.comments, newComment] }
           : state.currentTask,
       }));
@@ -219,12 +230,12 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       
       set((state) => ({
         tasks: state.tasks.map((task) =>
-          task._id === taskId
-            ? { ...task, comments: task.comments.filter(c => c._id !== commentId) }
+          task.id === taskId
+            ? { ...task, comments: task.comments.filter(c => c.id !== commentId) }
             : task
         ),
-        currentTask: state.currentTask?._id === taskId
-          ? { ...state.currentTask, comments: state.currentTask.comments.filter(c => c._id !== commentId) }
+        currentTask: state.currentTask?.id === taskId
+          ? { ...state.currentTask, comments: state.currentTask.comments.filter(c => c.id !== commentId) }
           : state.currentTask,
       }));
 
@@ -246,7 +257,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   removeTask: (id: string) => {
     set((state) => ({
-      tasks: state.tasks.filter((task) => task._id !== id)
+      tasks: state.tasks.filter((task) => task.id !== id)
     }));
   },
 
@@ -255,7 +266,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     const normalizedTask = normalizeTask(updatedTask);
     set((state) => {
       console.log('📋 Tareas actuales:', state.tasks.length);
-      const newTasks = state.tasks.map((task) => task._id === normalizedTask._id ? normalizedTask : task);
+      const newTasks = state.tasks.map((task) => task.id === normalizedTask.id ? normalizedTask : task);
       console.log('📋 Tareas después de actualizar:', newTasks.length);
       return { tasks: newTasks };
     });

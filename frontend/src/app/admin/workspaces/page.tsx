@@ -1,26 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
-import { Folder, Users, Trello, Calendar, UserPlus } from 'lucide-react';
+import { Folder, Users, Trello, Calendar, UserPlus, ArrowLeft } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import toast, { Toaster } from 'react-hot-toast';
 import api from '@/lib/api';
 import AssignMembersModal from '@/components/admin/AssignMembersModal';
+import Button from '@/components/ui/Button';
 
 interface Workspace {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   owner: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
   };
   members: Array<{
     user: {
-      _id: string;
+      id: string;
       name: string;
       email: string;
     };
@@ -101,11 +103,26 @@ export default function AdminWorkspacesPage() {
     <div className="p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Workspaces</h1>
-        <p className="text-gray-600">Vista general de todos los workspaces del sistema</p>
-      </div>
+      {/* Header Centrado */}
+      <div className="mb-8 flex items-center justify-between">
+
+      <Button
+          type="button"
+          variant="primary"
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Regresar
+        </Button>
+
+
+        <div className="text-center flex-1">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Workspaces</h1>
+          <p className="text-gray-600">Vista general de todos los workspaces del sistema</p>
+        </div>
+      <div className="w-24"></div>
+    </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -150,9 +167,9 @@ export default function AdminWorkspacesPage() {
       <div className="space-y-4">
         {workspaces.map((workspace) => (
           <Card
-            key={workspace._id}
+            key={workspace.id}
             className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => router.push(`/workspaces/${workspace._id}`)}
+            onClick={() => router.push(`/workspaces/${workspace.id}`)}
           >
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
@@ -281,7 +298,7 @@ export default function AdminWorkspacesPage() {
             setSelectedWorkspace(null);
           }}
           resourceType="workspace"
-          resourceId={selectedWorkspace._id}
+          resourceId={selectedWorkspace.id}
           resourceName={selectedWorkspace.name}
           currentMembers={selectedWorkspace.members}
           onMembersUpdated={fetchWorkspaces}

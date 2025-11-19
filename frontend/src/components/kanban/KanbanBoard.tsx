@@ -9,7 +9,6 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
 import { useColumnStore } from '@/store/columnStore';
 import { useTaskStore } from '@/store/taskStore';
 import { Task } from '@/services/taskService';
@@ -62,7 +61,7 @@ export default function KanbanBoard({
     };
     
     loadData();
-  }, [boardId]);
+  }, [boardId, columns.length, fetchColumns, fetchTasks, tasks.length]);
 
   // Obtener tareas por columna
   const getTasksByColumn = (columnId: string) => {
@@ -73,7 +72,7 @@ export default function KanbanBoard({
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
-    const task = tasks.find((t) => t._id === active.id);
+    const task = tasks.find((t) => t.id === active.id);
     if (task) {
       setActiveTask(task);
     }
@@ -88,8 +87,8 @@ export default function KanbanBoard({
 
     if (activeId === overId) return;
 
-    const activeTask = tasks.find((t) => t._id === activeId);
-    const overTask = tasks.find((t) => t._id === overId);
+    const activeTask = tasks.find((t) => t.id === activeId);
+    const overTask = tasks.find((t) => t.id === overId);
 
     if (!activeTask) return;
 
@@ -101,11 +100,11 @@ export default function KanbanBoard({
       if (activeColumn !== overColumn) {
         // Mover a otra columna
         const overColumnTasks = getTasksByColumn(overColumn);
-        const overIndex = overColumnTasks.findIndex((t) => t._id === overId);
+        const overIndex = overColumnTasks.findIndex((t) => t.id === overId);
 
         // Actualizar localmente (optimistic update)
         const updatedTasks = tasks.map((task) => {
-          if (task._id === activeId) {
+          if (task.id === activeId) {
             return { ...task, column: overColumn, position: overIndex };
           }
           return task;
@@ -115,10 +114,10 @@ export default function KanbanBoard({
       }
     } else {
       // Si se está arrastrando sobre una columna vacía
-      const overColumn = columns.find((c) => c._id === overId);
+      const overColumn = columns.find((c) => c.id === overId);
       if (overColumn && activeTask.column !== overId) {
         const updatedTasks = tasks.map((task) => {
-          if (task._id === activeId) {
+          if (task.id === activeId) {
             return { ...task, column: overId, position: 0 };
           }
           return task;
@@ -138,18 +137,18 @@ export default function KanbanBoard({
     const activeId = active.id as string;
     const overId = over.id as string;
 
-    const activeTask = tasks.find((t) => t._id === activeId);
+    const activeTask = tasks.find((t) => t.id === activeId);
     if (!activeTask) return;
 
     // Determinar la columna de destino
     let targetColumnId = overId;
-    const overTask = tasks.find((t) => t._id === overId);
+    const overTask = tasks.find((t) => t.id === overId);
     
     if (overTask) {
       targetColumnId = overTask.column;
     } else {
       // Verificar si overId es una columna
-      const overColumn = columns.find((c) => c._id === overId);
+      const overColumn = columns.find((c) => c.id === overId);
       if (overColumn) {
         targetColumnId = overId;
       }
@@ -160,9 +159,9 @@ export default function KanbanBoard({
     if (sourceColumnId === targetColumnId) {
       // Reordenar dentro de la misma columna
       const columnTasks = getTasksByColumn(targetColumnId);
-      const oldIndex = columnTasks.findIndex((t) => t._id === activeId);
+      const oldIndex = columnTasks.findIndex((t) => t.id === activeId);
       const newIndex = overTask
-        ? columnTasks.findIndex((t) => t._id === overId)
+        ? columnTasks.findIndex((t) => t.id === overId)
         : columnTasks.length;
 
       if (oldIndex !== newIndex) {
@@ -178,7 +177,7 @@ export default function KanbanBoard({
       // Mover a otra columna
       const targetColumnTasks = getTasksByColumn(targetColumnId);
       const newPosition = overTask
-        ? targetColumnTasks.findIndex((t) => t._id === overId)
+        ? targetColumnTasks.findIndex((t) => t.id === overId)
         : targetColumnTasks.length;
 
       // Llamar al backend para mover la tarea
@@ -204,12 +203,12 @@ export default function KanbanBoard({
           <div className="flex gap-6 p-6 min-h-full">
             {columns.map((column) => (
               <KanbanColumn
-                key={column._id}
+                key={column.id}
                 column={column}
-                tasks={getTasksByColumn(column._id)}
-                onAddTask={() => onAddTask(column._id)}
+                tasks={getTasksByColumn(column.id)}
+                onAddTask={() => onAddTask(column.id)}
                 onEditColumn={() => onEditColumn(column)}
-                onDeleteColumn={() => onDeleteColumn(column._id)}
+                onDeleteColumn={() => onDeleteColumn(column.id)}
                 onTaskClick={onTaskClick}
               />
             ))}

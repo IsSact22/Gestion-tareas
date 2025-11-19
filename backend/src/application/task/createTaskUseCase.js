@@ -20,9 +20,10 @@ export default class CreateTaskUseCase {
     }
 
     // Verificar permisos
-    const board = await this.boardRepository.findById(column.board._id);
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
-    if (!member || member.role === 'viewer') {
+    const boardId = column.boardId;
+    const board = await this.boardRepository.findById(boardId);
+    const isMember = board.members?.some(m => m.userId === userId);
+    if (!isMember) {
       throw new AppError('You do not have permission to create tasks', 403);
     }
 
@@ -33,7 +34,7 @@ export default class CreateTaskUseCase {
       title,
       description: description || '',
       column: columnId,
-      board: column.board._id,
+      board: boardId,
       position: maxPosition + 1,
       assignedTo: assignedTo || null,
       priority: priority || 'medium',
@@ -45,12 +46,13 @@ export default class CreateTaskUseCase {
     });
 
     // Registrar actividad
+    const taskId = task.id;
     await this.activityRepository.create({
       user: userId,
       action: 'created',
       entity: 'task',
-      entityId: task._id,
-      board: column.board._id,
+      entityId: taskId,
+      board: boardId,
       details: { title: task.title }
     });
 

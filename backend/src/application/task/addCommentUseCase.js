@@ -18,8 +18,9 @@ export default class AddCommentUseCase {
     }
 
     // Verificar acceso
-    const board = await this.boardRepository.findById(task.board._id);
-    const isMember = board.members.some(m => m.user._id.toString() === userId.toString());
+    const boardId = task.boardId || task.board?.id;
+    const board = await this.boardRepository.findById(boardId);
+    const isMember = board.members?.some(m => m.userId === userId);
     if (!isMember) {
       throw new AppError('You do not have access to this task', 403);
     }
@@ -32,7 +33,7 @@ export default class AddCommentUseCase {
       action: 'commented',
       entity: 'task',
       entityId: taskId,
-      board: task.board._id,
+      board: boardId,
       details: { title: task.title, comment: text.substring(0, 50) }
     });
 

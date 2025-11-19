@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Search, Plus } from 'lucide-react';
@@ -87,7 +88,7 @@ export default function Navbar() {
             <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-40 max-h-80 overflow-y-auto">
               {searchResults.map((user) => (
                 <div
-                  key={user._id}
+                  key={user.id}
                   className="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
                   onClick={handleClickOutside}
                 >

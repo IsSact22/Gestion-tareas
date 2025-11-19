@@ -26,10 +26,10 @@ export default function KanbanColumn({
   const [showMenu, setShowMenu] = useState(false);
   
   const { setNodeRef, isOver } = useDroppable({
-    id: column._id,
+    id: column.id,
   });
 
-  const taskIds = tasks.map((task) => task._id);
+  const taskIds = tasks.map((task) => task.id);
 
   return (
     <div className="flex-shrink-0 w-80">
@@ -95,7 +95,7 @@ export default function KanbanColumn({
           <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
             {tasks.map((task) => (
               <TaskCard
-                key={task._id}
+                key={task.id}
                 task={task}
                 onClick={() => onTaskClick(task)}
               />

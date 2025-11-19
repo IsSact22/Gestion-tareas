@@ -14,14 +14,16 @@ export default class DeleteWorkspaceUseCase {
     }
 
     // Verificar que el usuario sea el owner
-    if (workspace.owner._id.toString() !== userId.toString()) {
+    const ownerId = workspace.ownerId || workspace.owner?.id || workspace.owner;
+    
+    if (ownerId !== userId) {
       throw new AppError('Only the owner can delete this workspace', 403);
     }
 
     // Eliminar todos los boards del workspace
     const boards = await this.boardRepository.findByWorkspaceId(workspaceId);
     for (const board of boards) {
-      await this.boardRepository.delete(board._id);
+      await this.boardRepository.delete(board.id);
     }
 
     // Eliminar workspace

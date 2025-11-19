@@ -7,16 +7,17 @@ export default class UpdateTaskUseCase {
     this.activityRepository = activityRepository;
   }
 
-  async execute({ taskId, userId, title, description, assignedTo, priority, dueDate, tags }) {
+  async execute({ taskId, userId, title, description, assignedTo, priority, status, dueDate, tags }) {
     const task = await this.taskRepository.findById(taskId);
     if (!task) {
       throw new AppError('Task not found', 404);
     }
 
     // Verificar permisos
-    const board = await this.boardRepository.findById(task.board._id);
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
-    if (!member || member.role === 'viewer') {
+    const boardId = task.boardId;
+    const board = await this.boardRepository.findById(boardId);
+    const isMember = board.members?.some(m => m.userId === userId);
+    if (!isMember) {
       throw new AppError('You do not have permission to update tasks', 403);
     }
 
@@ -31,16 +32,18 @@ export default class UpdateTaskUseCase {
       updateData.description = description;
     }
     if (assignedTo !== undefined) {
-      // Si es un array vacío, asignar array vacío directamente
-      // Si tiene elementos, filtrar valores inválidos
-      updateData.assignedTo = Array.isArray(assignedTo) 
-        ? assignedTo.filter(id => id && id.toString().length === 24)
-        : assignedTo;
+      updateData.assignedTo = assignedTo;
       changes.assignedTo = { from: task.assignedTo, to: updateData.assignedTo };
     }
     if (priority !== undefined) {
       updateData.priority = priority;
       changes.priority = { from: task.priority, to: priority };
+    }
+    if (status !== undefined) {
+      // Normalizar status: convertir 'in_progress' a 'in-progress'
+      const normalizedStatus = (status || 'todo').replace('_', '-');
+      updateData.status = normalizedStatus;
+      changes.status = { from: task.status, to: normalizedStatus };
     }
     if (dueDate !== undefined) {
       updateData.dueDate = dueDate;
@@ -59,7 +62,7 @@ export default class UpdateTaskUseCase {
         action: 'updated',
         entity: 'task',
         entityId: taskId,
-        board: task.board._id,
+        board: boardId,
         details: changes
       });
     }

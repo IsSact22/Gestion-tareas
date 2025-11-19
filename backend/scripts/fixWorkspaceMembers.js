@@ -78,7 +78,7 @@ async function fixWorkspaceMembers() {
         });
 
         await workspace.save();
-        console.log(`✅ Fixed workspace: ${workspace.name} (ID: ${workspace._id})`);
+        console.log(`✅ Fixed workspace: ${workspace.name} (ID: ${workspace.id})`);
         console.log(`   Owner ${workspace.owner} agregado como admin\n`);
         fixed++;
       } else {

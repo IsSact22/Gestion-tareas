@@ -7,10 +7,10 @@ import MoveTaskUseCase from '../../application/task/moveTaskUseCase.js';
 import AddCommentUseCase from '../../application/task/addCommentUseCase.js';
 import DeleteCommentUseCase from '../../application/task/deleteCommentUseCase.js';
 import SearchTasksUseCase from '../../application/task/searchTasksUseCase.js';
-import TaskRepository from '../../infrastructure/database/mongo/taskRepository.js';
-import ColumnRepository from '../../infrastructure/database/mongo/columnRepository.js';
-import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
-import ActivityRepository from '../../infrastructure/database/mongo/activityRepository.js';
+import TaskRepository from '../../infrastructure/database/prisma/TaskRepository.js';
+import ColumnRepository from '../../infrastructure/database/prisma/ColumnRepository.js';
+import BoardRepository from '../../infrastructure/database/prisma/BoardRepository.js';
+import ActivityRepository from '../../infrastructure/database/prisma/ActivityRepository.js';
 
 const taskRepository = new TaskRepository();
 const columnRepository = new ColumnRepository();
@@ -34,7 +34,7 @@ export async function createTask(req, res, next) {
       title,
       description,
       columnId,
-      userId: req.user._id,
+      userId: req.user.id,
       assignedTo,
       priority,
       dueDate,
@@ -53,7 +53,7 @@ export async function getTasks(req, res, next) {
     const tasks = await getTasksUseCase.execute({
       boardId,
       columnId,
-      userId: req.user._id,
+      userId: req.user.id,
       userRole: req.user.role
     });
 
@@ -67,7 +67,7 @@ export async function getTaskById(req, res, next) {
   try {
     const task = await getTaskByIdUseCase.execute({
       taskId: req.params.id,
-      userId: req.user._id
+      userId: req.user.id
     });
 
     res.status(200).json({ success: true, data: task });
@@ -78,14 +78,15 @@ export async function getTaskById(req, res, next) {
 
 export async function updateTask(req, res, next) {
   try {
-    const { title, description, assignedTo, priority, dueDate, tags } = req.body;
+    const { title, description, assignedTo, priority, status, dueDate, tags } = req.body;
     const task = await updateTaskUseCase.execute({
       taskId: req.params.id,
-      userId: req.user._id,
+      userId: req.user.id,
       title,
       description,
       assignedTo,
       priority,
+      status,
       dueDate,
       tags
     });
@@ -100,7 +101,7 @@ export async function deleteTask(req, res, next) {
   try {
     const result = await deleteTaskUseCase.execute({
       taskId: req.params.id,
-      userId: req.user._id
+      userId: req.user.id
     });
 
     res.status(200).json({ success: true, data: result });
@@ -114,7 +115,7 @@ export async function moveTask(req, res, next) {
     const { newColumnId, newPosition } = req.body;
     const task = await moveTaskUseCase.execute({
       taskId: req.params.id,
-      userId: req.user._id,
+      userId: req.user.id,
       newColumnId,
       newPosition
     });
@@ -130,7 +131,7 @@ export async function addComment(req, res, next) {
     const { text } = req.body;
     const task = await addCommentUseCase.execute({
       taskId: req.params.id,
-      userId: req.user._id,
+      userId: req.user.id,
       text
     });
 
@@ -147,7 +148,7 @@ export async function deleteComment(req, res, next) {
     await deleteCommentUseCase.execute({
       taskId: req.params.id,
       commentId: req.params.commentId,
-      userId: req.user._id
+      userId: req.user.id
     });
 
     res.status(200).json({ success: true, message: 'Comentario eliminado' });
@@ -161,7 +162,7 @@ export async function searchTasks(req, res, next) {
     const { boardId, q } = req.query;
     const tasks = await searchTasksUseCase.execute({
       boardId,
-      userId: req.user._id,
+      userId: req.user.id,
       query: q
     });
 
@@ -173,7 +174,7 @@ export async function searchTasks(req, res, next) {
 
 export async function getMyTasks(req, res, next) {
   try {
-    const tasks = await taskRepository.findByAssignedUser(req.user._id);
+    const tasks = await taskRepository.findByAssignedUser(req.user.id);
     res.status(200).json({ success: true, data: tasks });
   } catch (error) {
     next(error);

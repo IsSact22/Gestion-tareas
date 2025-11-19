@@ -19,7 +19,7 @@ import notificationRoutes from "./infrastructure/webserver/express/routes/notifi
 
 const app = express();
 
-// 🧱 Middlewares base
+// Middlewares base
 app.use(helmet());
 app.use(cors({
   origin: config.frontendUrl,
@@ -29,7 +29,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 📚 Swagger Documentation
+// Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'AuraTask API Documentation',

@@ -18,8 +18,10 @@ export default class CreateBoardUseCase {
     }
 
     // Verificar que el usuario sea miembro del workspace
-    const isOwner = workspace.owner._id.toString() === userId.toString();
-    const isMember = workspace.members.some(m => m.user._id.toString() === userId.toString());
+    const ownerId = workspace.ownerId;
+    
+    const isOwner = ownerId === userId;
+    const isMember = workspace.members?.some(m => m.userId === userId);
 
     if (!isOwner && !isMember) {
       throw new AppError('You must be a member of the workspace', 403);
@@ -27,7 +29,7 @@ export default class CreateBoardUseCase {
 
     const board = await this.boardRepository.create({
       name,
-      description,
+      description,  
       workspace: workspaceId,
       color,
       members: [{ user: userId, role: 'admin' }],

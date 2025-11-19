@@ -30,7 +30,7 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: task._id });
+  } = useSortable({ id: task.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -101,7 +101,8 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
           {task.comments && task.comments.length > 0 && (
             <div className="flex items-center gap-1">
               <MessageSquare size={14} />
-              <span>{task.comments.length}</span>
+                <span>{task.comments.length}</span>
+                
             </div>
           )}
 
@@ -128,7 +129,7 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
         <div className="flex -space-x-2 mt-3">
           {task.assignedTo.slice(0, 3).map((user) => (
             <div
-              key={user._id}
+              key={user.id}
               className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-medium border-2 border-white"
               title={user.name}
             >

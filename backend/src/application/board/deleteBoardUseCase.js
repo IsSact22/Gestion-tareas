@@ -16,7 +16,7 @@ export default class DeleteBoardUseCase {
     }
 
     // Verificar que el usuario sea admin
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
+    const member = board.members?.find(m => m.userId === userId);
     if (!member || member.role !== 'admin') {
       throw new AppError('Only admins can delete this board', 403);
     }
@@ -24,13 +24,13 @@ export default class DeleteBoardUseCase {
     // Eliminar todas las columnas del board
     const columns = await this.columnRepository.findByBoardId(boardId);
     for (const column of columns) {
-      await this.columnRepository.delete(column._id);
+      await this.columnRepository.delete(column.id);
     }
 
     // Eliminar todas las tareas del board
     const tasks = await this.taskRepository.findByBoardId(boardId);
     for (const task of tasks) {
-      await this.taskRepository.delete(task._id);
+      await this.taskRepository.delete(task.id);
     }
 
     // Eliminar actividades

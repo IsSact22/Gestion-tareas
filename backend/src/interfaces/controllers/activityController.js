@@ -1,6 +1,6 @@
 import GetActivitiesUseCase from '../../application/activity/getActivitiesUseCase.js';
-import ActivityRepository from '../../infrastructure/database/mongo/activityRepository.js';
-import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
+import ActivityRepository from '../../infrastructure/database/prisma/ActivityRepository.js';
+import BoardRepository from '../../infrastructure/database/prisma/BoardRepository.js';
 
 const activityRepository = new ActivityRepository();
 const boardRepository = new BoardRepository();
@@ -12,7 +12,7 @@ export async function getActivities(req, res, next) {
     const { boardId, limit } = req.query;
     const activities = await getActivitiesUseCase.execute({
       boardId,
-      userId: req.user._id,
+      userId: req.user.id,
       limit: limit ? parseInt(limit) : 50
     });
 
@@ -26,7 +26,7 @@ export async function getMyActivities(req, res, next) {
   try {
     const { limit } = req.query;
     const activities = await activityRepository.findByUserId(
-      req.user._id,
+      req.user.id,
       limit ? parseInt(limit) : 50
     );
 

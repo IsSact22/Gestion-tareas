@@ -31,7 +31,7 @@ export default function ColumnModal({ isOpen, onClose, column, boardId }: Column
 
     if (column) {
       // Editar columna existente
-      await updateColumn(column._id, { name });
+      await updateColumn(column.id, { name });
     } else {
       // Crear nueva columna
       await createColumn({ name, boardId });

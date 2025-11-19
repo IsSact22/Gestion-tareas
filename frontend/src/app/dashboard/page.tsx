@@ -53,7 +53,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (workspaces.length > 0) {
       workspaces.forEach(workspace => {
-        socketService.joinWorkspace(workspace._id);
+        socketService.joinWorkspace(workspace.id);
         console.log(`🏢 Uniéndose al workspace: ${workspace.name}`);
       });
     }
@@ -179,13 +179,13 @@ export default function DashboardPage() {
             ) : (
               workspaces.slice(0, 3).map((workspace) => (
                 <div
-                  key={workspace._id}
-                  onClick={() => router.push(`/workspaces/${workspace._id}`)}
+                  key={workspace.id}
+                  onClick={() => router.push(`/workspaces/${workspace.id}`)}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Folder className="w-5 h-5 text-blue-600" />
+                      <Folder className="w-5 h-5 text-blue-600" />  
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">{workspace.name}</p>
@@ -232,8 +232,8 @@ export default function DashboardPage() {
             ) : (
               boards.slice(0, 3).map((board) => (
                 <div
-                  key={board._id}
-                  onClick={() => router.push(`/boards/${board._id}`)}
+                  key={board.id}
+                  onClick={() => router.push(`/boards/${board.id}`)}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center space-x-3">
@@ -258,7 +258,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* My Tasks */}
+     {/* My Tasks */}
       <Card variant="bordered">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-gray-900">Mis Tareas</h2>
@@ -269,78 +269,89 @@ export default function DashboardPage() {
             </Button>
           </Link>
         </div>
+
         <div className="space-y-3">
-            {boardsLoading ? (
-              <div className="text-center py-8">
-                <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-              </div>
-            ) : boards.length === 0 ? (
-              <div className="text-center py-8">
-                <Trello className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                <p className="text-gray-600 mb-4">No tienes boards aún</p>
-                <Link href="/boards">
-                  <Button variant="primary" size="sm">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Crear Board
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              myTasks.slice(0, 3).map((task) => {
-                // Obtener el boardId correctamente (puede ser string o objeto)
-                const boardId = typeof task.board === 'string' ? task.board : task.board._id;
-                const boardName = typeof task.board === 'string' ? 'Board' : task.board.name;
-                const boardColor = typeof task.board === 'string' ? '#8B5CF6' : (task.board.color || '#8B5CF6');
-                
-                return (
-                  <div
-                    key={task._id}
-                    onClick={() => router.push(`/boards/${boardId}`)}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div 
-                        className="w-10 h-10 rounded-lg flex items-center justify-center"
-                        style={{ backgroundColor: boardColor }}
-                      >
-                        <Trello className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{task.title}</p>
-                        <p className="text-sm text-gray-500">{task.description || 'Sin descripción'}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-xs px-2 py-1 rounded ${
-                            task.priority === 'urgent' ? 'bg-red-100 text-red-700' :
-                            task.priority === 'high' ? 'bg-orange-100 text-orange-700' :
-                            task.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-gray-100 text-gray-700'
-                          }`}>
-                            {task.priority}
-                          </span>
-                          <span className="text-xs text-gray-500 truncate max-w-[150px]">
-                            {boardName}
-                          </span>
-                        </div>
+          {boardsLoading ? (
+            <div className="text-center py-8">
+              <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            </div>
+          ) : boards.length === 0 ? (
+            // CASO 1: NO HAY BOARDS
+            <div className="text-center py-8">
+              <Trello className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-600 mb-4">No tienes boards aún</p>
+              <Link href="/boards">
+                <Button variant="primary" size="sm">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Crear Board
+                </Button>
+              </Link>
+            </div>
+          ) : myTasks.length === 0 ? (
+            // CASO 2: HAY BOARDS PERO NO HAY TAREAS (NUEVA CONDICIÓN AQUÍ)
+            <div className="text-center py-8">
+              <CheckSquare className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-600 mb-4">No tienes tareas asignadas</p>
+              <Button variant="primary" size="sm">
+                <Plus className="w-4 h-4 mr-2" />
+                Crear Tarea
+              </Button>
+            </div>
+          ) : (
+            // CASO 3: HAY TAREAS (RENDERIZADO DE LISTA)
+            myTasks.slice(0, 3).map((task) => {
+              const board = task.board;
+              const boardId = typeof board === "string" ? board : board?.id;
+
+              if (!boardId) return null;
+
+              const boardName = typeof board === "string" ? "Board" : board?.name || "Sin tablero";
+              const boardColor = typeof board === "string" ? "#8B5CF6" : board?.color || "#8B5CF6";
+
+              return (
+                <div
+                  key={task.id}
+                  onClick={() => router.push(`/boards/${boardId}`)}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div
+                      className="w-10 h-10 rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: boardColor }}
+                    >
+                      <Trello className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{task.title}</p>
+                      <p className="text-sm text-gray-500">
+                        {task.description || "Sin descripción"}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span
+                          className={`text-xs px-2 py-1 rounded ${
+                            task.priority === "urgent"
+                              ? "bg-red-100 text-red-700"
+                              : task.priority === "high"
+                              ? "bg-orange-100 text-orange-700"
+                              : task.priority === "medium"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {task.priority}
+                        </span>
+                        <span className="text-xs text-gray-500 truncate max-w-[150px]">
+                          {boardName}
+                        </span>
                       </div>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400" />
                   </div>
-                );
-              })
-            )}
-          </div>
-        
-        {/* <div className="space-y-3">
-        
-          <div className="text-center py-8">
-            <CheckSquare className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-600 mb-4">No tienes tareas asignadas</p>
-            <Button variant="primary" size="sm">
-              <Plus className="w-4 h-4 mr-2" />
-              Crear Tarea
-            </Button>
-          </div>
-        </div> */}
+                  <ArrowRight className="w-5 h-5 text-gray-400" />
+                </div>
+              );
+            })
+          )}
+        </div>
       </Card>
 
       {/* Team Activity */}

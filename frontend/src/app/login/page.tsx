@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -30,7 +31,9 @@ export default function LoginPage() {
 
     try {
       await login(formData.email, formData.password);
-      toast.success('¡Bienvenido de nuevo!');
+      toast.success('¡Bienvenido de nuevo!', {
+        duration: 3000,
+      });
       router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Error al iniciar sesión');

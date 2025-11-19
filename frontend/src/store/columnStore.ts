@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
 import columnService, { Column, CreateColumnDto, UpdateColumnDto } from '@/services/columnService';
 import socketService from '@/services/socketService';
@@ -67,12 +68,12 @@ export const useColumnStore = create<ColumnState>((set, get) => ({
     try {
       const updatedColumn = await columnService.updateColumn(id, data);
       set((state) => ({
-        columns: state.columns.map((col) => (col._id === id ? updatedColumn : col)),
+        columns: state.columns.map((col) => (col.id === id ? updatedColumn : col)),
         isLoading: false,
       }));
 
       // Emitir evento Socket.IO
-      const column = get().columns.find(c => c._id === id);
+      const column = get().columns.find(c => c.id === id);
       if (column) {
         socketService.emitColumnUpdated(column.board, updatedColumn);
       }
@@ -90,11 +91,11 @@ export const useColumnStore = create<ColumnState>((set, get) => ({
   deleteColumn: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const column = get().columns.find(c => c._id === id);
+      const column = get().columns.find(c => c.id === id);
       await columnService.deleteColumn(id);
       
       set((state) => ({
-        columns: state.columns.filter((col) => col._id !== id),
+        columns: state.columns.filter((col) => col.id !== id),
         isLoading: false,
       }));
 
@@ -134,7 +135,7 @@ export const useColumnStore = create<ColumnState>((set, get) => ({
 
   removeColumn: (id: string) => {
     set((state) => ({
-      columns: state.columns.filter((col) => col._id !== id)
+      columns: state.columns.filter((col) => col.id !== id)
     }));
   },
 

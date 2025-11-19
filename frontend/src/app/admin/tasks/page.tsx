@@ -1,35 +1,37 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
-import { CheckSquare, AlertCircle, Clock, CheckCircle2, Calendar } from 'lucide-react';
+import { CheckSquare, AlertCircle, Clock, CheckCircle2, Calendar, ArrowLeft } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import toast, { Toaster } from 'react-hot-toast';
 import api from '@/lib/api';
 import QuickTaskActions from '@/components/admin/QuickTaskActions';
+import Button from '@/components/ui/Button';
 
 interface Task {
-  _id: string;
+  id: string;  
   title: string;
   description?: string;
   status: 'todo' | 'in-progress' | 'done';
   priority: 'low' | 'medium' | 'high';
   board: {
-    _id: string;
+    id: string;
     name: string;
   };
   column: {
-    _id: string;
+    id: string;
     name: string;
   };
-  assignedTo?: {
-    _id: string;
+  assignedTo?: Array<{
+    id: string;
     name: string;
     email: string;
-  };
+  }>;
   createdBy: {
-    _id: string;
+    id: string;
     name: string;
   };
   dueDate?: string;
@@ -47,7 +49,7 @@ export default function AdminTasksPage() {
   const [stats, setStats] = useState({
     total: 0,
     todo: 0,
-    inProgress: 0,
+    in_progress: 0,
     done: 0,
     high: 0,
     medium: 0,
@@ -78,7 +80,7 @@ export default function AdminTasksPage() {
       setStats({
         total: tasksData.length,
         todo: tasksData.filter((t: Task) => t.status === 'todo').length,
-        inProgress: tasksData.filter((t: Task) => t.status === 'in-progress').length,
+        in_progress: tasksData.filter((t: Task) => t.status === 'in-progress').length,
         done: tasksData.filter((t: Task) => t.status === 'done').length,
         high: tasksData.filter((t: Task) => t.priority === 'high').length,
         medium: tasksData.filter((t: Task) => t.priority === 'medium').length,
@@ -96,12 +98,14 @@ export default function AdminTasksPage() {
       high: 'bg-red-100 text-red-700',
       medium: 'bg-yellow-100 text-yellow-700',
       low: 'bg-green-100 text-green-700',
+      urgent: 'bg-orange-200 text-orange-900',
     };
     
     const labels = {
       high: 'Alta',
       medium: 'Media',
       low: 'Baja',
+      urgent: 'Urgente',
     };
     
     return (
@@ -111,22 +115,28 @@ export default function AdminTasksPage() {
     );
   };
 
-  const getStatusBadge = (status: string) => {
-    const styles = {
+  const getStatusBadge = (status: string | undefined) => {
+    
+    const styles: Record<string, string> = {
       'todo': 'bg-gray-100 text-gray-700',
       'in-progress': 'bg-blue-100 text-blue-700',
       'done': 'bg-green-100 text-green-700',
     };
     
-    const labels = {
+    const labels: Record<string, string> = {
       'todo': 'Por hacer',
       'in-progress': 'En progreso',
       'done': 'Completada',
     };
     
+    const safeStatus = status || 'todo';
+    
+    const style = styles[safeStatus] || 'bg-gray-100 text-gray-700';
+    const label = labels[safeStatus] || 'Por hacer';
+    
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status as keyof typeof styles]}`}>
-        {labels[status as keyof typeof labels]}
+      <span className={`px-2 py-1 rounded-full text-xs font-medium ${style}`}>
+        {label}
       </span>
     );
   };
@@ -153,11 +163,26 @@ export default function AdminTasksPage() {
     <div className="p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Tareas</h1>
-        <p className="text-gray-600">Vista general de todas las tareas del sistema</p>
-      </div>
+      {/* Header Centrado */}
+      <div className="mb-8 flex items-center justify-between">
+
+      <Button
+          type="button"
+          variant="primary"
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Regresar
+        </Button>
+
+
+        <div className="text-center flex-1">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Tareas</h1>
+          <p className="text-gray-600">Vista general de todas las tareas del sistema</p>
+        </div>
+      <div className="w-24"></div>
+    </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -185,7 +210,7 @@ export default function AdminTasksPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-600 mb-1">En progreso</p>
-              <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
+              <p className="text-2xl font-bold text-blue-600">{stats.in_progress}</p>
             </div>
             <AlertCircle className="w-8 h-8 text-blue-400" />
           </div>
@@ -203,7 +228,18 @@ export default function AdminTasksPage() {
       </div>
 
       {/* Priority Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-4 gap-4 mb-8">
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-gray-600 mb-1">Prioridad Urgente</p>
+              <p className="text-2xl font-bold text-orange-600">{stats.high}</p>
+            </div>
+            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+              <AlertCircle className="w-6 h-6 text-orange-600" />
+            </div>
+          </div>
+        </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
@@ -249,7 +285,7 @@ export default function AdminTasksPage() {
               Filtrar por Estado
             </label>
             <select
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
             >
@@ -265,7 +301,7 @@ export default function AdminTasksPage() {
               Filtrar por Prioridad
             </label>
             <select
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={filterPriority}
               onChange={(e) => setFilterPriority(e.target.value)}
             >
@@ -310,15 +346,20 @@ export default function AdminTasksPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredTasks.map((task) => (
                 <tr
-                  key={task._id}
+                  key={task.id}
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={() => {
-                    const boardId = typeof task.board === 'string' ? task.board : task.board._id;
-                    router.push(`/boards/${boardId}`);
+                    const boardId = typeof task.board === 'string' ? task.board : task.board?.id;
+                    if (boardId) {
+                      router.push(`/boards/${boardId}`);
+                    } else {
+                      toast.error('No se puede acceder al board de esta tarea');
+                    }
                   }}
                 >
                   <td className="px-6 py-4">
                     <div>
+                      
                       <p className="font-medium text-gray-900">{task.title}</p>
                       {task.description && (
                         <p className="text-sm text-gray-500 line-clamp-1">
@@ -327,12 +368,13 @@ export default function AdminTasksPage() {
                       )}
                     </div>
                   </td>
+                  {/* campo de nombre del board */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      {typeof task.board === 'string' ? task.board : task.board.name}
+                      {typeof task.board === 'string' ? task.board : (task.board?.name || 'Sin tablero')}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {typeof task.column === 'string' ? task.column : task.column.name}
+                      {typeof task.column === 'string' ? task.column : task.column?.name || 'Sin columna'}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -341,15 +383,30 @@ export default function AdminTasksPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     {getPriorityBadge(task.priority)}
                   </td>
+                  {/* campo de asignados member */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {task.assignedTo && task.assignedTo.name ? (
+                    {task.assignedTo && Array.isArray(task.assignedTo) && task.assignedTo.length > 0 ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-semibold">
-                          {task.assignedTo.name.charAt(0).toUpperCase()}
+                        <div className="flex -space-x-2">
+                          {task.assignedTo.slice(0, 3).map((user) => (
+                            <div
+                              key={user.id}
+                              className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-semibold border-2 border-white"
+                              title={user.name}
+                            >
+                              {user.name.charAt(0).toUpperCase()}
+                            </div>
+                          ))}
+                         
+                          {task.assignedTo.length > 3 && (
+                            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-700 text-xs font-semibold border-2 border-white">
+                              +{task.assignedTo.length - 3}
+                            </div>
+                          )}
                         </div>
                         <div>
                           <p className="text-sm font-medium text-gray-900">
-                            {task.assignedTo.name}
+                            {task.assignedTo.length} asignado{task.assignedTo.length > 1 ? 's' : ''}
                           </p>
                         </div>
                       </div>
@@ -365,7 +422,7 @@ export default function AdminTasksPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <QuickTaskActions
-                      taskId={task._id}
+                      taskId={task.id}
                       currentStatus={task.status}
                       currentPriority={task.priority}
                       onUpdate={fetchAllTasks}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -62,10 +63,14 @@ export default function RegisterPage() {
 
     try {
       await register(formData.name, formData.email, formData.password);
-      toast.success('¡Cuenta creada exitosamente!');
+      toast.success('¡Cuenta creada exitosamente!', {
+        duration: 3000,
+      });
       router.push('/dashboard');
     } catch (error: any) {
-      toast.error(error.message || 'Error al registrarse');
+      toast.error(error.message || 'Error al registrarse', {
+        duration: 3000,
+      });
     }
   };
 

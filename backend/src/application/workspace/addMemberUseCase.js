@@ -14,8 +14,10 @@ export default class AddMemberUseCase {
     }
 
     // Verificar que el usuario sea el owner, admin del workspace, o admin del sistema
-    const isOwner = workspace.owner._id.toString() === userId.toString();
-    const userMember = workspace.members.find(m => m.user._id.toString() === userId.toString());
+    const ownerId = workspace.ownerId;
+    
+    const isOwner = ownerId === userId;
+    const userMember = workspace.members?.find(m => m.userId === userId);
     const isWorkspaceAdmin = userMember && userMember.role === 'admin';
     const isSystemAdmin = userRole === 'admin';
 
@@ -30,16 +32,15 @@ export default class AddMemberUseCase {
     }
 
     // Verificar que no sea ya miembro
-    const alreadyMember = workspace.members.some(
-      m => m.user._id.toString() === newMember._id.toString()
-    );
-    if (alreadyMember || workspace.owner._id.toString() === newMember._id.toString()) {
+    const newMemberId = newMember.id;
+    const alreadyMember = workspace.members?.some(m => m.userId === newMemberId);
+    if (alreadyMember || ownerId === newMemberId) {
       throw new AppError('User is already a member', 400);
     }
 
     const updatedWorkspace = await this.workspaceRepository.addMember(
       workspaceId,
-      newMember._id,
+      newMemberId,
       role
     );
 

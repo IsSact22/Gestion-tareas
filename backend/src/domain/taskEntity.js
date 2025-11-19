@@ -1,6 +1,6 @@
 export default class Task {
   constructor({ 
-    _id, 
+    id, 
     title, 
     description = '', 
     column, 
@@ -16,7 +16,7 @@ export default class Task {
     createdAt,
     updatedAt 
   }) {
-    this._id = _id;
+    this.id = id;
     this.title = title;
     this.description = description;
     this.column = column;

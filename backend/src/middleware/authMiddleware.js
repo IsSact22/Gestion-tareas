@@ -1,5 +1,5 @@
 import { verifyToken } from '../core/jwtUtils.js';
-import UserRepository from '../infrastructure/database/mongo/userRepository.js';
+import UserRepository from '../infrastructure/database/prisma/userRepository.js';
 import AppError from '../core/AppError.js';
 
 const userRepository = new UserRepository();
@@ -27,7 +27,7 @@ export const protect = async (req, res, next) => {
       throw new AppError('User not found', 404);
     }
 
-    // Agregar usuario al request
+    // Agregar usuario al request (Prisma usa id directamente)
     req.user = user;
     next();
   } catch (error) {

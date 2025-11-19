@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -8,7 +9,7 @@ import toast from 'react-hot-toast';
 interface QuickTaskActionsProps {
   taskId: string;
   currentStatus: 'todo' | 'in-progress' | 'done';
-  currentPriority: 'low' | 'medium' | 'high';
+  currentPriority: 'low' | 'medium' | 'high'| 'urgent';
   onUpdate: () => void;
 }
 
@@ -35,7 +36,7 @@ export default function QuickTaskActions({
     }
   };
 
-  const handlePriorityChange = async (newPriority: 'low' | 'medium' | 'high') => {
+  const handlePriorityChange = async (newPriority: 'low' | 'medium' | 'high'| 'urgent') => {
     if (newPriority === currentPriority) return;
 
     try {
@@ -117,12 +118,16 @@ export default function QuickTaskActions({
             ? 'bg-red-100 text-red-700'
             : currentPriority === 'medium'
             ? 'bg-yellow-100 text-yellow-700'
+            : currentPriority === 'urgent'
+            ? 'bg-orange-200 text-orange-900'
             : 'bg-green-100 text-green-700'
+          
         }`}
       >
         <option value="low">Baja</option>
         <option value="medium">Media</option>
         <option value="high">Alta</option>
+        <option value="urgent">Urgente</option>
       </select>
 
       {/* Delete */}

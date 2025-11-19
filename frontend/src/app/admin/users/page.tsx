@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
-import { UserCog, Plus, Edit, Trash2, Shield, User as UserIcon, Eye } from 'lucide-react';
+import { Plus, Edit, Trash2, Shield, User as UserIcon, Eye } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -12,7 +13,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import api from '@/lib/api';
 
 interface User {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   role: 'admin' | 'member' | 'viewer';
@@ -87,12 +88,12 @@ export default function ManageUsersPage() {
         updateData.password = formData.password;
       }
 
-      await api.put(`/users/${selectedUser._id}`, updateData);
+      await api.put(`/users/${selectedUser.id}`, updateData);
       toast.success('Usuario actualizado exitosamente');
       setIsEditModalOpen(false);
       setSelectedUser(null);
       setFormData({ name: '', email: '', password: '', role: 'member' });
-      fetchUsers();
+      fetchUsers()
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Error al actualizar usuario');
     }
@@ -198,7 +199,7 @@ export default function ManageUsersPage() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {users.map((user) => (
-                <tr key={user._id} className="hover:bg-gray-50">
+                <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
@@ -227,9 +228,9 @@ export default function ManageUsersPage() {
                       >
                         <Edit className="w-4 h-4" />
                       </button>
-                      {user._id !== currentUser?.id && (
+                      {user.id !== currentUser?.id && (
                         <button
-                          onClick={() => handleDeleteUser(user._id)}
+                          onClick={() => handleDeleteUser(user.id)}
                           className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50"
                           title="Eliminar"
                         >
@@ -286,7 +287,7 @@ export default function ManageUsersPage() {
             <select
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'member' | 'viewer' })}
               required
             >
               <option value="member">Member</option>

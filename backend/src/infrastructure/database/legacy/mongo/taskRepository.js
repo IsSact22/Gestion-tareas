@@ -80,7 +80,7 @@ export default class TaskRepository {
   async updateMultiplePositions(updates) {
     const bulkOps = updates.map(update => ({
       updateOne: {
-        filter: { _id: update.id },
+        filter: { id: update.id },
         update: { $set: { position: update.position } }
       }
     }));
@@ -100,7 +100,7 @@ export default class TaskRepository {
   async deleteComment(taskId, commentId) {
     return TaskModel.findByIdAndUpdate(
       taskId,
-      { $pull: { comments: { _id: commentId } } },
+      { $pull: { comments: { id: commentId } } },
       { new: true }
     )
       .populate('comments.user', 'name email avatar');

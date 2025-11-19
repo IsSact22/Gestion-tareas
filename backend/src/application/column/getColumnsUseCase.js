@@ -7,6 +7,11 @@ export default class GetColumnsUseCase {
   }
 
   async execute({ boardId, userId, userRole }) {
+    // Validar que boardId esté presente
+    if (!boardId) {
+      throw new AppError('boardId is required', 400);
+    }
+
     // Verificar acceso al board
     const board = await this.boardRepository.findById(boardId);
     if (!board) {
@@ -14,7 +19,7 @@ export default class GetColumnsUseCase {
     }
 
     // Permitir acceso a miembros del board o admins del sistema
-    const isMember = board.members.some(m => m.user._id.toString() === userId.toString());
+    const isMember = board.members?.some(m => m.userId === userId);
     const isSystemAdmin = userRole === 'admin';
     
     if (!isMember && !isSystemAdmin) {

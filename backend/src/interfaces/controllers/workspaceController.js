@@ -3,10 +3,10 @@ import GetWorkspacesUseCase from '../../application/workspace/getWorkspacesUseCa
 import UpdateWorkspaceUseCase from '../../application/workspace/updateWorkspaceUseCase.js';
 import DeleteWorkspaceUseCase from '../../application/workspace/deleteWorkspaceUseCase.js';
 import AddMemberUseCase from '../../application/workspace/addMemberUseCase.js';
-import WorkspaceRepository from '../../infrastructure/database/mongo/workspaceRepository.js';
-import BoardRepository from '../../infrastructure/database/mongo/boardRepository.js';
-import UserRepository from '../../infrastructure/database/mongo/userRepository.js';
 import { emitToWorkspace } from '../../socket/index.js';
+import WorkspaceRepository from '../../infrastructure/database/prisma/workspaceRepository.js';
+import BoardRepository from '../../infrastructure/database/prisma/BoardRepository.js';
+import UserRepository from '../../infrastructure/database/prisma/userRepository.js';
 
 const workspaceRepository = new WorkspaceRepository();
 const boardRepository = new BoardRepository();
@@ -24,13 +24,13 @@ export async function createWorkspace(req, res, next) {
     const workspace = await createWorkspaceUseCase.execute({
       name,
       description,
-      userId: req.user._id
+      userId: req.user.id
     });
 
     // Emitir evento Socket.IO
-    emitToWorkspace(workspace._id.toString(), 'workspace:updated', {
+    emitToWorkspace(workspace.id, 'workspace:created', {
       workspace,
-      userId: req.user._id,
+      userId: req.user.id,
       timestamp: new Date()
     });
 
@@ -42,7 +42,7 @@ export async function createWorkspace(req, res, next) {
 
 export async function getWorkspaces(req, res, next) {
   try {
-    const workspaces = await getWorkspacesUseCase.execute(req.user._id);
+    const workspaces = await getWorkspacesUseCase.execute(req.user.id);
     res.status(200).json({ success: true, data: workspaces });
   } catch (error) {
     next(error);
@@ -63,15 +63,15 @@ export async function updateWorkspace(req, res, next) {
     const { name, description } = req.body;
     const workspace = await updateWorkspaceUseCase.execute({
       workspaceId: req.params.id,
-      userId: req.user._id,
+      userId: req.user.id,
       name,
       description
     });
 
     // Emitir evento Socket.IO
-    emitToWorkspace(workspace._id.toString(), 'workspace:updated', {
+    emitToWorkspace(workspace.id, 'workspace:updated', {
       workspace,
-      userId: req.user._id,
+      userId: req.user.id,
       timestamp: new Date()
     });
 
@@ -85,7 +85,7 @@ export async function deleteWorkspace(req, res, next) {
   try {
     const result = await deleteWorkspaceUseCase.execute({
       workspaceId: req.params.id,
-      userId: req.user._id
+      userId: req.user.id
     });
 
     res.status(200).json({ success: true, data: result });
@@ -99,7 +99,7 @@ export async function addMember(req, res, next) {
     const { email, role } = req.body;
     const workspace = await addMemberUseCase.execute({
       workspaceId: req.params.id,
-      userId: req.user._id,
+      userId: req.user.id,
       memberEmail: email,
       role,
       userRole: req.user.role

@@ -1,4 +1,4 @@
-import UserRepository from "../../infrastructure/database/mongo/userRepository.js";
+import UserRepository from "../../infrastructure/database/prisma/userRepository.js";
 
 const userRepository = new UserRepository();
 
@@ -41,7 +41,7 @@ export async function updateUser(req, res, next) {
       updateData.password = password;
     }
     
-    const user = await userRepository.update(req.user._id, updateData);
+    const user = await userRepository.update(req.user.id, updateData);
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     next(error);

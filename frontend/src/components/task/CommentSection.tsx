@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Send, Trash2, User } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -73,7 +74,7 @@ export default function CommentSection({
         ) : (
           comments.map((comment) => (
             <div
-              key={comment._id}
+              key={comment.id}
               className="flex gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
             >
               {/* Avatar */}
@@ -111,9 +112,9 @@ export default function CommentSection({
                   </div>
 
                   {/* Botón eliminar (solo si es el autor) */}
-                  {user?._id === comment.user?._id && (
+                  {user?.id === comment.user?.id && (
                     <button
-                      onClick={() => handleDelete(comment._id)}
+                      onClick={() => handleDelete(comment.id)}
                       className="p-1 text-gray-400 hover:text-red-600 transition-colors"
                       title="Eliminar comentario"
                     >

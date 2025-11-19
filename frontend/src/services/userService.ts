@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable import/no-anonymous-default-export */
 import api from '../lib/api';
 
 export interface User {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   avatar?: string;

@@ -17,7 +17,9 @@ export default function SettingsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Configuración guardada');
+    toast.success('Configuración guardada', {
+      duration: 3000,
+    });
   };
 
   return (

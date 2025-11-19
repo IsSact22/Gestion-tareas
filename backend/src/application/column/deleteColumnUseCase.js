@@ -14,20 +14,21 @@ export default class DeleteColumnUseCase {
     }
 
     // Verificar permisos
-    const board = await this.boardRepository.findById(column.board._id);
-    const member = board.members.find(m => m.user._id.toString() === userId.toString());
-    if (!member || member.role === 'viewer') {
+    const boardId = column.boardId;
+    const board = await this.boardRepository.findById(boardId);
+    const isMember = board.members?.some(m => m.userId === userId);
+    if (!isMember) {
       throw new AppError('You do not have permission to delete columns', 403);
     }
 
     // Eliminar todas las tareas de la columna
     const tasks = await this.taskRepository.findByColumnId(columnId);
     for (const task of tasks) {
-      await this.taskRepository.delete(task._id);
+      await this.taskRepository.delete(task.id);
     }
 
-    // Remover columna del board
-    await this.boardRepository.removeColumn(column.board._id, columnId);
+    // Con Prisma, la relación se actualiza automáticamente al eliminar la columna
+    // No es necesario hacer removeColumn
 
     // Eliminar columna
     await this.columnRepository.delete(columnId);

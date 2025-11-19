@@ -1,12 +1,27 @@
-import mongoose from "mongoose";
-import config from "./index.js";
+import prisma from "../infrastructure/database/prisma/client.js";
 
+/**
+ * Conectar a PostgreSQL con Prisma
+ */
 export default async function connectDB() {
   try {
-    const conn = await mongoose.connect(config.dbUrl);
-    console.log("🟢 MongoDB Connected:", conn.connection.host);
+    await prisma.$connect();
+    console.log("🟢 PostgreSQL Connected successfully");
+    console.log("✅ Database connection verified");
   } catch (error) {
-    console.error("🔴 MongoDB Connection Error:", error.message);
+    console.error("🔴 PostgreSQL Connection Error:", error.message);
     process.exit(1);
+  }
+}
+
+/**
+ * Desconectar de PostgreSQL
+ */
+export async function disconnectDB() {
+  try {
+    await prisma.$disconnect();
+    console.log("🔌 PostgreSQL Disconnected");
+  } catch (error) {
+    console.error("Error disconnecting from PostgreSQL:", error.message);
   }
 }

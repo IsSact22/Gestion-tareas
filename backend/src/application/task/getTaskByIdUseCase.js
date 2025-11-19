@@ -13,8 +13,9 @@ export default class GetTaskByIdUseCase {
     }
 
     // Verificar acceso
-    const board = await this.boardRepository.findById(task.board._id);
-    const isMember = board.members.some(m => m.user._id.toString() === userId.toString());
+    const boardId = task.boardId;
+    const board = await this.boardRepository.findById(boardId);
+    const isMember = board.members?.some(m => m.userId === userId);
     if (!isMember) {
       throw new AppError('You do not have access to this task', 403);
     }

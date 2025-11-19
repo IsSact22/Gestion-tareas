@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -26,22 +27,19 @@ const priorityLabels = {
 
 const statusLabels = {
   todo: 'Por hacer',
-  in_progress: 'En progreso',
-  review: 'En revisión',
+  'in-progress': 'En progreso',
   done: 'Completado',
 };
 
 const statusColors = {
   todo: 'bg-gray-100 text-gray-800',
-  in_progress: 'bg-blue-100 text-blue-800',
-  review: 'bg-yellow-100 text-yellow-800',
+  'in-progress': 'bg-blue-100 text-blue-800',
   done: 'bg-green-100 text-green-800',
 };
 
 const statusIcons = {
   todo: Clock,
-  in_progress: PlayCircle,
-  review: AlertCircle,
+  'in-progress': PlayCircle,
   done: CheckCircle2,
 };
 
@@ -49,7 +47,7 @@ export default function TasksPage() {
   const router = useRouter();
   const { fetchBoards } = useBoardStore();
   const [myTasks, setMyTasks] = useState<Task[]>([]);
-  const [filter, setFilter] = useState<'all' | 'todo' | 'in_progress' | 'done'>('all');
+  const [filter, setFilter] = useState<'all' | 'todo' | 'in-progress' | 'done'>('all');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -72,21 +70,25 @@ export default function TasksPage() {
     loadMyTasks();
   }, [fetchBoards]);
 
-  const handleStatusChange = async (taskId: string, newStatus: 'todo' | 'in_progress' | 'review' | 'done') => {
+  const handleStatusChange = async (taskId: string, newStatus: 'todo' | 'in-progress' | 'done') => {
     try {
       await taskService.updateTask(taskId, { status: newStatus });
       
       // Actualizar el estado local
       setMyTasks(prevTasks =>
         prevTasks.map(task =>
-          task._id === taskId ? { ...task, status: newStatus } : task
+          (task.id) === taskId ? { ...task, status: newStatus } : task
         )
       );
       
-      toast.success(`Estado actualizado a "${statusLabels[newStatus]}"`);
+      toast.success(`Estado actualizado a "${statusLabels[newStatus]}"`, {
+        duration: 3000,
+      });
     } catch (error: any) {
       console.error('Error al cambiar estado:', error);
-      toast.error(error.response?.data?.message || 'Error al cambiar estado');
+      toast.error(error.response?.data?.message || 'Error al cambiar estado', {
+        duration: 3000,
+      });
     }
   };
 
@@ -97,8 +99,7 @@ export default function TasksPage() {
 
   const tasksByStatus = {
     todo: myTasks.filter(t => t.status === 'todo').length,
-    in_progress: myTasks.filter(t => t.status === 'in_progress').length,
-    review: myTasks.filter(t => t.status === 'review').length,
+    'in-progress': myTasks.filter(t => t.status === 'in-progress').length,
     done: myTasks.filter(t => t.status === 'done').length,
   };
 
@@ -148,7 +149,7 @@ export default function TasksPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">En progreso</p>
-              <p className="text-2xl font-bold text-blue-600">{tasksByStatus.in_progress}</p>
+              <p className="text-2xl font-bold text-blue-600">{tasksByStatus['in-progress']}</p>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <AlertCircle className="w-6 h-6 text-blue-600" />
@@ -156,17 +157,6 @@ export default function TasksPage() {
           </div>
         </Card>
 
-        <Card variant="bordered" className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">En revisión</p>
-              <p className="text-2xl font-bold text-orange-600">{tasksByStatus.review}</p>
-            </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-orange-600" />
-            </div>
-          </div>
-        </Card>
 
         <Card variant="bordered" className="p-4">
           <div className="flex items-center justify-between">
@@ -204,14 +194,14 @@ export default function TasksPage() {
           Por hacer ({tasksByStatus.todo})
         </button>
         <button
-          onClick={() => setFilter('in_progress')}
+          onClick={() => setFilter('in-progress')}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            filter === 'in_progress'
+            filter === 'in-progress'
               ? 'bg-blue-600 text-white'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          En progreso ({tasksByStatus.in_progress})
+          En progreso ({tasksByStatus['in-progress']})
         </button>
         <button
           onClick={() => setFilter('done')}
@@ -230,7 +220,7 @@ export default function TasksPage() {
         <div className="grid gap-4">
           {filteredTasks.map((task) => (
               <Card 
-                key={task._id} 
+                key={task.id} 
                 variant="bordered" 
                 className="p-5 hover:shadow-lg transition-all"
               >
@@ -274,11 +264,19 @@ export default function TasksPage() {
                     </div>
 
                     <button 
-                      onClick={() => router.push(`/boards/${typeof task.board === 'string' ? task.board : task.board._id}`)}
+                      onClick={() => {
+                        const boardId = typeof task.board === 'string' ? task.board : task.board?.id;
+                        if (boardId) {
+                          router.push(`/boards/${boardId}`);
+                        } else {
+                          toast.error('No se puede acceder al board de esta tarea');
+                        }
+                      }}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       title="Ver en el board"
+                      disabled={!task.board}
                     >
-                      <ArrowRight size={20} className="text-gray-400" />
+                      <ArrowRight size={20} className={task.board ? 'text-gray-400' : 'text-gray-200'} />
                     </button>
                   </div>
 
@@ -292,7 +290,7 @@ export default function TasksPage() {
                           key={status}
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleStatusChange(task._id, status);
+                            handleStatusChange(task.id, status);
                           }}
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                             task.status === status

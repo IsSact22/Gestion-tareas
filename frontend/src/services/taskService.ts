@@ -1,16 +1,21 @@
+/* eslint-disable import/no-anonymous-default-export */
 import api from '../lib/api';
 
 export interface Task {
-  _id: string;
+  id: string;
   title: string;
   description?: string;
   column: string;
-  board: string | { _id: string; name: string; color: string };
+  board: string | {
+    id: string;
+    name: string;
+    color: string 
+};
   position: number;
   priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'todo' | 'in_progress' | 'review' | 'done';
+  status: 'todo' | 'in-progress' | 'done';
   assignedTo: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
     avatar?: string;
@@ -20,7 +25,7 @@ export interface Task {
   attachments: string[];
   comments: Comment[];
   createdBy: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
   };
@@ -29,9 +34,9 @@ export interface Task {
 }
 
 export interface Comment {
-  _id: string;
+  id: string;
   user: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
     avatar?: string;
@@ -55,7 +60,7 @@ export interface UpdateTaskDto {
   title?: string;
   description?: string;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
-  status?: 'todo' | 'in_progress' | 'review' | 'done';
+  status?: 'todo' | 'in-progress'| 'done';
   assignedTo?: string[];
   tags?: string[];
   dueDate?: string;
@@ -150,5 +155,6 @@ class TaskService {
     return response.data.data;
   }
 }
+
 
 export default new TaskService();

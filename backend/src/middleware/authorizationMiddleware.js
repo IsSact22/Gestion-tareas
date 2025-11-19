@@ -84,7 +84,7 @@ export const canDelete = (resourceOwnerId) => {
     }
 
     // El creador puede eliminar su propio recurso
-    if (resourceOwnerId && resourceOwnerId.toString() === req.user._id.toString()) {
+    if (resourceOwnerId && resourceOwnerId.toString() === req.user.id.toString()) {
       return next();
     }
 
@@ -110,7 +110,7 @@ export const isOwnerOrAdmin = (getOwnerId) => {
       // Obtener el ID del propietario del recurso
       const ownerId = await getOwnerId(req);
       
-      if (ownerId && ownerId.toString() === req.user._id.toString()) {
+      if (ownerId && ownerId.toString() === req.user.id.toString()) {
         return next();
       }
 

@@ -13,7 +13,7 @@ export default class GetBoardByIdUseCase {
     }
 
     // Verificar que el usuario sea miembro o admin del sistema
-    const isMember = board.members.some(m => m.user._id.toString() === userId.toString());
+    const isMember = board.members?.some(m => m.userId === userId);
     const isSystemAdmin = userRole === 'admin';
     
     if (!isMember && !isSystemAdmin) {

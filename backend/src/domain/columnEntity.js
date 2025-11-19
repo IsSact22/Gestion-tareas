@@ -1,6 +1,6 @@
 export default class Column {
-  constructor({ _id, name, board, position, color = '#6B7280', createdAt, updatedAt }) {
-    this._id = _id;
+  constructor({ id, name, board, position, color = '#6B7280', createdAt, updatedAt }) {
+    this.id = id;
     this.name = name;
     this.board = board;
     this.position = position;

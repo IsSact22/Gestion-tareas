@@ -1,22 +1,23 @@
+/* eslint-disable import/no-anonymous-default-export */
 import api from '@/lib/api';
 
 export interface Board {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   workspace: {
-    _id: string;
+    id: string;
     name: string;
   };
   owner: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
   };
   members: Array<{
     user: {
+      id: string;
       avatar: string | Blob | undefined;
-      _id: string;
       name: string;
       email: string;
     };
@@ -81,8 +82,8 @@ class BoardService {
   }
 
   // Agregar miembro al board
-  async addMember(boardId: string, userId: string, role: 'admin' | 'member' | 'viewer'): Promise<Board> {
-    const response = await api.post(`/boards/${boardId}/members`, { userId, role });
+  async addMember(boardId: string, email: string, role: 'admin' | 'member' | 'viewer'): Promise<Board> {
+    const response = await api.post(`/boards/${boardId}/members`, { email, role });
     return response.data.data;
   }
 

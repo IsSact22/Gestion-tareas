@@ -1,26 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
-import { Trello, Users, Eye, Calendar, UserPlus } from 'lucide-react';
+import { Trello, Users, Eye, Calendar, UserPlus, ArrowLeft } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import toast, { Toaster } from 'react-hot-toast';
 import api from '@/lib/api';
 import AssignMembersModal from '@/components/admin/AssignMembersModal';
+import Button from '@/components/ui/Button';
 
 interface Board {
-  _id: string;
+  archived: any;
+  id: string;
   name: string;
   description?: string;
   color: string;
   workspace: {
-    _id: string;
+    id: string;
     name: string;
   };
   members: Array<{
     user: {
-      _id: string;
+      id: string;
       name: string;
       email: string;
     };
@@ -76,19 +79,19 @@ export default function AdminBoardsPage() {
     }
   };
 
-  const getRoleBadge = (role: string) => {
-    const styles = {
-      admin: 'bg-purple-100 text-purple-700',
-      member: 'bg-blue-100 text-blue-700',
-      viewer: 'bg-gray-100 text-gray-700',
-    };
+  // const getRoleBadge = (role: string) => {
+  //   const styles = {
+  //     admin: 'bg-purple-100 text-purple-700',
+  //     member: 'bg-blue-100 text-blue-700',
+  //     viewer: 'bg-gray-100 text-gray-700',
+  //   };
     
-    return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[role as keyof typeof styles]}`}>
-        {role}
-      </span>
-    );
-  };
+  //   return (
+  //     <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[role as keyof typeof styles]}`}>
+  //       {role}
+  //     </span>
+  //   );
+  // };
 
   if (isLoading) {
     return (
@@ -105,11 +108,26 @@ export default function AdminBoardsPage() {
     <div className="p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Boards</h1>
-        <p className="text-gray-600">Vista general de todos los boards del sistema</p>
-      </div>
+       {/* Header Centrado */}
+      <div className="mb-8 flex items-center justify-between">
+
+      <Button
+          type="button"
+          variant="primary"
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Regresar
+        </Button>
+
+
+        <div className="text-center flex-1">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Boards</h1>
+          <p className="text-gray-600">Vista general de todas los boards del sistema</p>
+        </div>
+      <div className="w-24"></div>
+    </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -154,9 +172,9 @@ export default function AdminBoardsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {boards.map((board) => (
           <Card
-            key={board._id}
+            key={board.id}
             className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => router.push(`/boards/${board._id}`)}
+            onClick={() => router.push(`/boards/${board.id}`)}
           >
             <div
               className="h-32 rounded-t-lg"
@@ -275,7 +293,7 @@ export default function AdminBoardsPage() {
             setSelectedBoard(null);
           }}
           resourceType="board"
-          resourceId={selectedBoard._id}
+          resourceId={selectedBoard.id}
           resourceName={selectedBoard.name}
           currentMembers={selectedBoard.members}
           onMembersUpdated={fetchBoards}
