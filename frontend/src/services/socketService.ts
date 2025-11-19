@@ -134,7 +134,7 @@ class SocketService {
   }
 
   emitTaskUpdated(boardId: string, task: any) {
-    this.socket?.emit('task:updated', { boardId, task, taskId: task._id });
+    this.socket?.emit('task:updated', { boardId, task, taskId: task.id });
   }
 
   emitTaskDeleted(boardId: string, taskId: string) {
@@ -168,7 +168,7 @@ class SocketService {
   }
 
   emitColumnUpdated(boardId: string, column: any) {
-    this.socket?.emit('column:updated', { boardId, column, columnId: column._id });
+    this.socket?.emit('column:updated', { boardId, column, columnId: column.id });
   }
 
   emitColumnDeleted(boardId: string, columnId: string) {

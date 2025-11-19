@@ -275,11 +275,19 @@ export default function TasksPage() {
                     </div>
 
                     <button 
-                      onClick={() => router.push(`/boards/${typeof task.board === 'string' ? task.board : task.board.id}`)}
+                      onClick={() => {
+                        const boardId = typeof task.board === 'string' ? task.board : task.board?.id;
+                        if (boardId) {
+                          router.push(`/boards/${boardId}`);
+                        } else {
+                          toast.error('No se puede acceder al board de esta tarea');
+                        }
+                      }}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       title="Ver en el board"
+                      disabled={!task.board}
                     >
-                      <ArrowRight size={20} className="text-gray-400" />
+                      <ArrowRight size={20} className={task.board ? 'text-gray-400' : 'text-gray-200'} />
                     </button>
                   </div>
 

@@ -5,7 +5,6 @@ import toast from 'react-hot-toast';
 import { Task } from '@/services/taskService';
 import { useTaskStore } from '@/store/taskStore';
 import { useConfirm } from '@/hooks/useConfirm';
-import Button from '@/components/ui/Button';
 import CommentSection from '@/components/task/CommentSection';
 import taskService from '@/services/taskService';
 
@@ -33,21 +32,18 @@ const priorityLabels = {
 const statusColors = {
   todo: 'bg-gray-100 text-gray-800',
   in_progress: 'bg-blue-100 text-blue-800',
-  review: 'bg-yellow-100 text-yellow-800',
   done: 'bg-green-100 text-green-800',
 };
 
 const statusLabels = {
   todo: 'Por hacer',
   in_progress: 'En progreso',
-  review: 'En revisión',
   done: 'Completada',
 };
 
 const statusIcons = {
   todo: Clock,
   in_progress: PlayCircle,
-  review: AlertCircle,
   done: CheckCircle2,
 };
 
@@ -98,7 +94,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
     }
   };
 
-  const handleStatusChange = async (newStatus: 'todo' | 'in_progress' | 'review' | 'done') => {
+  const handleStatusChange = async (newStatus: 'todo' | 'in_progress' | 'done') => {
     try {
       await updateTask(task.id, { status: newStatus });
       setCurrentStatus(newStatus);

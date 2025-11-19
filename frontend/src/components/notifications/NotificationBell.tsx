@@ -158,9 +158,9 @@ export default function NotificationBell() {
                             </p>
                             
                             {/* From User */}
-                            {notification.data.fromUser && (
+                            {notification.data?.fromUser && (
                               <p className="text-xs text-gray-500 mt-1">
-                                De: {notification.data.fromUser.name}
+                                De: {notification.data?.fromUser.name}
                               </p>
                             )}
                             

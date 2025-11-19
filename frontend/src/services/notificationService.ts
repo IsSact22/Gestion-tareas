@@ -1,8 +1,8 @@
+/* eslint-disable import/no-anonymous-default-export */
 import api from '../lib/api';
 
 export interface Notification {
   id: string;
-  _id: string;
   user: string;
   type: 'board_invitation' | 'workspace_invitation' | 'task_assigned' | 'task_comment' | 'task_mention' | 'board_update' | 'workspace_update';
   title: string;
@@ -12,7 +12,7 @@ export interface Notification {
     workspaceId?: string;
     taskId?: string;
     fromUser?: {
-      _id: string;
+      id: string;
       name: string;
       email: string;
       avatar?: string;

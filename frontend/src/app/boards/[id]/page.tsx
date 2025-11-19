@@ -20,14 +20,16 @@ import { Task } from '@/services/taskService';
 export default function BoardDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const boardId = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+  const boardId = params?.id 
+    ? (typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '')
+    : '';
 
   const { currentBoard, fetchBoardById, isLoading } = useBoardStore();
   const { fetchColumns, addColumn, removeColumn } = useColumnStore();
   const { fetchTasks, addTask, removeTask, updateTaskInList } = useTaskStore();
 
   // Conectar al board via Socket.IO
-  const socket = useBoardSocket(boardId);
+  useBoardSocket(boardId);
 
   const [showColumnModal, setShowColumnModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -38,24 +40,32 @@ export default function BoardDetailPage() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedColumnForTask, setSelectedColumnForTask] = useState<string | null>(null);
 
+  // Cargar datos del board
   useEffect(() => {
-    if (boardId) {
-      fetchBoardById(boardId);
-      fetchColumns(boardId);
-      fetchTasks(boardId);
+    if (!boardId) {
+      console.warn('⚠️ No boardId provided, redirecting to boards');
+      router.push('/boards');
+      return;
     }
-  }, [boardId, fetchBoardById, fetchColumns, fetchTasks]);
+    
+    fetchBoardById(boardId);
+    fetchColumns(boardId);
+    fetchTasks(boardId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardId, router]);
 
   // Escuchar eventos de Socket.IO
   useEffect(() => {
+    if (!boardId) return;
+
     // Columnas
-    socketService.onColumnCreated((data) => {
-      console.log('📊 Columna creada:', data);
+    socketService.onColumnCreated(() => {
+      console.log('📊 Columna creada');
       fetchColumns(boardId);
     });
 
-    socketService.onColumnUpdated((data) => {
-      console.log('📝 Columna actualizada:', data);
+    socketService.onColumnUpdated(() => {
+      console.log('📝 Columna actualizada');
       fetchColumns(boardId);
     });
 
@@ -98,7 +108,7 @@ export default function BoardDetailPage() {
       console.log('👤 Usuario se unió:', data.userEmail);
     });
 
-    socketService.onUserLeft((data) => {
+    socketService.onUserLeft(() => {
       console.log('👋 Usuario salió');
     });
 

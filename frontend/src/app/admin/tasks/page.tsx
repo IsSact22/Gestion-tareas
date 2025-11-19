@@ -24,11 +24,11 @@ interface Task {
     id: string;
     name: string;
   };
-  assignedTo?: {
+  assignedTo?: Array<{
     id: string;
     name: string;
     email: string;
-  };
+  }>;
   createdBy: {
     id: string;
     name: string;
@@ -115,13 +115,13 @@ export default function AdminTasksPage() {
   const getStatusBadge = (status: string) => {
     const styles = {
       'todo': 'bg-gray-100 text-gray-700',
-      'in-progress': 'bg-blue-100 text-blue-700',
+      'in_progress': 'bg-blue-100 text-blue-700',
       'done': 'bg-green-100 text-green-700',
     };
     
     const labels = {
       'todo': 'Por hacer',
-      'in-progress': 'En progreso',
+      'in_progress': 'En progreso',
       'done': 'Completada',
     };
     
@@ -250,13 +250,13 @@ export default function AdminTasksPage() {
               Filtrar por Estado
             </label>
             <select
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
             >
               <option value="all">Todos</option>
               <option value="todo">Por hacer</option>
-              <option value="in-progress">En progreso</option>
+              <option value="in_progress">En progreso</option>
               <option value="done">Completadas</option>
             </select>
           </div>
@@ -266,7 +266,7 @@ export default function AdminTasksPage() {
               Filtrar por Prioridad
             </label>
             <select
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={filterPriority}
               onChange={(e) => setFilterPriority(e.target.value)}
             >
@@ -314,12 +314,17 @@ export default function AdminTasksPage() {
                   key={task.id}
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={() => {
-                    const boardId = typeof task.board === 'string' ? task.board : task.board.id;
-                    router.push(`/boards/${boardId}`);
+                    const boardId = typeof task.board === 'string' ? task.board : task.board?.id;
+                    if (boardId) {
+                      router.push(`/boards/${boardId}`);
+                    } else {
+                      toast.error('No se puede acceder al board de esta tarea');
+                    }
                   }}
                 >
                   <td className="px-6 py-4">
                     <div>
+                      
                       <p className="font-medium text-gray-900">{task.title}</p>
                       {task.description && (
                         <p className="text-sm text-gray-500 line-clamp-1">
@@ -328,12 +333,13 @@ export default function AdminTasksPage() {
                       )}
                     </div>
                   </td>
+                  {/* campo de nombre del board */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      {typeof task.board === 'string' ? task.board : task.board.name}
+                      {typeof task.board === 'string' ? task.board : (task.board?.name || 'Sin tablero')}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {typeof task.column === 'string' ? task.column : task.column.name}
+                      {typeof task.column === 'string' ? task.column : task.column?.name || 'Sin columna'}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -342,15 +348,30 @@ export default function AdminTasksPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     {getPriorityBadge(task.priority)}
                   </td>
+                  {/* campo de asignados member */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {task.assignedTo && task.assignedTo.name ? (
+                    {task.assignedTo && Array.isArray(task.assignedTo) && task.assignedTo.length > 0 ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-semibold">
-                          {task.assignedTo.name.charAt(0).toUpperCase()}
+                        <div className="flex -space-x-2">
+                          {task.assignedTo.slice(0, 3).map((user) => (
+                            <div
+                              key={user.id}
+                              className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-semibold border-2 border-white"
+                              title={user.name}
+                            >
+                              {user.name.charAt(0).toUpperCase()}
+                            </div>
+                          ))}
+                         
+                          {task.assignedTo.length > 3 && (
+                            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-700 text-xs font-semibold border-2 border-white">
+                              +{task.assignedTo.length - 3}
+                            </div>
+                          )}
                         </div>
                         <div>
                           <p className="text-sm font-medium text-gray-900">
-                            {task.assignedTo.name}
+                            {task.assignedTo.length} asignado{task.assignedTo.length > 1 ? 's' : ''}
                           </p>
                         </div>
                       </div>
