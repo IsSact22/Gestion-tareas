@@ -9,7 +9,6 @@ import {
   Trello, 
   CheckSquare, 
   Users, 
-  Settings,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -40,7 +39,6 @@ const getMenuItemsByRole = (role: string) => {
 
   const settingsItems = [
     { icon: User, label: 'My Profile', href: '/profile', roles: ['admin', 'member', 'viewer'] },
-    { icon: Settings, label: 'Settings', href: '/settings', roles: ['admin'] },
   ];
 
   const allItems = [...baseItems, ...adminItems, ...settingsItems];
