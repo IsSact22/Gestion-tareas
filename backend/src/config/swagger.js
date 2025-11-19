@@ -39,7 +39,7 @@ const options = {
         User: {
           type: 'object',
           properties: {
-            _id: {
+            id: {
               type: 'string',
               example: '507f1f77bcf86cd799439011',
             },
@@ -76,7 +76,7 @@ const options = {
         Workspace: {
           type: 'object',
           properties: {
-            _id: {
+            id: {
               type: 'string',
               example: '507f1f77bcf86cd799439011',
             },
@@ -125,7 +125,7 @@ const options = {
         Board: {
           type: 'object',
           properties: {
-            _id: {
+            id: {
               type: 'string',
               example: '507f1f77bcf86cd799439011',
             },
@@ -180,7 +180,7 @@ const options = {
         Column: {
           type: 'object',
           properties: {
-            _id: {
+            id: {
               type: 'string',
               example: '507f1f77bcf86cd799439011',
             },
@@ -209,7 +209,7 @@ const options = {
         Task: {
           type: 'object',
           properties: {
-            _id: {
+            id: {
               type: 'string',
               example: '507f1f77bcf86cd799439011',
             },
@@ -265,7 +265,7 @@ const options = {
               items: {
                 type: 'object',
                 properties: {
-                  _id: {
+                  id: {
                     type: 'string',
                   },
                   user: {

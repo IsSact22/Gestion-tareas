@@ -89,6 +89,19 @@ export default class TaskRepository {
     async findAll() {
         const tasks = await prisma.task.findMany({
             include: {
+                column: {
+                    select: {
+                        id: true,
+                        name: true
+                    }
+                },
+                board: {
+                    select: {
+                        id: true,
+                        name: true,
+                        color: true
+                    }
+                },
                 assignedTo: {
                     include: {
                         user: {
@@ -107,6 +120,21 @@ export default class TaskRepository {
                         name: true,
                         email: true,
                         avatar: true
+                    }
+                },
+                comments: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                avatar: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'asc'
                     }
                 }
             },
@@ -239,12 +267,46 @@ export default class TaskRepository {
                         name: true
                     }
                 },
+                board: {
+                    select: {
+                        id: true,
+                        name: true,
+                        color: true
+                    }
+                },
+                assignedTo: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                avatar: true
+                            }
+                        }
+                    }
+                },
                 creator: {
                     select: {
                         id: true,
                         name: true,
                         email: true,
                         avatar: true
+                    }
+                },
+                comments: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                avatar: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'asc'
                     }
                 }
             },
@@ -327,6 +389,7 @@ export default class TaskRepository {
             ...(data.title && { title: data.title }),
             ...(data.description !== undefined && { description: data.description }),
             ...(data.priority && { priority: data.priority }),
+            ...(data.status && { status: data.status }),
             ...(data.dueDate !== undefined && { dueDate: dueDate }),
             ...(data.position !== undefined && { position: data.position }),
             ...(data.tags && { tags: data.tags }),

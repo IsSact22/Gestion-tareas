@@ -1,6 +1,6 @@
 export default class Activity {
-  constructor({ _id, user, action, entity, entityId, details = {}, board, createdAt }) {
-    this._id = _id;
+  constructor({ id, user, action, entity, entityId, details = {}, board, createdAt }) {
+    this.id = id;
     this.user = user;
     this.action = action; // 'created', 'updated', 'moved', 'deleted', 'assigned', 'commented'
     this.entity = entity; // 'task', 'column', 'board', 'workspace'

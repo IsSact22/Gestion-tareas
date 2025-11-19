@@ -7,6 +7,11 @@ export default class GetColumnsUseCase {
   }
 
   async execute({ boardId, userId, userRole }) {
+    // Validar que boardId esté presente
+    if (!boardId) {
+      throw new AppError('boardId is required', 400);
+    }
+
     // Verificar acceso al board
     const board = await this.boardRepository.findById(boardId);
     if (!board) {

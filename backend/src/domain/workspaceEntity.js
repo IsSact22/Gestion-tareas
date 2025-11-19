@@ -1,6 +1,6 @@
 export default class Workspace {
-  constructor({ _id, name, description, owner, members = [], createdAt, updatedAt }) {
-    this._id = _id;
+  constructor({ id, name, description, owner, members = [], createdAt, updatedAt }) {
+    this.id = id;
     this.name = name;
     this.description = description;
     this.owner = owner;

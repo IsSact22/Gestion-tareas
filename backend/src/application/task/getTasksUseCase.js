@@ -7,6 +7,16 @@ export default class GetTasksUseCase {
   }
 
   async execute({ boardId, columnId, userId, userRole }) {
+    // Validar que boardId o columnId esté presente
+    if (!boardId && !columnId) {
+      throw new AppError('boardId or columnId is required', 400);
+    }
+
+    // Si hay columnId, obtener tareas de la columna
+    if (columnId) {
+      return await this.taskRepository.findByColumnId(columnId);
+    }
+
     // Verificar acceso al board
     const board = await this.boardRepository.findById(boardId);
     if (!board) {
@@ -19,10 +29,6 @@ export default class GetTasksUseCase {
     
     if (!isMember && !isSystemAdmin) {
       throw new AppError('You do not have access to this board', 403);
-    }
-
-    if (columnId) {
-      return await this.taskRepository.findByColumnId(columnId);
     }
 
     return await this.taskRepository.findByBoardId(boardId);

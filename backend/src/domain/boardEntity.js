@@ -1,6 +1,6 @@
 export default class Board {
-  constructor({ _id, name, description, workspace, columns = [], members = [], createdAt, updatedAt }) {
-    this._id = _id;
+  constructor({ id, name, description, workspace, columns = [], members = [], createdAt, updatedAt }) {
+    this.id = id;
     this.name = name;
     this.description = description;
     this.workspace = workspace;

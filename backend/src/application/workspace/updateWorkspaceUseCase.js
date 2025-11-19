@@ -13,7 +13,7 @@ export default class UpdateWorkspaceUseCase {
     }
 
     // Verificar que el usuario sea el owner
-    const ownerId = workspace.ownerId || workspace.owner?._id || workspace.owner;
+    const ownerId = workspace.ownerId || workspace.owner?.id || workspace.owner;
     
     if (ownerId !== userId) {
       throw new AppError('Only the owner can update this workspace', 403);

@@ -24,8 +24,8 @@ export default class LoginUseCase {
       throw new AppError('Invalid credentials', 401);
     }
 
-    // Generar token (usar id o _id para compatibilidad)
-    const userId = user.id || user._id;
+    // Generar token (usar id o id para compatibilidad)
+    const userId = user.id;
     const token = generateToken(userId);
 
     return {

@@ -78,7 +78,7 @@ export async function getTaskById(req, res, next) {
 
 export async function updateTask(req, res, next) {
   try {
-    const { title, description, assignedTo, priority, dueDate, tags } = req.body;
+    const { title, description, assignedTo, priority, status, dueDate, tags } = req.body;
     const task = await updateTaskUseCase.execute({
       taskId: req.params.id,
       userId: req.user.id,
@@ -86,6 +86,7 @@ export async function updateTask(req, res, next) {
       description,
       assignedTo,
       priority,
+      status,
       dueDate,
       tags
     });

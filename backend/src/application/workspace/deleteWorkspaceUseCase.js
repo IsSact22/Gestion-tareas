@@ -14,7 +14,7 @@ export default class DeleteWorkspaceUseCase {
     }
 
     // Verificar que el usuario sea el owner
-    const ownerId = workspace.ownerId || workspace.owner?._id || workspace.owner;
+    const ownerId = workspace.ownerId || workspace.owner?.id || workspace.owner;
     
     if (ownerId !== userId) {
       throw new AppError('Only the owner can delete this workspace', 403);
@@ -23,7 +23,7 @@ export default class DeleteWorkspaceUseCase {
     // Eliminar todos los boards del workspace
     const boards = await this.boardRepository.findByWorkspaceId(workspaceId);
     for (const board of boards) {
-      await this.boardRepository.delete(board.id || board._id);
+      await this.boardRepository.delete(board.id);
     }
 
     // Eliminar workspace

@@ -26,13 +26,13 @@ export default class DeleteCommentUseCase {
     }
 
     // Encontrar el comentario
-    const comment = task.comments?.find(c => c.id || c._id === commentId);
+    const comment = task.comments?.find(c => c.id === commentId);
     if (!comment) {
       throw new Error('Comentario no encontrado');
     }
 
     // Verificar que el usuario es el autor del comentario o admin del board
-    const commentUserId = comment.userId || comment.user?._id || comment.user;
+    const commentUserId = comment.userId || comment.user?.id || comment.user;
     const isAuthor = commentUserId === userId;
     const isAdmin = board.members?.some(m => m.userId === userId);
     if (!isAuthor && !isAdmin) {

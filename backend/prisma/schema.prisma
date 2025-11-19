@@ -128,6 +128,7 @@ model Task {
   position    Int       @default(0)
   createdBy   String
   priority    String    @default("medium") // 'low' | 'medium' | 'high' | 'urgent'
+  status      String    @default("todo") // 'todo' | 'in_progress' | 'done'
   dueDate     DateTime?
   tags        String[]  @default([])
   attachments Json[]    @default([])

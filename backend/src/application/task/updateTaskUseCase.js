@@ -7,7 +7,7 @@ export default class UpdateTaskUseCase {
     this.activityRepository = activityRepository;
   }
 
-  async execute({ taskId, userId, title, description, assignedTo, priority, dueDate, tags }) {
+  async execute({ taskId, userId, title, description, assignedTo, priority, status, dueDate, tags }) {
     const task = await this.taskRepository.findById(taskId);
     if (!task) {
       throw new AppError('Task not found', 404);
@@ -38,6 +38,10 @@ export default class UpdateTaskUseCase {
     if (priority !== undefined) {
       updateData.priority = priority;
       changes.priority = { from: task.priority, to: priority };
+    }
+    if (status !== undefined) {
+      updateData.status = status;
+      changes.status = { from: task.status, to: status };
     }
     if (dueDate !== undefined) {
       updateData.dueDate = dueDate;

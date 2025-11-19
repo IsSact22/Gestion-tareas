@@ -67,7 +67,7 @@ export default class WorkspaceRepository {
 
   async updateMemberRole(workspaceId, userId, newRole) {
     return WorkspaceModel.findOneAndUpdate(
-      { _id: workspaceId, 'members.user': userId },
+      { id: workspaceId, 'members.user': userId },
       { $set: { 'members.$.role': newRole } },
       { new: true }
     )

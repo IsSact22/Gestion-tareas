@@ -1,6 +1,6 @@
 export default class User {
-  constructor({ _id, name, email, password, avatar = null, role = 'member', createdAt, updatedAt }) {
-    this._id = _id;
+  constructor({ id, name, email, password, avatar = null, role = 'member', createdAt, updatedAt }) {
+    this.id = id;
     this.name = name;
     this.email = email;
     this.password = password;

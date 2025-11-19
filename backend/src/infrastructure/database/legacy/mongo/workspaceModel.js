@@ -36,7 +36,7 @@ const workspaceSchema = new mongoose.Schema({
 // Virtual para obtener los boards de este workspace
 workspaceSchema.virtual('boards', {
   ref: 'Board',
-  localField: '_id',
+  localField: 'id',
   foreignField: 'workspace'
 });
 

@@ -41,7 +41,7 @@ export default class ColumnRepository {
     // updates es un array de {id, position}
     const bulkOps = updates.map(update => ({
       updateOne: {
-        filter: { _id: update.id },
+        filter: { id: update.id },
         update: { $set: { position: update.position } }
       }
     }));

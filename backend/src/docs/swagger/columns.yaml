@@ -182,7 +182,7 @@ paths:
                   type: array
                   items:
                     type: string
-                  example: ['col1_id', 'col2_id', 'col3_id']
+                  example: ['col1id', 'col2id', 'col3id']
                   description: Array con los IDs de las columnas en el nuevo orden
       responses:
         '200':
