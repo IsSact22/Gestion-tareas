@@ -4,7 +4,12 @@ const userRepository = new UserRepository();
 
 export async function getAllUsers(req, res, next) {
   try {
-    const users = await userRepository.findAll();
+    let users;
+    if (req.user.role === 'admin') {
+      users = await userRepository.findAll();
+    } else {
+      users = await userRepository.findByTeam(req.user.id);
+    }
     res.status(200).json({ success: true, data: users });
   } catch (error) {
     next(error);

@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trello, Plus, MoreVertical, Edit, Trash2, Star, Users, Folder, Home } from 'lucide-react';
+import { Trello, Plus, MoreVertical, Edit, Trash2, Star, Users, Folder, ArrowLeft } from 'lucide-react';
 import { useBoardStore } from '@/store/boardStore';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useRouter } from 'next/navigation';
@@ -79,6 +79,7 @@ export default function BoardsPage() {
     if (result) {
       setIsCreateModalOpen(false);
       setFormData({ name: '', description: '', workspaceId: '', color: BOARD_COLORS[0].value });
+      fetchBoards(); // Agregar recarga de boards después de crear para mostrar el color correcto
     }
   };
 
@@ -94,6 +95,7 @@ export default function BoardsPage() {
         setIsEditModalOpen(false);
         setSelectedBoard(null);
         setFormData({ name: '', description: '', workspaceId: '', color: BOARD_COLORS[0].value });
+        fetchBoards(); // Agregar recarga de boards después de editar para mostrar el color actualizado
       }
     }
   };
@@ -134,64 +136,58 @@ export default function BoardsPage() {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       
-    
-    {/* Contenedor principal con justify-between */}
-    <div className="flex items-center justify-between mb-8">
-      {/* Contenedor izquierdo - título y botones */}
-      <div className="flex items-center space-x-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Boards</h1>
-          <p className="text-gray-600">Visualiza y gestiona tus tableros Kanban</p>
-        </div>
-        
-        {/* Botones de navegación al lado del título */}
-        <div className="flex space-x-2">
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors border border-gray-300"
-            title="Ir al Dashboard"
-          >
-            <Home size={20} />
-          </button>
+    {/* Header */}
+    <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* Izquierda: Botón Regresar + Título */}
+      <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
+        <button
+          onClick={() => router.push('/dashboard')}
+          className="p-1.5 md:p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors flex-shrink-0"
+        >
+          <ArrowLeft size={20} />
+        </button>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Boards</h1>
+          <p className="text-sm md:text-base text-gray-600">Visualiza y gestiona tus tableros Kanban</p>
         </div>
       </div>
   
-      {/* Botón "Nuevo Board" a la derecha */}
+      {/* Derecha: Botón Nuevo Board */}
       <button 
         onClick={() => setIsCreateModalOpen(true)}
-        className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
+        className="bg-purple-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 w-full md:w-auto text-sm md:text-base"
       >
-        <Plus className="w-5 h-5" />
+        <Plus className="w-4 h-4 md:w-5 md:h-5" />
         <span>Nuevo Board</span>
       </button>
     </div>
 
       {boards.length === 0 ? (
         /* Empty State */
-        <div className="bg-white rounded-2xl border-2 border-dashed border-gray-300 p-12 text-center">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Trello className="w-8 h-8 text-gray-400" />
+        <div className="bg-white rounded-2xl border-2 border-dashed border-gray-300 p-8 md:p-12 text-center">
+          <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Trello className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
             No hay boards aún
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-sm md:text-base text-gray-600 mb-6">
             Crea tu primer board para empezar a organizar tus tareas
           </p>
           <button 
             onClick={() => setIsCreateModalOpen(true)}
-            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors inline-flex items-center space-x-2"
+            className="bg-purple-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-purple-700 transition-colors inline-flex items-center gap-2 text-sm md:text-base"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4 md:w-5 md:h-5" />
             <span>Crear Board</span>
           </button>
         </div>
       ) : (
         /* Boards Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {boards.map((board) => (
             <div
               key={board.id}
@@ -213,17 +209,17 @@ export default function BoardsPage() {
                 </button>
               </div>
 
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
+              <div className="p-4 md:p-6">
+                <div className="flex items-start justify-between mb-3 md:mb-4">
                   <div 
-                    className="flex-1"
+                    className="flex-1 min-w-0"
                     onClick={() => router.push(`/boards/${board.id}`)}
                   >
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1 md:mb-2 group-hover:text-purple-600 transition-colors truncate">
                       {board.name}
                     </h3>
                     {board.description && (
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                      <p className="text-gray-600 text-xs md:text-sm mb-2 md:mb-3 line-clamp-2">
                         {board.description}
                       </p>
                     )}
@@ -261,13 +257,13 @@ export default function BoardsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
-                  <div className="flex items-center space-x-1">
-                    <Folder className="w-4 h-4" />
-                    <span className="truncate max-w-[120px]">{board.workspace.name}</span>
+                <div className="flex items-center justify-between text-xs md:text-sm text-gray-500 pt-3 md:pt-4 border-t border-gray-100">
+                  <div className="flex items-center gap-1">
+                    <Folder className="w-3 h-3 md:w-4 md:h-4" />
+                    <span className="truncate max-w-[100px] md:max-w-[120px]">{board.workspace.name}</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Users className="w-4 h-4" />
+                  <div className="flex items-center gap-1">
+                    <Users className="w-3 h-3 md:w-4 md:h-4" />
                     <span>{board.members?.length || 0}</span>
                   </div>
                 </div>
@@ -350,8 +346,8 @@ export default function BoardsPage() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
-            <Button type="submit" disabled={isLoading} className="flex-1">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+            <Button type="submit" disabled={isLoading} className="w-full sm:flex-1">
               {isLoading ? 'Creando...' : 'Crear Board'}
             </Button>
             <Button
@@ -361,6 +357,7 @@ export default function BoardsPage() {
                 setIsCreateModalOpen(false);
                 setFormData({ name: '', description: '', workspaceId: '', color: BOARD_COLORS[0].value });
               }}
+              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>
@@ -423,8 +420,8 @@ export default function BoardsPage() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
-            <Button type="submit" disabled={isLoading} className="flex-1">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+            <Button type="submit" disabled={isLoading} className="w-full sm:flex-1">
               {isLoading ? 'Guardando...' : 'Guardar Cambios'}
             </Button>
             <Button
@@ -435,6 +432,7 @@ export default function BoardsPage() {
                 setSelectedBoard(null);
                 setFormData({ name: '', description: '', workspaceId: '', color: BOARD_COLORS[0].value });
               }}
+              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>

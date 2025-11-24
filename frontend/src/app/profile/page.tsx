@@ -72,17 +72,17 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-center" />
       
       {/* Header Centrado */}
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
 
       <Button
           type="button"
           variant="primary"
           onClick={() => window.history.back()}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 self-start md:self-auto"
         >
           <ArrowLeft className="w-4 h-4" />
           Regresar
@@ -90,23 +90,23 @@ export default function ProfilePage() {
 
 
         <div className="text-center flex-1">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Mi Perfil</h1>
-          <p className="text-gray-600">Administra tu información personal</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Mi Perfil</h1>
+          <p className="text-sm md:text-base text-gray-600">Administra tu información personal</p>
         </div>
-      <div className="w-24"></div>
+      <div className="w-0 md:w-24"></div>
     </div>
 
-      <div className="max-w-3xl mx-auto ">
+      <div className="max-w-3xl mx-auto">
         {/* Profile Card */}
-        <Card className="mb-6">
+        <Card className="mb-4 md:mb-6">
           {/* Avatar y Info del Usuario - Centrado */}
-          <div className="flex flex-col items-center gap-6 p-6 border-b border-gray-200 text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+          <div className="flex flex-col items-center gap-4 md:gap-6 p-4 md:p-6 border-b border-gray-200 text-center">
+            <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl md:text-3xl font-bold">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">{user?.name}</h2>
-              <p className="text-gray-600 mb-3">{user?.email}</p>
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-1 md:mb-2">{user?.name}</h2>
+              <p className="text-sm md:text-base text-gray-600 mb-2 md:mb-3 break-all">{user?.email}</p>
               <div className="flex justify-center">
                 {getRoleBadge(user?.role || 'viewer')}
               </div>
@@ -114,12 +114,12 @@ export default function ProfilePage() {
           </div>
 
           {/* Profile Form */}
-          <form onSubmit={handleUpdateProfile} className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form onSubmit={handleUpdateProfile} className="p-4 md:p-6 space-y-4 md:space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {/* Nombre */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
-                  <User className="w-4 h-4 inline mr-2" />
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2 text-center">
+                  <User className="w-3 h-3 md:w-4 md:h-4 inline mr-2" />
                   Nombre
                 </label>
                 <Input
@@ -134,8 +134,8 @@ export default function ProfilePage() {
 
               {/* Email (No editable) */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
-                  <Mail className="w-4 h-4 inline mr-2" />
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2 text-center">
+                  <Mail className="w-3 h-3 md:w-4 md:h-4 inline mr-2" />
                   Email
                   <span className="ml-2 text-xs text-gray-500">(No editable)</span>
                 </label>
@@ -150,12 +150,12 @@ export default function ProfilePage() {
 
             {/* Cambiar Contraseña */}
             {isEditing && (
-              <div className="border-t border-gray-200 pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-                  <Lock className="w-5 h-5 inline mr-2" />
+              <div className="border-t border-gray-200 pt-4 md:pt-6">
+                <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4 text-center">
+                  <Lock className="w-4 h-4 md:w-5 md:h-5 inline mr-2" />
                   Cambiar Contraseña
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <Input
                     label="Nueva Contraseña"
                     type="password"
@@ -177,12 +177,12 @@ export default function ProfilePage() {
             )}
 
             {/* Información del Rol */}
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-                <Shield className="w-5 h-5 inline mr-2" />
+            <div className="border-t border-gray-200 pt-4 md:pt-6">
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4 text-center">
+                <Shield className="w-4 h-4 md:w-5 md:h-5 inline mr-2" />
                 Información del Rol
               </h3>
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
+              <div className="bg-gray-50 rounded-lg p-3 md:p-4 text-center">
                 <p className="text-sm text-gray-600 mb-2">
                   <strong>Rol actual:</strong> 
                 </p>
@@ -202,13 +202,13 @@ export default function ProfilePage() {
           </form>
 
           {/* Botones - Centrados */}
-          <div className="px-6 pb-6">
-            <div className="flex gap-3 pt-4 border-t border-gray-200 justify-center">
+          <div className="px-4 md:px-6 pb-4 md:pb-6">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-3 md:pt-4 border-t border-gray-200 justify-center">
               {!isEditing ? (
                 <Button
                   type="button"
                   onClick={() => setIsEditing(true)}
-                  className="px-8"
+                  className="w-full sm:w-auto px-6 md:px-8"
                 >
                   Editar Perfil
                 </Button>
@@ -217,7 +217,7 @@ export default function ProfilePage() {
                   <Button 
                     type="button" 
                     onClick={handleUpdateProfile}
-                    className="px-8"
+                    className="w-full sm:w-auto px-6 md:px-8"
                   >
                     Guardar Cambios
                   </Button>
@@ -233,7 +233,7 @@ export default function ProfilePage() {
                         confirmPassword: '',
                       });
                     }}
-                    className="px-8"
+                    className="w-full sm:w-auto px-6 md:px-8"
                   >
                     Cancelar
                   </Button>
@@ -245,9 +245,9 @@ export default function ProfilePage() {
 
         {/* Información Adicional - Centrada */}
         <Card>
-          <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Información de la Cuenta</h3>
-            <div className="space-y-3 text-sm max-w-md mx-auto">
+          <div className="p-4 md:p-6">
+            <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4 text-center">Información de la Cuenta</h3>
+            <div className="space-y-2 md:space-y-3 text-xs md:text-sm max-w-md mx-auto">
               <div className="flex justify-between py-2 border-b border-gray-100">
                 <span className="text-gray-600">Fecha de registro:</span>
                 <span className="font-medium text-gray-900">

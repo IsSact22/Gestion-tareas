@@ -199,8 +199,8 @@ export default function KanbanBoard({
         onDragEnd={handleDragEnd}
       >
         {/* Kanban Board */}
-        <div className="flex-1 overflow-x-auto">
-          <div className="flex gap-6 p-6 min-h-full">
+        <div className="flex-1 overflow-x-auto overflow-y-hidden">
+          <div className="flex gap-3 md:gap-6 p-3 md:p-6 min-h-full">
             {columns.map((column) => (
               <KanbanColumn
                 key={column.id}
@@ -214,13 +214,13 @@ export default function KanbanBoard({
             ))}
 
             {/* Add Column Button */}
-            <div className="flex-shrink-0 w-80">
+            <div className="flex-shrink-0 w-72 md:w-80">
               <button
                 onClick={onAddColumn}
-                className="w-full h-full min-h-[200px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors flex flex-col items-center justify-center gap-2"
+                className="w-full h-full min-h-[150px] md:min-h-[200px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors flex flex-col items-center justify-center gap-2"
               >
-                <Plus size={32} />
-                <span className="font-medium">Agregar columna</span>
+                <Plus size={24} className="md:w-8 md:h-8" />
+                <span className="text-sm md:text-base font-medium">Agregar columna</span>
               </button>
             </div>
           </div>

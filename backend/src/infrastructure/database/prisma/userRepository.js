@@ -190,4 +190,22 @@ export default class UserRepository {
       take: 10
     });
   }
+
+  /**
+   * Buscar miembros del equipo del usuario
+   */
+  async findByTeam(userId) {
+    const workspaces = await prisma.workspace.findMany({
+      where: { OR: [{ ownerId: userId }, { members: { some: { userId } } }] },
+      select: { id: true }
+    });
+    const ids = workspaces.map(w => w.id);
+    if (!ids.length) return [];
+    return prisma.user.findMany({
+      where: { OR: [{ ownedWorkspaces: { some: { id: { in: ids } } } }, { workspaceMembers: { some: { workspaceId: { in: ids } } } }] },
+      select: { id: true, name: true, email: true, avatar: true, role: true, createdAt: true, updatedAt: true },
+      distinct: ['id'],
+      orderBy: { createdAt: 'desc' }
+    });
+  }
 }

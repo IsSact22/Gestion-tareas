@@ -15,10 +15,11 @@ import {
   UserCog,
   User
 } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 // Menús según el rol del usuario
 const getMenuItemsByRole = (role: string) => {
@@ -47,7 +48,7 @@ const getMenuItemsByRole = (role: string) => {
 };
 
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+  const { collapsed, toggleCollapsed } = useSidebar();
   const pathname = usePathname();
   const router = useRouter();
   const { logout, user } = useAuthStore();
@@ -63,12 +64,26 @@ export default function Sidebar() {
   };
 
   return (
-    <aside
-      className={cn(
-        'fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40',
-        collapsed ? 'w-20' : 'w-64'
-      )}
-    >
+    <>
+      {/* Overlay para móvil - solo visible cuando sidebar está abierto en móvil */}
+      <div
+        className={cn(
+          'fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity',
+          !collapsed ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        )}
+        onClick={toggleCollapsed}
+      />
+      
+      <aside
+        className={cn(
+          'fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40',
+          // Móvil: collapsed=true (cerrado), collapsed=false (abierto)
+          // Desktop: collapsed=true (colapsado 80px), collapsed=false (expandido 256px)
+          collapsed 
+            ? '-translate-x-full md:translate-x-0 md:w-20' 
+            : 'translate-x-0 w-64'
+        )}
+      >
       {/* Header */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
         {!collapsed ? (
@@ -93,9 +108,10 @@ export default function Sidebar() {
             />
           </Link>
         )}
+        {/* Botón de colapsar - solo visible en desktop */}
         <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+          onClick={toggleCollapsed}
+          className="hidden md:block p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
         >
           {collapsed ? (
             <ChevronRight className="w-5 h-5 text-gray-600" />
@@ -115,6 +131,12 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => {
+                // Cerrar sidebar en móvil al hacer clic en un link
+                if (window.innerWidth < 768) {
+                  toggleCollapsed();
+                }
+              }}
               className={cn(
                 'flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors',
                 isActive
@@ -178,5 +200,6 @@ export default function Sidebar() {
         )}
       </div>
     </aside>
+    </>
   );
 }

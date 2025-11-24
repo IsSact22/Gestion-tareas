@@ -112,12 +112,12 @@ export default function TasksPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mis Tareas</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Mis Tareas</h1>
+          <p className="text-sm md:text-base text-gray-600 mt-1">
             Todas las tareas asignadas a ti en todos los boards
           </p>
         </div>
@@ -125,6 +125,7 @@ export default function TasksPage() {
           variant="primary" 
           size="md"
           onClick={() => router.push('/boards')}
+          className="w-full sm:w-auto"
         >
           <Folder className="w-4 h-4 mr-2" />
           Ver Boards
@@ -132,50 +133,50 @@ export default function TasksPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
-        <Card variant="bordered" className="p-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <Card variant="bordered" className="p-3 md:p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Por hacer</p>
-              <p className="text-2xl font-bold text-gray-900">{tasksByStatus.todo}</p>
+              <p className="text-xs md:text-sm text-gray-600">Por hacer</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">{tasksByStatus.todo}</p>
             </div>
-            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-              <CheckSquare className="w-6 h-6 text-gray-600" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+              <CheckSquare className="w-5 h-5 md:w-6 md:h-6 text-gray-600" />
             </div>
           </div>
         </Card>
 
-        <Card variant="bordered" className="p-4">
+        <Card variant="bordered" className="p-3 md:p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">En progreso</p>
-              <p className="text-2xl font-bold text-blue-600">{tasksByStatus['in-progress']}</p>
+              <p className="text-xs md:text-sm text-gray-600">En progreso</p>
+              <p className="text-xl md:text-2xl font-bold text-blue-600">{tasksByStatus['in-progress']}</p>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <AlertCircle className="w-6 h-6 text-blue-600" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <AlertCircle className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
             </div>
           </div>
         </Card>
 
 
-        <Card variant="bordered" className="p-4">
+        <Card variant="bordered" className="p-3 md:p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Completadas</p>
-              <p className="text-2xl font-bold text-green-600">{tasksByStatus.done}</p>
+              <p className="text-xs md:text-sm text-gray-600">Completadas</p>
+              <p className="text-xl md:text-2xl font-bold text-green-600">{tasksByStatus.done}</p>
             </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <CheckSquare className="w-6 h-6 text-green-600" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <CheckSquare className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
             </div>
           </div>
         </Card>
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-colors ${
             filter === 'all'
               ? 'bg-blue-600 text-white'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -185,7 +186,7 @@ export default function TasksPage() {
         </button>
         <button
           onClick={() => setFilter('todo')}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-colors ${
             filter === 'todo'
               ? 'bg-blue-600 text-white'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -195,7 +196,7 @@ export default function TasksPage() {
         </button>
         <button
           onClick={() => setFilter('in-progress')}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-colors ${
             filter === 'in-progress'
               ? 'bg-blue-600 text-white'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -205,7 +206,7 @@ export default function TasksPage() {
         </button>
         <button
           onClick={() => setFilter('done')}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-colors ${
             filter === 'done'
               ? 'bg-blue-600 text-white'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -222,26 +223,26 @@ export default function TasksPage() {
               <Card 
                 key={task.id} 
                 variant="bordered" 
-                className="p-5 hover:shadow-lg transition-all"
+                className="p-4 md:p-5 hover:shadow-lg transition-all"
               >
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   {/* Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-lg text-gray-900">{task.title}</h3>
-                        <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${priorityColors[task.priority]}`}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                        <h3 className="font-semibold text-base md:text-lg text-gray-900 truncate">{task.title}</h3>
+                        <span className={`px-2 py-0.5 md:px-2.5 md:py-1 text-xs font-medium rounded-full ${priorityColors[task.priority]} w-fit`}>
                           {priorityLabels[task.priority]}
                         </span>
                       </div>
                       
                       {task.description && (
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                        <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2">
                           {task.description}
                         </p>
                       )}
 
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-gray-500">
                         {task.dueDate && (
                           <div className="flex items-center gap-1.5">
                             <Calendar size={16} />
@@ -272,17 +273,17 @@ export default function TasksPage() {
                           toast.error('No se puede acceder al board de esta tarea');
                         }
                       }}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      className="p-1.5 md:p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
                       title="Ver en el board"
                       disabled={!task.board}
                     >
-                      <ArrowRight size={20} className={task.board ? 'text-gray-400' : 'text-gray-200'} />
+                      <ArrowRight size={18} className={`md:w-5 md:h-5 ${task.board ? 'text-gray-400' : 'text-gray-200'}`} />
                     </button>
                   </div>
 
                   {/* Status Buttons */}
-                  <div className="flex items-center gap-2 pt-3 border-t">
-                    <span className="text-sm font-medium text-gray-700 mr-2">Estado:</span>
+                  <div className="flex flex-wrap items-center gap-2 pt-2 md:pt-3 border-t">
+                    <span className="text-xs md:text-sm font-medium text-gray-700 mr-1 md:mr-2">Estado:</span>
                     {(Object.keys(statusLabels) as Array<keyof typeof statusLabels>).map((status) => {
                       const Icon = statusIcons[status];
                       return (
