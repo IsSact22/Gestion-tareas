@@ -160,17 +160,17 @@ export default function AdminTasksPage() {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       
       {/* Header Centrado */}
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
 
       <Button
           type="button"
           variant="primary"
           onClick={() => window.history.back()}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 self-start md:self-auto"
         >
           <ArrowLeft className="w-4 h-4" />
           Regresar
@@ -178,57 +178,57 @@ export default function AdminTasksPage() {
 
 
         <div className="text-center flex-1">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Tareas</h1>
-          <p className="text-gray-600">Vista general de todas las tareas del sistema</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Gestión de Tareas</h1>
+          <p className="text-sm md:text-base text-gray-600">Vista general de todas las tareas del sistema</p>
         </div>
-      <div className="w-24"></div>
+      <div className="w-0 md:w-24"></div>
     </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <Card className="p-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+        <Card className="p-3 md:p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-600 mb-1">Total</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">{stats.total}</p>
             </div>
-            <CheckSquare className="w-8 h-8 text-gray-400" />
+            <CheckSquare className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
           </div>
         </Card>
 
-        <Card className="p-4">
+        <Card className="p-3 md:p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-600 mb-1">Por hacer</p>
-              <p className="text-2xl font-bold text-gray-600">{stats.todo}</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-600">{stats.todo}</p>
             </div>
-            <Clock className="w-8 h-8 text-gray-400" />
+            <Clock className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
           </div>
         </Card>
 
-        <Card className="p-4">
+        <Card className="p-3 md:p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-600 mb-1">En progreso</p>
-              <p className="text-2xl font-bold text-blue-600">{stats.in_progress}</p>
+              <p className="text-xl md:text-2xl font-bold text-blue-600">{stats.in_progress}</p>
             </div>
-            <AlertCircle className="w-8 h-8 text-blue-400" />
+            <AlertCircle className="w-6 h-6 md:w-8 md:h-8 text-blue-400" />
           </div>
         </Card>
 
-        <Card className="p-4">
+        <Card className="p-3 md:p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-600 mb-1">Completadas</p>
-              <p className="text-2xl font-bold text-green-600">{stats.done}</p>
+              <p className="text-xl md:text-2xl font-bold text-green-600">{stats.done}</p>
             </div>
-            <CheckCircle2 className="w-8 h-8 text-green-400" />
+            <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-green-400" />
           </div>
         </Card>
       </div>
 
       {/* Priority Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
@@ -278,14 +278,14 @@ export default function AdminTasksPage() {
       </div>
 
       {/* Filters */}
-      <Card className="p-4 mb-6">
-        <div className="flex items-center gap-4">
+      <Card className="p-3 md:p-4 mb-4 md:mb-6">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">
               Filtrar por Estado
             </label>
             <select
-              className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-3 md:px-4 py-2 text-sm md:text-base border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
             >
@@ -297,11 +297,11 @@ export default function AdminTasksPage() {
           </div>
 
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">
               Filtrar por Prioridad
             </label>
             <select
-              className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-3 md:px-4 py-2 text-sm md:text-base border text-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={filterPriority}
               onChange={(e) => setFilterPriority(e.target.value)}
             >
@@ -314,8 +314,8 @@ export default function AdminTasksPage() {
         </div>
       </Card>
 
-      {/* Tasks Table */}
-      <Card>
+      {/* Tasks Table - Desktop */}
+      <Card className="hidden md:block">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -434,6 +434,83 @@ export default function AdminTasksPage() {
           </table>
         </div>
       </Card>
+
+      {/* Tasks Cards - Mobile */}
+      <div className="md:hidden space-y-3">
+        {filteredTasks.map((task) => (
+          <Card
+            key={task.id}
+            className="p-3 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => {
+              const boardId = typeof task.board === 'string' ? task.board : task.board?.id;
+              if (boardId) {
+                router.push(`/boards/${boardId}`);
+              } else {
+                toast.error('No se puede acceder al board de esta tarea');
+              }
+            }}
+          >
+            <div className="space-y-2">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-sm text-gray-900 truncate">{task.title}</h3>
+                  {task.description && (
+                    <p className="text-xs text-gray-500 line-clamp-2 mt-1">
+                      {task.description}
+                    </p>
+                  )}
+                </div>
+                <QuickTaskActions
+                  taskId={task.id}
+                  currentStatus={task.status}
+                  currentPriority={task.priority}
+                  onUpdate={fetchAllTasks}
+                />
+              </div>
+              
+              <div className="flex items-center gap-2 flex-wrap">
+                {getStatusBadge(task.status)}
+                {getPriorityBadge(task.priority)}
+              </div>
+              
+              <div className="text-xs text-gray-500">
+                <div className="flex items-center gap-1 mb-1">
+                  <span className="font-medium">Board:</span>
+                  <span>{typeof task.board === 'string' ? task.board : (task.board?.name || 'Sin tablero')}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  <span>{new Date(task.createdAt).toLocaleDateString('es-ES')}</span>
+                </div>
+              </div>
+              
+              {task.assignedTo && Array.isArray(task.assignedTo) && task.assignedTo.length > 0 && (
+                <div className="flex items-center gap-2 pt-2 border-t">
+                  <div className="flex -space-x-2">
+                    {task.assignedTo.slice(0, 3).map((user) => (
+                      <div
+                        key={user.id}
+                        className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-semibold border-2 border-white"
+                        title={user.name}
+                      >
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                    ))}
+                    {task.assignedTo.length > 3 && (
+                      <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-gray-700 text-xs font-semibold border-2 border-white">
+                        +{task.assignedTo.length - 3}
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-xs text-gray-600">
+                    {task.assignedTo.length} asignado{task.assignedTo.length > 1 ? 's' : ''}
+                  </span>
+                </div>
+              )}
+            </div>
+          </Card>
+        ))}
+      </div>
 
       {/* Empty State */}
       {filteredTasks.length === 0 && (

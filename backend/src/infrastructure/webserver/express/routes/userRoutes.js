@@ -12,7 +12,7 @@ router.get("/search", searchUsers);
 router.put("/profile", updateUser); // Usuario actualiza su propio perfil
 
 // Rutas solo para admins
-router.get("/", isAdmin, getAllUsers); // Solo admin puede ver todos los usuarios
+router.get("/", getAllUsers); // Solo admin puede ver todos los usuarios
 router.get("/:id", getUserById); // Cualquiera puede ver un usuario específico
 router.put("/:id", isAdmin, updateUserByAdmin); // Solo admin puede actualizar cualquier usuario
 router.delete("/:id", isAdmin, deleteUser); // Solo admin puede eliminar usuarios

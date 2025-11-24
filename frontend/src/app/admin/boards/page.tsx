@@ -105,17 +105,17 @@ export default function AdminBoardsPage() {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       
        {/* Header Centrado */}
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
 
       <Button
           type="button"
           variant="primary"
           onClick={() => window.history.back()}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 self-start md:self-auto"
         >
           <ArrowLeft className="w-4 h-4" />
           Regresar
@@ -123,53 +123,53 @@ export default function AdminBoardsPage() {
 
 
         <div className="text-center flex-1">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestión de Boards</h1>
-          <p className="text-gray-600">Vista general de todas los boards del sistema</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Gestión de Boards</h1>
+          <p className="text-sm md:text-base text-gray-600">Vista general de todas los boards del sistema</p>
         </div>
-      <div className="w-24"></div>
+      <div className="w-0 md:w-24"></div>
     </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+        <Card className="p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total Boards</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
+              <p className="text-xs md:text-sm text-gray-600 mb-1">Total Boards</p>
+              <p className="text-2xl md:text-3xl font-bold text-gray-900">{stats.total}</p>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Trello className="w-6 h-6 text-blue-600" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Trello className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
             </div>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Activos</p>
-              <p className="text-3xl font-bold text-green-600">{stats.active}</p>
+              <p className="text-xs md:text-sm text-gray-600 mb-1">Activos</p>
+              <p className="text-2xl md:text-3xl font-bold text-green-600">{stats.active}</p>
             </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <Eye className="w-6 h-6 text-green-600" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <Eye className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
             </div>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Archivados</p>
-              <p className="text-3xl font-bold text-gray-600">{stats.archived}</p>
+              <p className="text-xs md:text-sm text-gray-600 mb-1">Archivados</p>
+              <p className="text-2xl md:text-3xl font-bold text-gray-600">{stats.archived}</p>
             </div>
-            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-gray-600" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+              <Calendar className="w-5 h-5 md:w-6 md:h-6 text-gray-600" />
             </div>
           </div>
         </Card>
       </div>
 
       {/* Boards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {boards.map((board) => (
           <Card
             key={board.id}
@@ -177,65 +177,65 @@ export default function AdminBoardsPage() {
             onClick={() => router.push(`/boards/${board.id}`)}
           >
             <div
-              className="h-32 rounded-t-lg"
+              className="h-24 md:h-32 rounded-t-lg"
               style={{ backgroundColor: board.color || '#8B5CF6' }}
             >
-              <div className="p-4 h-full flex flex-col justify-between">
+              <div className="p-3 md:p-4 h-full flex flex-col justify-between">
                 <div className="flex items-start justify-between">
-                  <h3 className="text-xl font-bold text-white">{board.name}</h3>
+                  <h3 className="text-lg md:text-xl font-bold text-white truncate">{board.name}</h3>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedBoard(board);
                       setIsMembersModalOpen(true);
                     }}
-                    className="p-1 hover:bg-white/20 rounded transition-colors"
+                    className="p-1 hover:bg-white/20 rounded transition-colors flex-shrink-0"
                     title="Gestionar miembros"
                   >
-                    <UserPlus className="w-5 h-5 text-white" />
+                    <UserPlus className="w-4 h-4 md:w-5 md:h-5 text-white" />
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="p-4">
+            <div className="p-3 md:p-4">
               {/* Description */}
               {board.description && (
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2">
                   {board.description}
                 </p>
               )}
 
               {/* Workspace */}
-              <div className="mb-3 pb-3 border-b border-gray-200">
+              <div className="mb-2 md:mb-3 pb-2 md:pb-3 border-b border-gray-200">
                 <p className="text-xs text-gray-500 mb-1">Workspace</p>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-xs md:text-sm font-medium text-gray-900 truncate">
                   {typeof board.workspace === 'string' ? board.workspace : board.workspace.name}
                 </p>
               </div>
 
               {/* Members */}
-              <div className="mb-3">
-                <div className="flex items-center justify-between mb-2">
+              <div className="mb-2 md:mb-3">
+                <div className="flex items-center justify-between mb-1 md:mb-2">
                   <p className="text-xs text-gray-500">Miembros</p>
                   <span className="text-xs font-medium text-gray-700">
                     {board.members.length}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-gray-400" />
+                  <Users className="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
                   <div className="flex -space-x-2">
                     {board.members.slice(0, 5).map((member, idx) => (
                       <div
                         key={idx}
-                        className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-semibold border-2 border-white"
+                        className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-semibold border-2 border-white"
                         title={member.user.name}
                       >
                         {member.user.name.charAt(0).toUpperCase()}
                       </div>
                     ))}
                     {board.members.length > 5 && (
-                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-xs font-semibold border-2 border-white">
+                      <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-xs font-semibold border-2 border-white">
                         +{board.members.length - 5}
                       </div>
                     )}
@@ -244,28 +244,29 @@ export default function AdminBoardsPage() {
               </div>
 
               {/* Admin */}
-              <div className="mb-3">
+              <div className="mb-2 md:mb-3">
                 <p className="text-xs text-gray-500 mb-1">Administrador</p>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   {board.members
                     .filter((m) => m.role === 'admin')
                     .slice(0, 2)
                     .map((admin, idx) => (
                       <div key={idx} className="flex items-center gap-1">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-semibold">
+                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-semibold">
                           {admin.user.name.charAt(0).toUpperCase()}
                         </div>
-                        <span className="text-xs text-gray-700">{admin.user.name}</span>
+                        <span className="text-xs text-gray-700 truncate max-w-[100px]">{admin.user.name}</span>
                       </div>
                     ))}
                 </div>
               </div>
 
               {/* Dates */}
-              <div className="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-gray-200">
-                <div>
-                  <Calendar className="w-3 h-3 inline mr-1" />
-                  Creado: {new Date(board.createdAt).toLocaleDateString('es-ES')}
+              <div className="flex items-center justify-between text-xs text-gray-500 pt-2 md:pt-3 border-t border-gray-200">
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  <span className="hidden sm:inline">Creado:</span>
+                  <span>{new Date(board.createdAt).toLocaleDateString('es-ES')}</span>
                 </div>
               </div>
             </div>

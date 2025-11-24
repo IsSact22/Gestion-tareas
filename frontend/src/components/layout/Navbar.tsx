@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, Menu } from 'lucide-react';
 import { useState, useCallback } from 'react';
 import Button from '@/components/ui/Button';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import { useRouter } from 'next/navigation';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
+  const { toggleCollapsed } = useSidebar();
 
   // Función para realizar la búsqueda
   const performSearch = useCallback(async (query: string) => {
@@ -63,7 +65,16 @@ export default function Navbar() {
 
   return (
     <header className="h-16 bg-white border-b border-gray-200">
-      <div className="h-full px-6 flex items-center justify-between">
+      <div className="h-full px-4 md:px-6 flex items-center justify-between gap-3">
+        {/* Menu Button - Solo móvil */}
+        <button
+          onClick={toggleCollapsed}
+          className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          aria-label="Toggle menu"
+        >
+          <Menu className="w-5 h-5 text-gray-700" />
+        </button>
+
         {/* Search con resultados */}
         <div className="flex-1 max-w-xl relative">
           <div className="relative">

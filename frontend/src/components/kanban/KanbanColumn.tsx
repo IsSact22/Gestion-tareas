@@ -32,13 +32,13 @@ export default function KanbanColumn({
   const taskIds = tasks.map((task) => task.id);
 
   return (
-    <div className="flex-shrink-0 w-80">
-      <div className="bg-gray-50 rounded-lg p-4 h-full flex flex-col">
+    <div className="flex-shrink-0 w-72 md:w-80">
+      <div className="bg-gray-50 rounded-lg p-3 md:p-4 h-full flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3 md:mb-4">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-gray-900">{column.name}</h3>
-            <span className="px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-700">
+            <h3 className="font-semibold text-sm md:text-base text-gray-900 truncate">{column.name}</h3>
+            <span className="px-1.5 md:px-2 py-0.5 md:py-1 text-xs rounded-full bg-gray-200 text-gray-700 flex-shrink-0">
               {tasks.length}
             </span>
           </div>
@@ -88,7 +88,7 @@ export default function KanbanColumn({
         {/* Tasks Container */}
         <div
           ref={setNodeRef}
-          className={`flex-1 overflow-y-auto space-y-3 min-h-[200px] ${
+          className={`flex-1 overflow-y-auto space-y-2 md:space-y-3 min-h-[150px] md:min-h-[200px] ${
             isOver ? 'bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg' : ''
           }`}
         >
@@ -103,7 +103,7 @@ export default function KanbanColumn({
           </SortableContext>
 
           {tasks.length === 0 && !isOver && (
-            <div className="text-center text-gray-400 text-sm py-8">
+            <div className="text-center text-gray-400 text-xs md:text-sm py-6 md:py-8">
               No hay tareas
             </div>
           )}
@@ -112,9 +112,9 @@ export default function KanbanColumn({
         {/* Add Task Button */}
         <button
           onClick={onAddTask}
-          className="mt-4 w-full py-2 px-4 bg-white border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
+          className="mt-3 md:mt-4 w-full py-1.5 md:py-2 px-3 md:px-4 bg-white border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
         >
-          <Plus size={18} />
+          <Plus size={16} className="md:w-[18px] md:h-[18px]" />
           <span>Agregar tarea</span>
         </button>
       </div>

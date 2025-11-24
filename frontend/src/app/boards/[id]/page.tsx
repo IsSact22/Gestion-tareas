@@ -136,32 +136,32 @@ export default function BoardDetailPage() {
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
+      <div className="bg-white border-b border-gray-200 px-3 md:px-6 py-3 md:py-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
           {/* Left Section */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto">
             <button
               onClick={() => router.push('/boards')}
-              className="p-2 hover:bg-gray-500 text-gray-700 rounded-lg transition-colors"
+              className="p-1.5 md:p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors"
             >
-              <ArrowLeft size={20} />
-                      </button>
+              <ArrowLeft size={18} className="md:w-5 md:h-5" />
+            </button>
             <button
               onClick={() => router.push('/dashboard')}
-              className="p-2 hover:bg-gray-500 text-gray-700 rounded-lg transition-colors"
+              className="p-1.5 md:p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors"
             >
-              <Home size={20} />
+              <Home size={18} className="md:w-5 md:h-5" />
             </button>
 
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                {currentBoard.name}
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <Star size={18} className="text-gray-400 hover:text-yellow-500" />
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg md:text-2xl font-bold text-gray-900 flex items-center gap-2 truncate">
+                <span className="truncate">{currentBoard.name}</span>
+                <button className="p-1 hover:bg-gray-100 rounded flex-shrink-0">
+                  <Star size={16} className="md:w-[18px] md:h-[18px] text-gray-400 hover:text-yellow-500" />
                 </button>
               </h1>
               {currentBoard.description && (
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-1">
                   {currentBoard.description}
                 </p>
               )}
@@ -169,47 +169,47 @@ export default function BoardDetailPage() {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto justify-between md:justify-end">
             {/* Members */}
             <div className="flex -space-x-2">
-              {currentBoard.members?.slice(0, 5).map((member, index) => (
+              {currentBoard.members?.slice(0, 3).map((member, index) => (
                 <div
                   key={`${member.user.id}-${index}`}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-medium border-2 border-white"
+                  className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs md:text-sm font-medium border-2 border-white"
                   title={member.user.name}
                 >
                   {member.user.name.charAt(0).toUpperCase()}
                 </div>
               ))}
-              {currentBoard.members && currentBoard.members.length > 5 && (
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-700 text-xs font-medium border-2 border-white">
-                  +{currentBoard.members.length - 5}
+              {currentBoard.members && currentBoard.members.length > 3 && (
+                <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-700 text-xs font-medium border-2 border-white">
+                  +{currentBoard.members.length - 3}
                 </div>
               )}
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-1 md:gap-2">
               <button 
                 onClick={() => setShowMemberModal(true)}
-                className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2"
+                className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-1 md:gap-2 text-xs md:text-sm"
                 title="Invitar miembro"
               >
-                <UserPlus size={18} />
-                <span>Invitar</span>
+                <UserPlus size={16} className="md:w-[18px] md:h-[18px]" />
+                <span className="hidden sm:inline">Invitar</span>
               </button>
               
               <button 
                 onClick={() => setShowManageMembersModal(true)}
-                className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+                className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-1 md:gap-2 text-xs md:text-sm"
                 title="Gestionar miembros"
               >
-                <Users size={18} />
-                <span>Gestionar</span>
+                <Users size={16} className="md:w-[18px] md:h-[18px]" />
+                <span className="hidden sm:inline">Gestionar</span>
               </button>
             </div>
 
-            <button className="p-2 hover:bg-gray-500 text-gray-700 rounded-lg transition-colors">
-              <Settings size={20} />
+            <button className="p-1.5 md:p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors">
+              <Settings size={18} className="md:w-5 md:h-5" />
             </button>
           </div>
         </div>

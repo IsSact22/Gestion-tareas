@@ -88,17 +88,17 @@ export default function WorkspacesPage() {
   }
 
     return (
-        <div className="p-8 min-h-screen bg-gray-50">
+        <div className="p-4 md:p-8 min-h-screen bg-gray-50">
             <Toaster position="top-right" />
 
-            <div className="mb-8 flex items-center justify-between">
+            <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
   
             {/* 1. IZQUIERDA: Botón Regresar */}
-            <div className="w-48 flex justify-start"> {/* Contenedor para asegurar alineación */}
+            <div className="w-full md:w-48 flex justify-start">
                 <Button
                 type="button"
                 variant="primary"
-                onClick={() => window.history.back()}
+                onClick={() => router.push('/dashboard')}
                 className="flex items-center gap-2"
                 >
                 <ArrowLeft className="w-4 h-4" />
@@ -107,16 +107,16 @@ export default function WorkspacesPage() {
             </div>
 
             {/* 2. CENTRO: Título */}
-            <div className="text-center flex-1 px-4">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Workspaces</h1>
-                <p className="text-gray-600">Organiza tus proyectos en espacios de trabajo</p>
+            <div className="text-center flex-1 px-0 md:px-4">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Workspaces</h1>
+                <p className="text-sm md:text-base text-gray-600">Organiza tus proyectos en espacios de trabajo</p>
             </div>
 
             {/* 3. DERECHA: Botón Nuevo Workspace */}
-            <div className="w-48 flex justify-end"> {/* Contenedor del mismo ancho que el izquierdo para centrar perfecto el título */}
+            <div className="w-full md:w-48 flex justify-start md:justify-end">
                 <button
                 onClick={() => setIsCreateModalOpen(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm"                >
+                className="bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm text-sm md:text-base w-full md:w-auto justify-center">
                 <Plus className="w-4 h-4" />
                 <span>Nuevo Workspace</span>
                 </button>
@@ -126,43 +126,43 @@ export default function WorkspacesPage() {
 
             {/* Empty State */}
             {workspaces.length === 0 ? (
-                <div className="flex flex-col items-center justify-center bg-white rounded-2xl border-2 border-dashed border-gray-300 py-16 text-center shadow-sm">
-                    <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-5">
-                        <Folder className="w-10 h-10 text-blue-500" />
+                <div className="flex flex-col items-center justify-center bg-white rounded-2xl border-2 border-dashed border-gray-300 py-12 md:py-16 px-4 text-center shadow-sm">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-blue-50 rounded-full flex items-center justify-center mb-4 md:mb-5">
+                        <Folder className="w-8 h-8 md:w-10 md:h-10 text-blue-500" />
                     </div>
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                    <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
                         No hay workspaces aún
                     </h3>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-sm md:text-base text-gray-600 mb-6">
                         Crea tu primer workspace para comenzar a organizar tus proyectos.
                     </p>
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm text-sm md:text-base"
                     >
-                        <Plus className="w-5 h-5" />
+                        <Plus className="w-4 h-4 md:w-5 md:h-5" />
                         <span>Crear Workspace</span>
                     </button>
                 </div>
             ) : (
                 /* Workspaces Grid */
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                     {workspaces.map((workspace) => (
                         <div
                             key={workspace.id}
                             onClick={() => openEditModal(workspace)}
-                            className="group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-xl hover:scale-[1.01] transition-all cursor-pointer relative"
+                            className="group bg-white rounded-xl border border-gray-200 p-4 md:p-6 hover:shadow-xl hover:scale-[1.01] transition-all cursor-pointer relative"
                         >
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex-1">
-                                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
-                                        <Folder className="w-6 h-6 text-blue-600" />
+                            <div className="flex items-start justify-between mb-3 md:mb-4">
+                                <div className="flex-1 min-w-0">
+                                    <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-2 md:mb-3">
+                                        <Folder className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors truncate">
                                         {workspace.name}
                                     </h3>
                                     {workspace.description && (
-                                        <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                                        <p className="text-gray-600 text-xs md:text-sm mb-2 line-clamp-2">
                                             {workspace.description}
                                         </p>
                                     )}
@@ -204,13 +204,13 @@ export default function WorkspacesPage() {
                             </div>
 
                             {/* Footer info */}
-                            <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs md:text-sm text-gray-500 pt-3 md:pt-4 border-t border-gray-100">
                                 <div className="flex items-center gap-1">
-                                    <Users className="w-4 h-4" />
+                                    <Users className="w-3 h-3 md:w-4 md:h-4" />
                                     <span>{workspace.members?.length || 0} miembros</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <Calendar className="w-4 h-4" />
+                                    <Calendar className="w-3 h-3 md:w-4 md:h-4" />
                                     <span>{formatDate(workspace.createdAt)}</span>
                                 </div>
                             </div>
@@ -255,8 +255,8 @@ export default function WorkspacesPage() {
                         />
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <Button type="submit" disabled={isLoading} className="flex-1">
+                    <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+                        <Button type="submit" disabled={isLoading} className="w-full sm:flex-1">
                             {isLoading ? "Creando..." : "Crear Workspace"}
                         </Button>
                         <Button
@@ -266,6 +266,7 @@ export default function WorkspacesPage() {
                                 setIsCreateModalOpen(false);
                                 setFormData({ name: "", description: "" });
                             }}
+                            className="w-full sm:w-auto"
                         >
                             Cancelar
                         </Button>
@@ -331,17 +332,18 @@ export default function WorkspacesPage() {
                         </div>
 
                         {/* Agregar miembro */}
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <Input
                                 type="email"
                                 placeholder="Email del miembro"
                                 value={newMemberEmail}
                                 onChange={(e) => setNewMemberEmail(e.target.value)}
+                                className="flex-1"
                             />
                             <select
                                 value={memberRole}
                                 onChange={(e) => setMemberRole(e.target.value)}
-                                className="px-3 py-2 border text-gray-800 border-gray-300 rounded-lg text-sm"
+                                className="px-3 py-2 border text-gray-800 border-gray-300 rounded-lg text-sm w-full sm:w-auto"
                             >
                                 <option value="member">Miembro</option>
                                 <option value="admin">Admin</option>
@@ -355,14 +357,15 @@ export default function WorkspacesPage() {
                                         setNewMemberEmail('');
                                     }
                                 }}
+                                className="w-full sm:w-auto"
                             >
                                 Agregar
                             </Button>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <Button type="submit" disabled={isLoading} className="flex-1">
+                    <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+                        <Button type="submit" disabled={isLoading} className="w-full sm:flex-1">
                             {isLoading ? "Guardando..." : "Guardar Cambios"}
                         </Button>
                         <Button
@@ -375,6 +378,7 @@ export default function WorkspacesPage() {
                                 setNewMemberEmail('');
                                 setMemberRole('member');
                             }}
+                            className="w-full sm:w-auto"
                         >
                             Cancelar
                         </Button>

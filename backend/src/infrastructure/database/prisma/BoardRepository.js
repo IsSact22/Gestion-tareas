@@ -115,6 +115,7 @@ export default class BoardRepository {
             data: {
                 name: data.name,
                 description: data.description,
+                color: data.color || '#8B5CF6',
                 workspaceId: data.workspace,
                 members: {
                     create: data.members?.map(member => ({
@@ -151,6 +152,7 @@ export default class BoardRepository {
             data: {
                 ...(data.name && { name: data.name }),
                 ...(data.description !== undefined && { description: data.description }),
+                ...(data.color && { color: data.color }),
             },
             include: {
                 workspace: true,
