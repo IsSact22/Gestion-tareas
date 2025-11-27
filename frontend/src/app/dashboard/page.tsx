@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -5,6 +6,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useBoardStore } from '@/store/boardStore';
 import { Task } from '@/services/taskService';
+import { Team } from '@/services/teamService';
 import socketService from '@/services/socketService';
 import Card from '@/components/ui/Card';
 import { 
@@ -26,7 +28,7 @@ export default function DashboardPage() {
   const { user } = useAuthStore();
   const { workspaces, isLoading, fetchWorkspaces } = useWorkspaceStore();
   const { boards, isLoading: boardsLoading, fetchBoards } = useBoardStore();
-  const [teams, setTeams] = useState([]); // Usar useState en lugar de useTeamStore
+  const [teams, setTeams] = useState<Team[]>([]); // Usar useState en lugar de useTeamStore
   const [teamsLoading, setTeamsLoading] = useState(true);
   const [myTasks, setMyTasks] = useState<Task[]>([]);
   const [tasksLoading, setTasksLoading] = useState(true);

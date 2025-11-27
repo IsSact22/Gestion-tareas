@@ -19,7 +19,16 @@ class SocketService {
       return;
     }
 
-    const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    if (this.socket) {
+      console.log('⏳ Socket.IO ya está en proceso de conexión');
+      return;
+    }
+
+    // Socket.IO debe conectar al servidor sin la ruta /api
+    const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const SOCKET_URL = baseURL.replace('/api', '');
+
+    console.log('🔌 Conectando a Socket.IO:', SOCKET_URL);
 
     this.socket = io(SOCKET_URL, {
       auth: { token },
@@ -27,7 +36,10 @@ class SocketService {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
-      reconnectionAttempts: this.maxReconnectAttempts
+      reconnectionAttempts: this.maxReconnectAttempts,
+      path: '/socket.io/',
+      rejectUnauthorized: false,
+      forceNew: false
     });
 
     this.setupEventListeners();
@@ -53,8 +65,12 @@ class SocketService {
       }
     });
 
-    this.socket.on('connect_error', (error) => {
-      console.error('❌ Error de conexión Socket.IO:', error.message);
+    this.socket.on('connect_error', (error: any) => {
+      console.error('❌ Error de conexión Socket.IO:', {
+        message: error.message,
+        data: error.data,
+        type: error.type
+      });
       this.reconnectAttempts++;
       
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {
@@ -65,6 +81,10 @@ class SocketService {
     this.socket.on('reconnect', (attemptNumber) => {
       console.log(`🔄 Reconectado después de ${attemptNumber} intentos`);
       toast.success('Reconectado', { duration: 2000 });
+    });
+
+    this.socket.on('error', (error: any) => {
+      console.error('❌ Error en Socket.IO:', error);
     });
   }
 

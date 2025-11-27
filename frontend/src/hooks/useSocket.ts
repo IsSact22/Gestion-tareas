@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import socketService from '@/services/socketService';
 import { useAuthStore } from '@/store/authStore';
 
@@ -7,9 +7,13 @@ import { useAuthStore } from '@/store/authStore';
  */
 export function useSocket() {
   const { token, isAuthenticated } = useAuthStore();
+  const connectionAttempted = useRef(false);
 
   useEffect(() => {
-    if (isAuthenticated && token) {
+    if (isAuthenticated && token && !connectionAttempted.current) {
+      connectionAttempted.current = true;
+      console.log('🔌 Intentando conectar Socket.IO con token:', token.substring(0, 20) + '...');
+      
       // Conectar al socket
       socketService.connect(token);
 
