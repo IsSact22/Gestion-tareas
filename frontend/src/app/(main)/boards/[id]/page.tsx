@@ -13,7 +13,7 @@ import TaskModal from '@/components/modals/TaskModal';
 import TaskDetailModal from '@/components/modals/TaskDetailModal';
 import AddBoardMemberModal from '@/components/modals/AddBoardMemberModal';
 import ManageMembersModal from '@/components/modals/ManageMembersModal';
-import { ArrowLeft, Users, Settings, Star, Home, UserPlus } from 'lucide-react';
+import { Users, Settings, Star, UserPlus, MoreHorizontal, Share2, Filter, ChevronLeft } from 'lucide-react';
 import { Column } from '@/services/columnService';
 import { Task } from '@/services/taskService';
 
@@ -134,89 +134,100 @@ export default function BoardDetailPage() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-3 md:px-6 py-3 md:py-4">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          {/* Left Section */}
-          <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto">
-            <button
-              onClick={() => router.push('/boards')}
-              className="p-1.5 md:p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors"
-            >
-              <ArrowLeft size={18} className="md:w-5 md:h-5" />
-            </button>
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="p-1.5 md:p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors"
-            >
-              <Home size={18} className="md:w-5 md:h-5" />
-            </button>
+    <div className="flex flex-col h-full bg-gray-50">
+      
+      {/* --- NUEVO HEADER PREMIUM --- */}
+      <header className="flex-shrink-0 bg-white border-b border-gray-200 h-16 md:h-18 px-4 md:px-6 flex items-center justify-between sticky top-0 z-20">
+        
+        {/* Izquierda: Navegación y Título */}
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          <button 
+            onClick={() => router.push('/boards')}
+            className="p-2 -ml-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Volver a mis tableros"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          
+          <div className="h-6 w-px bg-gray-200 hidden md:block" />
 
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg md:text-2xl font-bold text-gray-900 flex items-center gap-2 truncate">
-                <span className="truncate">{currentBoard.name}</span>
-                <button className="p-1 hover:bg-gray-100 rounded flex-shrink-0">
-                  <Star size={16} className="md:w-[18px] md:h-[18px] text-gray-400 hover:text-yellow-500" />
-                </button>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded bg-indigo-500 flex-shrink-0" 
+                style={{ backgroundColor: currentBoard.color }} // Si tienes color en el board
+              />
+              <h1 className="text-lg md:text-xl font-bold text-gray-900 truncate tracking-tight">
+                {currentBoard.name}
               </h1>
-              {currentBoard.description && (
-                <p className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-1">
-                  {currentBoard.description}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Right Section */}
-          <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto justify-between md:justify-end">
-            {/* Members */}
-            <div className="flex -space-x-2">
-              {currentBoard.members?.slice(0, 3).map((member, index) => (
-                <div
-                  key={`${member.user.id}-${index}`}
-                  className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs md:text-sm font-medium border-2 border-white"
-                  title={member.user.name}
-                >
-                  {member.user.name.charAt(0).toUpperCase()}
-                </div>
-              ))}
-              {currentBoard.members && currentBoard.members.length > 3 && (
-                <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-700 text-xs font-medium border-2 border-white">
-                  +{currentBoard.members.length - 3}
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-1 md:gap-2">
               <button 
-                onClick={() => setShowMemberModal(true)}
-                className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-1 md:gap-2 text-xs md:text-sm"
-                title="Invitar miembro"
+                className="text-gray-300 hover:text-yellow-400 transition-colors focus:outline-none"
+                onClick={() => {/* Lógica de favorito */}}
               >
-                <UserPlus size={16} className="md:w-[18px] md:h-[18px]" />
-                <span className="hidden sm:inline">Invitar</span>
-              </button>
-              
-              <button 
-                onClick={() => setShowManageMembersModal(true)}
-                className="px-2 md:px-4 py-1.5 md:py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-1 md:gap-2 text-xs md:text-sm"
-                title="Gestionar miembros"
-              >
-                <Users size={16} className="md:w-[18px] md:h-[18px]" />
-                <span className="hidden sm:inline">Gestionar</span>
+                <Star size={16} className={currentBoard.isFavorite ? "fill-yellow-400 text-yellow-400" : ""} />
               </button>
             </div>
-
-            <button className="p-1.5 md:p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors">
-              <Settings size={18} className="md:w-5 md:h-5" />
-            </button>
+            {/* Descripción opcional pequeña */}
+            {currentBoard.description && (
+               <p className="text-xs text-gray-500 truncate hidden md:block mt-0.5">
+                 {currentBoard.description}
+               </p>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Kanban Board */}
-      <div className="flex-1 overflow-hidden">
+        {/* Derecha: Acciones y Miembros */}
+        <div className="flex items-center gap-3 md:gap-4">
+          
+          {/* Avatares superpuestos (Avatar Stack) */}
+          <div className="flex items-center -space-x-2 md:-space-x-3 overflow-hidden pl-2">
+            {currentBoard.members?.slice(0, 4).map((member, i) => (
+              <div 
+                key={i} 
+                className="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-medium shadow-sm z-0 hover:z-10 hover:scale-110 transition-transform cursor-default"
+                title={member.user.name}
+              >
+                {member.user.name.charAt(0).toUpperCase()}
+              </div>
+            ))}
+            <button
+               onClick={() => setShowMemberModal(true)}
+               className="w-8 h-8 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-all z-0 text-xs"
+               title="Invitar nuevo miembro"
+            >
+              <UserPlus size={14} />
+            </button>
+          </div>
+
+          <div className="h-6 w-px bg-gray-200 hidden md:block" />
+
+          {/* Botonera de Acciones */}
+          <div className="flex items-center gap-2">
+             <button className="hidden md:flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                <Filter size={16} />
+                <span>Filtrar</span>
+             </button>
+
+             <button 
+                onClick={() => setShowMemberModal(true)}
+                className="hidden md:flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-200 rounded-lg transition-all"
+             >
+                <Share2 size={16} />
+                <span>Compartir</span>
+             </button>
+
+             <button 
+                onClick={() => setShowManageMembersModal(true)}
+                className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+             >
+                <MoreHorizontal size={20} />
+             </button>
+          </div>
+        </div>
+      </header>
+
+      {/* --- KANBAN BOARD (Full Width/Height) --- */}
+      <div className="flex-1 overflow-hidden relative w-full">
         <KanbanBoard
           boardId={boardId}
           onAddColumn={() => {

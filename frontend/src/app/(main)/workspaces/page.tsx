@@ -2,13 +2,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Folder, Plus, Users, Calendar, MoreVertical, Edit, Trash2, ArrowLeft } from 'lucide-react';
+import { Folder, Plus, Users, Calendar, MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { useWorkspaceStore } from '@/store/workspaceStore';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { Toaster } from 'react-hot-toast';
 
 export default function WorkspacesPage() {
   const router = useRouter();
@@ -88,40 +87,20 @@ export default function WorkspacesPage() {
   }
 
     return (
-        <div className="p-4 md:p-8 min-h-screen bg-gray-50">
-            <Toaster position="top-right" />
-
-            <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-  
-            {/* 1. IZQUIERDA: Botón Regresar */}
-            <div className="w-full md:w-48 flex justify-start">
-                <Button
-                type="button"
-                variant="primary"
-                onClick={() => router.push('/dashboard')}
-                className="flex items-center gap-2"
-                >
-                <ArrowLeft className="w-4 h-4" />
-                Regresar
-                </Button>
-            </div>
-
-            {/* 2. CENTRO: Título */}
-            <div className="text-center flex-1 px-0 md:px-4">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Workspaces</h1>
-                <p className="text-sm md:text-base text-gray-600">Organiza tus proyectos en espacios de trabajo</p>
-            </div>
-
-            {/* 3. DERECHA: Botón Nuevo Workspace */}
-            <div className="w-full md:w-48 flex justify-start md:justify-end">
+        <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900">Workspaces</h1>
+                    <p className="text-gray-600 mt-1">Organiza tus proyectos en espacios de trabajo</p>
+                </div>
                 <button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm text-sm md:text-base w-full md:w-auto justify-center">
-                <Plus className="w-4 h-4" />
-                <span>Nuevo Workspace</span>
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm font-medium"
+                >
+                    <Plus className="w-5 h-5" />
+                    <span>Nuevo Workspace</span>
                 </button>
-            </div>
-
             </div>
 
             {/* Empty State */}
@@ -138,7 +117,7 @@ export default function WorkspacesPage() {
                     </p>
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm text-sm md:text-base"
+                        className=" text-white px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-sm text-sm md:text-base"
                     >
                         <Plus className="w-4 h-4 md:w-5 md:h-5" />
                         <span>Crear Workspace</span>
@@ -365,7 +344,7 @@ export default function WorkspacesPage() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
-                        <Button type="submit" disabled={isLoading} className="w-full sm:flex-1">
+                        <Button type="submit" disabled={isLoading} className="w-full sm:flex-1 bg-indigo-600 hover:bg-indigo-700">
                             {isLoading ? "Guardando..." : "Guardar Cambios"}
                         </Button>
                         <Button

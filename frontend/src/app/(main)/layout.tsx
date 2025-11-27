@@ -9,20 +9,25 @@ import { Toaster } from 'react-hot-toast';
 import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext';
 import { cn } from '@/lib/utils';
 
-function DashboardContent({ children }: { children: React.ReactNode }) {
+function MainContent({ children }: { children: React.ReactNode }) {
   const { collapsed } = useSidebar();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen flex bg-gray-50 overflow-hidden">
       <Toaster position="top-right" />
       <Sidebar />
+      
+      {/* Contenedor principal que se ajusta al sidebar */}
       <div className={cn(
-        'transition-all duration-300',
-        // En móvil no hay padding, en desktop sí
-        collapsed ? 'md:pl-20' : 'md:pl-64'
+        'flex flex-col flex-1 transition-all duration-300 overflow-hidden',
+        // En móvil: sin margen (sidebar es overlay)
+        // En desktop: margen según estado del sidebar
+        collapsed ? 'md:ml-20' : 'md:ml-72'
       )}>
         <Navbar />
-        <main className="min-h-screen">
+        
+        {/* Contenido de las páginas - Sin padding, las páginas manejan su propio espaciado */}
+        <main className="flex-1 overflow-auto">
           {children}
         </main>
       </div>
@@ -30,11 +35,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { checkAuth } = useAuthStore();
   
   // Inicializar Socket.IO automáticamente
@@ -46,7 +47,7 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <DashboardContent>{children}</DashboardContent>
+      <MainContent>{children}</MainContent>
     </SidebarProvider>
   );
 }

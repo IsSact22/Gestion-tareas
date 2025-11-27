@@ -9,7 +9,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Modal from '@/components/ui/Modal';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import api from '@/lib/api';
 
 interface User {
@@ -159,8 +159,7 @@ export default function ManageUsersPage() {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <Toaster position="top-right" />
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
       
       {/* Header */}
       <div className="flex items-center justify-between mb-8">

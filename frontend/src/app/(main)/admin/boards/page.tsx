@@ -6,7 +6,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { Trello, Users, Eye, Calendar, UserPlus, ArrowLeft } from 'lucide-react';
 import Card from '@/components/ui/Card';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import AssignMembersModal from '@/components/admin/AssignMembersModal';
 import Button from '@/components/ui/Button';
@@ -105,8 +105,7 @@ export default function AdminBoardsPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
-      <Toaster position="top-right" />
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
       
        {/* Header Centrado */}
       <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-center justify-between gap-4">

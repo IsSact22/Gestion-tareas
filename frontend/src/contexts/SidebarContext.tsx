@@ -11,16 +11,32 @@ interface SidebarContextType {
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
-  // En móvil empieza cerrado (collapsed=true), en desktop abierto (collapsed=false)
-  const [collapsed, setCollapsed] = useState(true);
+  // Inicializamos en false (abierto) por defecto para evitar parpadeos en SSR
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    // Detectar si es desktop al montar
-    const isDesktop = window.innerWidth >= 768; // md breakpoint
-    setCollapsed(!isDesktop); // Desktop: false (abierto), Móvil: true (cerrado)
+    // 1. Verificamos si hay una preferencia guardada por el usuario
+    const savedState = localStorage.getItem('sidebar-collapsed');
+
+    if (savedState !== null) {
+      // Si el usuario ya eligió antes, respetamos su decisión
+      setCollapsed(JSON.parse(savedState));
+    } else {
+      // 2. Si es la primera vez que entra, decidimos según el ancho de pantalla
+      // Si es móvil (< 768px), lo cerramos por defecto. Si es desktop, abierto.
+      const isMobile = window.innerWidth < 768;
+      setCollapsed(isMobile);
+    }
   }, []);
 
-  const toggleCollapsed = () => setCollapsed(prev => !prev);
+  const toggleCollapsed = () => {
+    setCollapsed((prev) => {
+      const newState = !prev;
+      // Guardamos la nueva preferencia cada vez que el usuario hace clic
+      localStorage.setItem('sidebar-collapsed', JSON.stringify(newState));
+      return newState;
+    });
+  };
 
   return (
     <SidebarContext.Provider value={{ collapsed, setCollapsed, toggleCollapsed }}>
