@@ -9,6 +9,7 @@ const authenticateSocket = (socket, next) => {
   const token = socket.handshake.auth.token;
 
   if (!token) {
+    console.error('❌ Socket.IO: No token provided');
     return next(new Error('Authentication error: No token provided'));
   }
 
@@ -16,8 +17,10 @@ const authenticateSocket = (socket, next) => {
     const decoded = jwt.verify(token, config.jwtSecret);
     socket.userId = decoded.id;
     socket.userEmail = decoded.email;
+    console.log(`✅ Socket.IO autenticado: ${socket.userId}`);
     next();
   } catch (error) {
+    console.error('❌ Socket.IO: Token inválido', error.message);
     next(new Error('Authentication error: Invalid token'));
   }
 };
@@ -25,10 +28,15 @@ const authenticateSocket = (socket, next) => {
 function initializeSocket(server) {
   io = new Server(server, {
     cors: {
-      origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+      origin: config.frontendUrl,
       methods: ['GET', 'POST'],
-      credentials: true
-    }
+      credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization']
+    },
+    allowEIO3: true,
+    transports: ['websocket', 'polling'],
+    pingInterval: 25000,
+    pingTimeout: 60000
   });
 
   // Aplicar middleware de autenticación

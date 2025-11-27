@@ -3,14 +3,16 @@
 
 import { useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
-import { User, Mail, Lock, Shield, ArrowLeft } from 'lucide-react';
+import { User, Mail, Lock, Shield } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import api from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
+  const router = useRouter();
   const { user, setUser } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -72,29 +74,12 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
-      <Toaster position="top-center" />
-      
-      {/* Header Centrado */}
-      <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-
-      <Button
-          type="button"
-          variant="primary"
-          onClick={() => window.history.back()}
-          className="flex items-center gap-2 self-start md:self-auto"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Regresar
-        </Button>
-
-
-        <div className="text-center flex-1">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Mi Perfil</h1>
-          <p className="text-sm md:text-base text-gray-600">Administra tu información personal</p>
-        </div>
-      <div className="w-0 md:w-24"></div>
-    </div>
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-gray-900">Mi Perfil</h1>
+        <p className="text-gray-600 mt-1">Administra tu información personal</p>
+      </div>
 
       <div className="max-w-3xl mx-auto">
         {/* Profile Card */}
@@ -151,7 +136,7 @@ export default function ProfilePage() {
             {/* Cambiar Contraseña */}
             {isEditing && (
               <div className="border-t border-gray-200 pt-4 md:pt-6">
-                <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4 text-center">
+                <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4 text-center" >
                   <Lock className="w-4 h-4 md:w-5 md:h-5 inline mr-2" />
                   Cambiar Contraseña
                 </h3>
@@ -208,7 +193,7 @@ export default function ProfilePage() {
                 <Button
                   type="button"
                   onClick={() => setIsEditing(true)}
-                  className="w-full sm:w-auto px-6 md:px-8"
+                  className="w-full sm:w-auto px-6 md:px-8 bg-indigo-600 hover:bg-indigo-700"
                 >
                   Editar Perfil
                 </Button>
@@ -217,7 +202,7 @@ export default function ProfilePage() {
                   <Button 
                     type="button" 
                     onClick={handleUpdateProfile}
-                    className="w-full sm:w-auto px-6 md:px-8"
+                    className="w-full sm:w-auto px-6 md:px-8 bg-indigo-600 hover:bg-indigo-700"
                   >
                     Guardar Cambios
                   </Button>

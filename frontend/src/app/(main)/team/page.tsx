@@ -2,11 +2,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Users, Search, Shield, Mail, Calendar, Trello, CheckSquare } from 'lucide-react';
+import { Users, Search, Shield, Mail, Calendar, Trello, CheckSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
-import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/authStore'; // Corregir ruta del import de useAuthStore
@@ -118,22 +117,12 @@ export default function TeamPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
-      <Toaster position="top-right" />
-
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="p-1.5 md:p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors flex-shrink-0"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Equipo</h1>
-            <p className="text-sm md:text-base text-gray-600">Gestiona los miembros de tu organización</p>
-          </div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Equipo</h1>
+          <p className="text-gray-600 mt-1">Gestiona los miembros de tu organización</p>
         </div>
       </div>
 

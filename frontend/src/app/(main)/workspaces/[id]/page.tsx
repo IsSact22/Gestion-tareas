@@ -3,12 +3,11 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, Users, Folder, Calendar, Trello, UserPlus, Plus, Trash2 } from 'lucide-react';
+import { Users, Folder, Calendar, Trello, UserPlus, Plus, Trash2 } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Modal from '@/components/ui/Modal';
-import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 
@@ -157,43 +156,22 @@ export default function WorkspaceDetailPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
-      <Toaster position="top-right" />
-
+    <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
-          <button
-            onClick={() => router.push('/workspaces')}
-            className="p-1.5 md:p-2 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors flex-shrink-0"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 truncate">{workspace.name}</h1>
-            {workspace.description && (
-              <p className="text-sm md:text-base text-gray-600 line-clamp-2">{workspace.description}</p>
-            )}
-          </div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">{workspace.name}</h1>
+          {workspace.description && (
+            <p className="text-gray-600 mt-1">{workspace.description}</p>
+          )}
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-          <Button
-            onClick={() => setIsCreateBoardModalOpen(true)}
-            className="w-full sm:w-auto"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Nuevo Board
-          </Button>
-          {/* <Button
-            variant="secondary"
-            onClick={() => router.push(`/boards?workspace=${workspaceId}`)}
-            className="w-full sm:w-auto"
-          >
-            <Trello className="w-4 h-4 mr-2" />
-            Ver Todos
-          </Button> */}
-        </div>
+        <Button
+          onClick={() => setIsCreateBoardModalOpen(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl"
+        >
+          <Plus className="w-5 h-5 mr-2" />
+          Nuevo Board
+        </Button>
       </div>
 
       {/* Stats */}
@@ -464,7 +442,7 @@ export default function WorkspaceDetailPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            <Button type="submit" className="w-full sm:flex-1">
+            <Button type="submit" className="w-full sm:flex-1 bg-indigo-600 hover:bg-indigo-700">
               Crear Board
             </Button>
             <Button

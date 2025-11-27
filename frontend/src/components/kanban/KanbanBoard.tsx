@@ -191,50 +191,68 @@ export default function KanbanBoard({
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <DndContext
-        sensors={sensors}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        {/* Kanban Board */}
-        <div className="flex-1 overflow-x-auto overflow-y-hidden">
-          <div className="flex gap-3 md:gap-6 p-3 md:p-6 min-h-full">
-            {columns.map((column) => (
-              <KanbanColumn
-                key={column.id}
-                column={column}
-                tasks={getTasksByColumn(column.id)}
-                onAddTask={() => onAddTask(column.id)}
-                onEditColumn={() => onEditColumn(column)}
-                onDeleteColumn={() => onDeleteColumn(column.id)}
-                onTaskClick={onTaskClick}
-              />
-            ))}
-
-            {/* Add Column Button */}
-            <div className="flex-shrink-0 w-72 md:w-80">
-              <button
-                onClick={onAddColumn}
-                className="w-full h-full min-h-[150px] md:min-h-[200px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors flex flex-col items-center justify-center gap-2"
-              >
-                <Plus size={24} className="md:w-8 md:h-8" />
-                <span className="text-sm md:text-base font-medium">Agregar columna</span>
-              </button>
+  <div className="h-full flex flex-col">
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
+    >
+      {/* Área Scrollable Principal:
+         - Mobile: snap-x manda el comportamiento de carrusel.
+         - Desktop: scroll normal.
+      */}
+      <div className="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar snap-x snap-mandatory md:snap-none">
+        
+        {/* Contenedor de Columnas */}
+        <div className="flex h-full p-4 gap-4 md:gap-6 items-start">
+          
+          {columns.map((column) => (
+            <div 
+               key={column.id} 
+               className="flex-shrink-0 snap-center md:snap-align-none h-full"
+            >
+              {/* Ancho de Columna Responsive:
+                 - Mobile: w-[85vw] (ocupa el 85% de la pantalla para ver que hay otra al lado).
+                 - Tablet/Desktop: w-80 (tamaño fijo estándar).
+              */}
+              <div className="w-[85vw] md:w-80 h-full max-h-full">
+                <KanbanColumn
+                  column={column}
+                  tasks={getTasksByColumn(column.id)}
+                  onAddTask={() => onAddTask(column.id)}
+                  onEditColumn={() => onEditColumn(column)}
+                  onDeleteColumn={() => onDeleteColumn(column.id)}
+                  onTaskClick={onTaskClick}
+                />
+              </div>
             </div>
+          ))}
+
+          {/* Botón Agregar Columna */}
+          <div className="flex-shrink-0 snap-center md:snap-align-none pt-2">
+            <button
+              onClick={onAddColumn}
+              className="w-[85vw] md:w-80 h-12 md:h-14 flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50/50 transition-all font-medium bg-white/50 backdrop-blur-sm"
+            >
+              <Plus size={20} />
+              <span>Añadir sección</span>
+            </button>
           </div>
+          
+          {/* Espaciador final para que no se corte el scroll en móvil */}
+          <div className="w-4 flex-shrink-0 md:hidden" />
         </div>
+      </div>
 
-        {/* Drag Overlay */}
-        <DragOverlay>
-          {activeTask ? (
-            <div className="rotate-3 opacity-90">
-              <TaskCard task={activeTask} onClick={() => {}} />
-            </div>
-          ) : null}
-        </DragOverlay>
-      </DndContext>
-    </div>
-  );
+      <DragOverlay dropAnimation={{ duration: 250, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
+        {activeTask ? (
+          <div className="w-[85vw] md:w-80 cursor-grabbing rotate-2 scale-105 shadow-2xl">
+            <TaskCard task={activeTask} onClick={() => {}} />
+          </div>
+        ) : null}
+      </DragOverlay>
+    </DndContext>
+  </div>
+);
 }

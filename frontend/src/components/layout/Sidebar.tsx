@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import Link from 'next/link';
@@ -21,31 +22,20 @@ import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/contexts/SidebarContext';
 
-// Menús según el rol del usuario
-const getMenuItemsByRole = (role: string) => {
-  const baseItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', roles: ['admin', 'member', 'viewer'] },
-    { icon: Folder, label: 'Workspaces', href: '/workspaces', roles: [ 'member', 'viewer'] },
-    { icon: Trello, label: 'Boards', href: '/boards', roles: ['member', 'viewer'] },
-    { icon: CheckSquare, label: 'My Tasks', href: '/tasks', roles: ['member', 'viewer'] },
-  ];
-
-  const adminItems = [
-    { icon: UserCog, label: 'Manage Users', href: '/admin/users', roles: ['admin'], section: 'admin' },
-    { icon: Folder, label: 'All Workspaces', href: '/admin/workspaces', roles: ['admin'], section: 'admin' },
-    { icon: Trello, label: 'All Boards', href: '/admin/boards', roles: ['admin'], section: 'admin' },
-    { icon: CheckSquare, label: 'All Tasks', href: '/admin/tasks', roles: ['admin'], section: 'admin' },
-    { icon: Users, label: 'Team', href: '/team', roles: ['admin', 'member'] },
-  ];
-
-  const settingsItems = [
-    { icon: User, label: 'My Profile', href: '/profile', roles: ['admin', 'member', 'viewer'] },
-  ];
-
-  const allItems = [...baseItems, ...adminItems, ...settingsItems];
-  
-  return allItems.filter(item => item.roles.includes(role));
-};
+// Configuración de menús
+const allItems = [
+  { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', roles: [ 'member', 'viewer'] },
+  { icon: Folder, label: 'Workspaces', href: '/workspaces', roles: [ 'member', 'viewer'] },
+  { icon: Trello, label: 'Boards', href: '/boards', roles: [ 'member', 'viewer'] },
+  { icon: CheckSquare, label: 'Mis Tareas', href: '/tasks', roles: [ 'member', 'viewer'] },
+  { icon: Users, label: 'Equipo', href: '/team', roles: [ 'admin','member'] },
+  { icon: User, label: 'Mi Perfil', href: '/profile', roles: [ 'admin','member', 'viewer'] },
+  // Sección Admin
+  { icon: UserCog, label: 'Admin Usuarios', href: '/admin/users', roles: ['admin'] },
+  { icon: Folder, label: 'Admin Workspaces', href: '/admin/workspaces', roles: ['admin'] },
+  { icon: Trello, label: 'Admin Boards', href: '/admin/boards', roles: ['admin'] },
+  { icon: CheckSquare, label: 'Admin Tareas', href: '/admin/tasks', roles: ['admin'] },
+];
 
 export default function Sidebar() {
   const { collapsed, toggleCollapsed } = useSidebar();
@@ -53,9 +43,8 @@ export default function Sidebar() {
   const router = useRouter();
   const { logout, user } = useAuthStore();
 
-  // Obtener menús según el rol del usuario
   const menuItems = useMemo(() => {
-    return getMenuItemsByRole(user?.role || 'viewer');
+    return allItems.filter(item => item.roles.includes(user?.role || 'viewer'));
   }, [user?.role]);
 
   const handleLogout = () => {
@@ -65,10 +54,10 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Overlay para móvil - solo visible cuando sidebar está abierto en móvil */}
+      {/* Overlay para móvil */}
       <div
         className={cn(
-          'fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity',
+          'fixed inset-0 bg-gray-900/20 backdrop-blur-sm z-30 md:hidden transition-opacity duration-300',
           !collapsed ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
         onClick={toggleCollapsed}
@@ -76,130 +65,139 @@ export default function Sidebar() {
       
       <aside
         className={cn(
-          'fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40',
-          // Móvil: collapsed=true (cerrado), collapsed=false (abierto)
-          // Desktop: collapsed=true (colapsado 80px), collapsed=false (expandido 256px)
+          'fixed left-0 top-0 h-screen bg-slate-50 border-r border-gray-200/60 z-40 transition-all duration-300 ease-in-out flex flex-col',
           collapsed 
             ? '-translate-x-full md:translate-x-0 md:w-20' 
-            : 'translate-x-0 w-64'
+            : 'translate-x-0 w-72'
         )}
       >
-      {/* Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
-        {!collapsed ? (
-          <Link href="/dashboard" className="flex items-center space-x-2">
-             <Image 
-                src="/logo/logo-aura.svg" 
-                alt="AuraTasks Logo" 
-                width={60} 
-                height={60}
-                className="w-12 h-12"
-              />
-            <span className="font-bold text-gray-900">AuraTask</span>
+        {/* === HEADER & LOGO === */}
+        <div className={cn(
+          "h-20 flex items-center transition-all relative",
+          collapsed ? "justify-center" : "justify-between px-6"
+        )}>
+          <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
+             <div className="relative w-10 h-10 flex-shrink-0 bg-white rounded-xl shadow-sm flex items-center justify-center border border-gray-100">
+               <Image 
+                  src="/logo/logo-aura.svg" 
+                  alt="AuraTasks Logo" 
+                  width={28} 
+                  height={28}
+                  className="object-contain"
+                />
+             </div>
+             {!collapsed && (
+               <span className="font-bold text-xl text-gray-800 tracking-tight whitespace-nowrap">
+                 Aura<span className="text-indigo-600">Task</span>
+               </span>
+             )}
           </Link>
-        ) : (
-          <Link href="/dashboard" className="flex items-center justify-center">
-            <Image 
-              src="/logo/logo-aura.svg" 
-              alt="AuraTask Logo" 
-              width={32} 
-              height={32}
-              className="w-12 h-12"
-            />
-          </Link>
-        )}
-        {/* Botón de colapsar - solo visible en desktop */}
-        <button
-          onClick={toggleCollapsed}
-          className="hidden md:block p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-        >
-          {collapsed ? (
-            <ChevronRight className="w-5 h-5 text-gray-600" />
-          ) : (
-            <ChevronLeft className="w-5 h-5 text-gray-600" />
-          )}
-        </button>
-      </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-          
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => {
-                // Cerrar sidebar en móvil al hacer clic en un link
-                if (window.innerWidth < 768) {
-                  toggleCollapsed();
-                }
-              }}
-              className={cn(
-                'flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors',
-                isActive
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'text-gray-700 hover:bg-gray-100',
-                collapsed && 'justify-center'
-              )}
-              title={collapsed ? item.label : undefined}
-            >
-              <Icon className="w-5 h-5 flex-shrink-0" />
-              {!collapsed && <span className="font-medium">{item.label}</span>}
-            </Link>
-          );
-        })}
-      </nav>
+          {/* === BOTÓN DE COLAPSAR (CORREGIDO) === */}
+          {/* Este botón ahora siempre existe, pero cambia de posición/estilo según el estado */}
+          <button
+            onClick={toggleCollapsed}
+            className={cn(
+              "hidden md:flex items-center justify-center transition-all duration-300 z-50",
+              collapsed 
+                ? "absolute -right-3 top-8 w-6 h-6 bg-white border border-gray-200 rounded-full shadow-md text-gray-500 hover:text-indigo-600 hover:scale-110" // Estilo "burbuja" cuando está cerrado
+                : "p-1.5 rounded-lg text-gray-400 hover:bg-white hover:text-gray-600 hover:shadow-sm border border-transparent hover:border-gray-100" // Estilo normal cuando está abierto
+            )}
+          >
+            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={18} />}
+          </button>
+        </div>
 
-      {/* User Section */}
-      <div className="border-t border-gray-200 p-4">
-        {!collapsed ? (
-          <div className="space-y-3">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+        {/* Separator */}
+        <div className="h-px bg-gray-200 mx-6 mb-4 opacity-50" />
+
+        {/* === NAVEGACIÓN === */}
+        <nav className="flex-1 px-3 space-y-1.5 overflow-y-auto custom-scrollbar">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => {
+                  if (window.innerWidth < 768) toggleCollapsed();
+                }}
+                className={cn(
+                  'group flex items-center px-3 py-3 rounded-xl transition-all duration-200 ease-in-out',
+                  isActive
+                    ? 'bg-white text-indigo-600 shadow-sm border border-gray-100/50'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-white/60',
+                  collapsed && 'justify-center px-2'
+                )}
+                title={collapsed ? item.label : undefined}
+              >
+                <Icon 
+                  className={cn(
+                    "w-5 h-5 flex-shrink-0 transition-colors",
+                    isActive ? "text-indigo-600" : "text-gray-400 group-hover:text-gray-600"
+                  )} 
+                />
+                
+                {!collapsed && (
+                  <span className={cn(
+                    "ml-3 font-medium text-sm",
+                    isActive ? "font-semibold" : ""
+                  )}>
+                    {item.label}
+                  </span>
+                )}
+                
+                {/* Indicador activo (Puntito) */}
+                {!collapsed && isActive && (
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* === SECCIÓN USUARIO === */}
+        <div className="p-4 mt-auto">
+          <div className={cn(
+            "rounded-2xl bg-white border border-gray-100 shadow-sm transition-all overflow-hidden",
+            collapsed ? "p-2 bg-transparent border-0 shadow-none items-center flex flex-col gap-2" : "p-3"
+          )}>
+            
+            <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-3 mb-3")}>
+              <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-inner flex-shrink-0">
                 {user?.name?.charAt(0).toUpperCase() || 'U'}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {user?.name || 'Usuario'}
-                </p>
-                <div className="flex items-center gap-2">
-                  <p className="text-xs text-gray-500 truncate">
-                    {user?.email || 'email@example.com'}
+              
+              {!collapsed && (
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-gray-800 truncate">
+                    {user?.name?.split(' ')[0] || 'Usuario'}
                   </p>
-                  <span className={cn(
-                    'text-xs px-2 py-0.5 rounded-full font-medium',
-                    user?.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                    user?.role === 'member' ? 'bg-blue-100 text-blue-700' :
-                    'bg-gray-100 text-gray-700'
-                  )}>
-                    {user?.role === 'admin' ? 'Admin' : 
-                     user?.role === 'member' ? 'Member' : 'Viewer'}
-                  </span>
+                  <p className="text-[11px] text-gray-400 truncate font-medium">
+                    {user?.role === 'admin' ? 'Admin' : user?.role === 'member' ? 'Miembro' : 'Viewer'}
+                  </p>
                 </div>
-              </div>
+              )}
             </div>
+
             <button
               onClick={handleLogout}
-              className="w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+              className={cn(
+                "flex items-center transition-colors rounded-lg",
+                !collapsed 
+                  ? "w-full px-3 py-2 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 justify-center" 
+                  : "p-2 text-gray-400 hover:text-red-600 hover:bg-red-50"
+              )}
+              title="Cerrar Sesión"
             >
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium">Cerrar Sesión</span>
+              <LogOut className={cn("w-4 h-4", !collapsed && "mr-2")} />
+              {!collapsed && "Cerrar Sesión"}
             </button>
           </div>
-        ) : (
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
-            title="Cerrar Sesión"
-          >
-            <LogOut className="w-5 h-5" />
-          </button>
-        )}
-      </div>
-    </aside>
+        </div>
+      </aside>
     </>
   );
 }
