@@ -1,6 +1,6 @@
 import { verifyToken } from '../core/jwtUtils.js';
-import UserRepository from '@/src/infrastructure/database/prisma/UserRepository.js';
-import AppError from '@/src/core/AppError.js';
+import UserRepository from '../infrastructure/database/prisma/UserRepository.js';
+import AppError from '../core/AppError.js';
 
 const userRepository = new UserRepository();
 
