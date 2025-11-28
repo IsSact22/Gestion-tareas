@@ -64,10 +64,6 @@ export default function LoginPage() {
                </div>
                <span className="font-bold text-xl text-gray-900 tracking-tight">AuraTasks</span>
             </Link>
-            
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
-              Bienvenido de nuevo
-            </h2>
             <p className="mt-2 text-sm text-gray-600">
               ¿No tienes cuenta?{' '}
               <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
