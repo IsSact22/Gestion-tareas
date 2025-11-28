@@ -1,230 +1,283 @@
-'use client'; // Necesario para el menú interactivo
+'use client';
 
 import { useState } from 'react';
-import { ArrowRight, Users, CheckCircle, BarChart3, Zap, Target, Sparkles, Menu, X } from 'lucide-react';
+import { 
+  ArrowRight, 
+  Users, 
+  BarChart3, 
+  Zap, 
+  Target, 
+  Sparkles, 
+  Menu, 
+  X, 
+  CheckCircle2,
+  Layout,
+  KanbanSquare,
+  ShieldCheck
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function Home() {
-  // Estado para controlar el menú en móvil
+export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-x-hidden">
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 py-8 md:py-16">
-        
-        {/* --- NAV BAR RESPONSIVE --- */}
-        <nav className="relative mb-12 md:mb-16">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity z-50">
-              <div className="relative w-10 h-10 md:w-12 md:h-12">
-                <Image 
-                  src="https://drive.google.com/uc?export=view&id=1LOsbQcwaCFfTrprLrr-8yCE1CDP15LHM" 
-                  alt="AuraTasks Logo" 
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <span className="text-xl md:text-2xl font-bold text-gray-900">AuraTasks</span>
-            </Link>
+    <div className="min-h-screen bg-white overflow-x-hidden selection:bg-indigo-100 selection:text-indigo-900">
+      
+      {/* --- FONDO AMBIENTAL (AURAS) --- */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[400px] h-[400px] bg-purple-400/20 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-indigo-400/10 rounded-full blur-[120px]" />
+      </div>
 
-            {/* Desktop Menu (Hidden on Mobile) */}
-            <div className="hidden md:flex items-center space-x-4">
-              <Link
-                href="/login"
-                className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
-              >
-                Iniciar Sesión
-              </Link>
-              <Link
-                href="/register"
-                className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-all hover:shadow-lg font-medium"
-              >
-                Comenzar Gratis
-              </Link>
-            </div>
-
-            {/* Mobile Menu Button (Visible only on Mobile) */}
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg focus:outline-none z-50"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-
-          {/* Mobile Menu Overlay */}
-          {isMenuOpen && (
-            <div className="absolute top-full left-0 right-0 bg-white shadow-lg rounded-2xl mt-2 p-4 flex flex-col space-y-4 md:hidden z-40 border border-gray-100 animate-in slide-in-from-top-5">
-              <Link
-                href="/login"
-                className="text-gray-700 font-medium p-3 hover:bg-gray-50 rounded-lg text-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Iniciar Sesión
-              </Link>
-              <Link
-                href="/register"
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium text-center hover:bg-blue-700"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Comenzar Gratis
-              </Link>
-            </div>
-          )}
-        </nav>
-
-        {/* Hero Content */}
-        <div className="text-center max-w-5xl mx-auto mb-16 md:mb-24 px-2">
-          <div className="inline-flex items-center space-x-2 bg-blue-100 text-blue-700 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium mb-6">
-            <Sparkles className="w-3 h-3 md:w-4 md:h-4" />
-            <span>Gestión de proyectos moderna y colaborativa</span>
-          </div>
+      {/* --- NAVBAR STICKY GLASS --- */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-md border-b border-gray-100">
+        <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           
-          {/* Títulos ajustados para móvil (text-4xl) y desktop (text-7xl) */}
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            Gestiona tareas con{' '}
-            <span className="block md:inline text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-              fluidez y en equipo
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            {/* Usamos un div placeholder o tu imagen local si ya la arreglaste */}
+            <div className="relative w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-blue-200">
+               A
+            </div>
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700">
+              AuraTasks
             </span>
-          </h1>
-          
-          <p className="text-lg md:text-2xl text-gray-600 mb-4 leading-relaxed max-w-3xl mx-auto">
-            Un sistema moderno de gestión de tareas y proyectos colaborativos diseñado para que tú y tu equipo trabajen con total organización.
-          </p>
-          
-          <p className="text-base md:text-lg text-gray-500 mb-8 md:mb-10">
-            Desde un panel intuitivo y minimalista, podrás crear espacios de trabajo y tableros bajo control.
-          </p>
-          
-          {/* Botones en columna para móvil, fila para desktop */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/register"
-              className="w-full sm:w-auto bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-all hover:shadow-xl hover:scale-105 font-semibold text-lg flex items-center justify-center"
-            >
-              Empezar Ahora
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-            <Link
-              href="/login"
-              className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all font-semibold text-lg text-center"
-            >
+          </Link>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
               Iniciar Sesión
             </Link>
+            <Link
+              href="/register"
+              className="bg-gray-900 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-all hover:shadow-lg hover:shadow-gray-200"
+            >
+              Comenzar Gratis
+            </Link>
           </div>
+
+          {/* Mobile Toggle */}
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
 
-        {/* Main Features */}
-        <div className="mb-16 md:mb-24">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            Con AuraTasks, administrar tus proyectos se convierte en una{' '}
-            <span className="text-blue-600 block md:inline">experiencia fluida</span>
-          </h2>
-          <p className="text-center text-gray-600 text-base md:text-lg mb-8 md:mb-12 max-w-2xl mx-auto px-4">
-            Todo lo que necesitas para fluir en tu trabajo, conectar con tu equipo y alcanzar tus metas.
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-100 p-4 flex flex-col gap-3 md:hidden shadow-xl animate-in slide-in-from-top-5">
+            <Link href="/login" className="p-3 text-center text-gray-700 hover:bg-gray-50 rounded-xl font-medium">
+              Iniciar Sesión
+            </Link>
+            <Link href="/register" className="p-3 text-center bg-indigo-600 text-white rounded-xl font-medium">
+              Comenzar Gratis
+            </Link>
+          </div>
+        )}
+      </nav>
+
+      <main className="relative z-10 pt-32 pb-16 container mx-auto px-4 md:px-6">
+        
+        {/* --- HERO SECTION --- */}
+        <div className="text-center max-w-4xl mx-auto mb-20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-semibold mb-6 uppercase tracking-wider">
+            <Sparkles size={12} />
+            <span>Gestión inteligente v1.0</span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 tracking-tight mb-6 leading-[1.1]">
+            Organiza tu trabajo con <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-gradient">
+              fluidez y estilo.
+            </span>
+          </h1>
+
+          <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
+            AuraTasks es la plataforma donde los equipos modernos planifican, colaboran y ejecutan sus proyectos sin fricción.
           </p>
-          
-          {/* Grid: 1 columna en móvil, 2 en tablet, 4 en desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: Users, color: "blue", title: "Colabora en equipo", desc: "Asigna tareas, comparte avances y mantén la comunicación centralizada." },
-              { icon: BarChart3, color: "purple", title: "Visualiza tu progreso", desc: "Obtén métricas claras sobre tareas activas y crecimiento semanal." },
-              { icon: Zap, color: "green", title: "Optimiza tu productividad", desc: "Gestiona todo desde un solo lugar, sin perder el enfoque." },
-              { icon: Target, color: "indigo", title: "Diseño limpio", desc: "Una interfaz moderna que facilita tu día a día." }
-            ].map((item, idx) => (
-              <div key={idx} className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <div className={`w-12 h-12 bg-${item.color}-100 rounded-lg flex items-center justify-center mb-4`}>
-                  <item.icon className={`w-6 h-6 text-${item.color}-600`} />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                  {item.desc}
-                </p>
-              </div>
-            ))}
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <Link
+              href="/register"
+              className="w-full sm:w-auto px-8 py-4 bg-gray-900 text-white rounded-2xl font-semibold hover:bg-black hover:scale-105 transition-all shadow-xl shadow-gray-200 flex items-center justify-center gap-2"
+            >
+              Empezar ahora <ArrowRight size={18} />
+            </Link>
+            <Link
+              href="/demo" // Puedes cambiar esto a un video o más info
+              className="w-full sm:w-auto px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-2xl font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center"
+            >
+              Ver Demo
+            </Link>
+          </div>
+
+          {/* --- CSS MOCKUP (Representación del Dashboard) --- */}
+          <div className="relative mx-auto max-w-5xl">
+            <div className="relative rounded-t-3xl border border-gray-200 bg-white/50 backdrop-blur-xl shadow-2xl shadow-indigo-500/10 overflow-hidden p-2 pb-0">
+               {/* Header falso */}
+               <div className="h-12 border-b border-gray-100 flex items-center px-4 gap-2">
+                 <div className="flex gap-1.5">
+                   <div className="w-3 h-3 rounded-full bg-red-400/80" />
+                   <div className="w-3 h-3 rounded-full bg-yellow-400/80" />
+                   <div className="w-3 h-3 rounded-full bg-green-400/80" />
+                 </div>
+                 <div className="ml-4 w-32 h-2 bg-gray-100 rounded-full" />
+               </div>
+               
+               <div className="flex h-[300px] md:h-[500px] bg-gray-50/50">
+                  {/* Sidebar falso */}
+                  <div className="w-16 md:w-64 border-r border-gray-200 hidden md:flex flex-col p-4 gap-3 bg-white">
+                     <div className="w-full h-8 bg-gray-100 rounded-lg mb-4" />
+                     {[1,2,3,4].map(i => (
+                       <div key={i} className="w-full h-6 bg-gray-50 rounded-md" />
+                     ))}
+                  </div>
+                  {/* Contenido Kanban falso */}
+                  <div className="flex-1 p-6 flex gap-6 overflow-hidden">
+                     {[1,2,3].map(col => (
+                       <div key={col} className="flex-1 bg-gray-100/50 rounded-xl p-3 flex flex-col gap-3 border border-gray-200/50">
+                          <div className="w-20 h-4 bg-gray-200 rounded mb-2" />
+                          <div className="w-full h-24 bg-white rounded-lg shadow-sm border border-gray-100 p-3">
+                             <div className="w-3/4 h-3 bg-gray-100 rounded mb-2" />
+                             <div className="w-1/2 h-2 bg-gray-50 rounded" />
+                          </div>
+                          <div className="w-full h-24 bg-white rounded-lg shadow-sm border border-gray-100 opacity-60" />
+                       </div>
+                     ))}
+                  </div>
+               </div>
+            </div>
+            {/* Decoración detrás del mockup */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-[2rem] blur-2xl opacity-20 -z-10" />
           </div>
         </div>
 
-        {/* Benefits */}
-        <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl md:rounded-3xl p-8 md:p-16 shadow-xl text-white mb-16 md:mb-20">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text-center">
-              Funcionalidades completas
+        {/* --- FEATURES BENTO GRID --- */}
+        <div className="py-24">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Todo lo que necesitas para <span className="text-indigo-600">fluir</span>
             </h2>
-            <p className="text-lg md:text-xl text-blue-100 mb-8 md:mb-12 text-center">
-              Todo lo que necesitas en un solo lugar
+            <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+              Diseñado para eliminar el caos y potenciar la productividad de tu equipo.
             </p>
-            
-            {/* Grid de beneficios adaptativo */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-              {[
-                'Workspaces por proyectos',
-                'Tableros Kanban',
-                'Asignación de tareas',
-                'Colaboración en tiempo real',
-                'Métricas detalladas',
-                'Gestión de equipos',
-                'Interfaz minimalista',
-                'Notificaciones',
-              ].map((feature, index) => (
-                <div key={index} className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-300 flex-shrink-0" />
-                  <span className="text-white font-medium text-base md:text-lg">{feature}</span>
-                </div>
-              ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {/* Card Grande 1 */}
+            <div className="md:col-span-2 bg-gray-50 rounded-3xl p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 group">
+               <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-6 text-blue-600 group-hover:scale-110 transition-transform">
+                 <Layout size={24} />
+               </div>
+               <h3 className="text-2xl font-bold text-gray-900 mb-3">Espacios de Trabajo Flexibles</h3>
+               <p className="text-gray-500 mb-6">Organiza tus proyectos en Workspaces dedicados. Separa marketing, desarrollo y diseño en entornos únicos pero conectados.</p>
+               <div className="w-full h-32 bg-white rounded-xl border border-gray-200/60 shadow-inner overflow-hidden relative">
+                  <div className="absolute top-4 left-4 right-4 h-2 bg-gray-100 rounded-full" />
+                  <div className="absolute top-9 left-4 w-1/3 h-2 bg-gray-50 rounded-full" />
+               </div>
+            </div>
+
+            {/* Card Pequeña 1 */}
+            <div className="bg-white rounded-3xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 group">
+               <div className="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center shadow-sm mb-6 text-purple-600 group-hover:rotate-12 transition-transform">
+                 <KanbanSquare size={24} />
+               </div>
+               <h3 className="text-xl font-bold text-gray-900 mb-2">Tableros Kanban</h3>
+               <p className="text-gray-500 text-sm">Visualiza el progreso con arrastrar y soltar. Simple, potente y bonito.</p>
+            </div>
+
+            {/* Card Pequeña 2 */}
+            <div className="bg-white rounded-3xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 group">
+               <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center shadow-sm mb-6 text-green-600 group-hover:scale-110 transition-transform">
+                 <Users size={24} />
+               </div>
+               <h3 className="text-xl font-bold text-gray-900 mb-2">Colaboración Real</h3>
+               <p className="text-gray-500 text-sm">Invita a tu equipo, asigna tareas y comenta en tiempo real.</p>
+            </div>
+
+            {/* Card Grande 2 */}
+            <div className="md:col-span-2 bg-gray-900 rounded-3xl p-8 border border-gray-800 text-white hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+               <div className="relative z-10">
+                 <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm group-hover:scale-110 transition-transform">
+                   <ShieldCheck size={24} className="text-indigo-300" />
+                 </div>
+                 <h3 className="text-2xl font-bold mb-3">Seguridad y Control</h3>
+                 <p className="text-gray-400 mb-6 max-w-md">Roles granulares de administrador y miembro. Mantén el control total de quién ve y edita tus proyectos importantes.</p>
+               </div>
+               {/* Decoración fondo card oscura */}
+               <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
             </div>
           </div>
         </div>
 
-        {/* CTA Final */}
-        <div className="text-center py-10 md:py-20">
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
-            ¿Listo para fluir?
+        {/* --- LISTA DE BENEFICIOS --- */}
+        <div className="py-20 bg-gradient-to-b from-white to-blue-50/50 rounded-[3rem] my-10">
+           <div className="max-w-4xl mx-auto px-6">
+              <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">¿Por qué elegir AuraTasks?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6">
+                {[
+                  'Interfaz ultra-rápida sin recargas',
+                  'Actualizaciones en tiempo real',
+                  'Diseño minimalista que no distrae',
+                  'Gestión de roles y permisos',
+                  'Notificaciones inteligentes',
+                  'Modo oscuro (Próximamente)'
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 size={14} className="text-green-600" />
+                    </div>
+                    <span className="text-gray-700 font-medium">{item}</span>
+                  </div>
+                ))}
+              </div>
+           </div>
+        </div>
+
+        {/* --- CTA FINAL --- */}
+        <div className="text-center py-20 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-100/50 via-purple-100/50 to-pink-100/50 blur-3xl -z-10 rounded-full opacity-60" />
+          
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            Empieza a organizar tu éxito.
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 mb-8 md:mb-10 max-w-2xl mx-auto">
-            Únete a Flowly y transforma la manera en que tu equipo gestiona proyectos.
+          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+            Únete a AuraTasks hoy y transforma la manera en que tu equipo alcanza sus objetivos.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               href="/register"
-              className="w-full sm:w-auto inline-flex items-center justify-center bg-blue-600 text-white px-10 py-4 md:py-5 rounded-lg hover:bg-blue-700 transition-all hover:shadow-xl hover:scale-105 font-bold text-lg md:text-xl"
+              className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 transition-all transform hover:-translate-y-1"
             >
-              Crear Cuenta Gratis
-              <ArrowRight className="ml-2 w-5 h-5 md:w-6 md:h-6" />
-            </Link>
-            <Link
-              href="/login"
-              className="w-full sm:w-auto inline-flex items-center justify-center border-2 border-gray-300 text-gray-700 px-10 py-4 md:py-5 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all font-bold text-lg md:text-xl"
-            >
-              Ya tengo cuenta
+              Crear cuenta gratis
             </Link>
           </div>
         </div>
 
-        {/* Footer */}
-        <footer className="border-t border-gray-200 pt-8 md:pt-12 pb-8 mt-12 md:mt-20">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-             <div className="relative w-8 h-8 md:w-10 md:h-10">
-                <Image 
-                 src="https://drive.google.com/uc?export=view&id=1LOsbQcwaCFfTrprLrr-8yCE1CDP15LHM"
-                  alt="AuraTasks Logo" 
-                  width={60} 
-                  height={60} 
-                  className="object-contain"
-                />
-             </div>
-            <span className="text-lg md:text-xl font-bold text-gray-900">AuraTasks</span>
+      </main>
+
+      {/* --- FOOTER --- */}
+      <footer className="border-t border-gray-200 py-12 bg-white">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-2 mb-6 opacity-80">
+            <div className="w-6 h-6 bg-gray-900 rounded-md flex items-center justify-center text-white text-xs font-bold">A</div>
+            <span className="font-bold text-gray-900">AuraTasks</span>
           </div>
-          <p className="text-center text-gray-600 text-sm md:text-base">
-            © 2025 AuraTasks. Gestiona tareas con fluidez y en equipo. Todos los derechos reservados para Isaac Hung.
+          <p className="text-gray-500 text-sm mb-6">
+            © 2025 AuraTasks. Gestiona tareas con fluidez y en equipo. <br />
+            Desarrollado por Isaac Hung.
           </p>
-        </footer>
-      </div>
+          <div className="flex justify-center gap-6 text-sm text-gray-400">
+            <Link href="#" className="hover:text-gray-600">Privacidad</Link>
+            <Link href="#" className="hover:text-gray-600">Términos</Link>
+            <Link href="#" className="hover:text-gray-600">Contacto</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
