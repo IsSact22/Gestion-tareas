@@ -79,7 +79,7 @@ export default function Sidebar() {
           <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
              <div className="relative w-10 h-10 flex-shrink-0 bg-white rounded-xl shadow-sm flex items-center justify-center border border-gray-100">
                <Image 
-                  src="/logo/logo-aura.svg" 
+                  src="https://drive.google.com/uc?export=view&id=1LOsbQcwaCFfTrprLrr-8yCE1CDP15LHM" 
                   alt="AuraTasks Logo" 
                   width={28} 
                   height={28}

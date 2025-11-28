@@ -52,7 +52,7 @@ export default function KanbanColumn({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-gray-400 hover:text-gray-600 transition-all opacity-0 group-hover:opacity-100 md:opacity-0" // En móvil siempre visible si quieres, o maneja la opacidad
+            className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-gray-400 hover:text-gray-600 transition-all md:opacity-0 md:group-hover:opacity-100"
             style={{ opacity: showMenu ? 1 : undefined }} // Mantener visible si el menú está abierto
           >
             <MoreHorizontal size={16} />

@@ -148,6 +148,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="w-full px-4 py-2 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Ej: Implementar autenticación"
               required
               autoFocus
@@ -164,7 +165,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Describe la tarea..."
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-2 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
             />
           </div>
 
@@ -177,7 +178,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
               <select
                 value={formData.columnId}
                 onChange={(e) => setFormData({ ...formData, columnId: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2  text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 required
               >
                 <option value="">Selecciona una columna</option>
@@ -225,6 +226,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
                 type="text"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
+                className="w-full px-4 py-2 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
@@ -236,6 +238,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
               <Button
                 type="button"
                 onClick={handleAddTag}
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all bg-indigo-600 hover:bg-indigo-700"
                 variant="secondary"
               >
                 Agregar
@@ -290,7 +293,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
                         });
                       }
                     }}
-                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                    className="w-4 h-4 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500"
                   />
                   <div className="flex items-center gap-2 flex-1">
                     {member.user.avatar ? (
@@ -301,8 +304,8 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
                         className="w-8 h-8 rounded-full"
                       />
                     ) : (
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User size={16} className="text-blue-600" />
+                      <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                        <User size={16} className="text-indigo-600" />
                       </div>
                     )}
                     <div>
@@ -332,6 +335,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
             <Input
               type="date"
               value={formData.dueDate}
+              className="w-full px-4 py-2 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
             />
           </div>
@@ -348,6 +352,7 @@ export default function TaskModal({ isOpen, onClose, task, boardId, columnId }: 
             </Button>
             <Button
               type="submit"
+              className="px-4 py-2 rounded-lg text-sm font-medium transition-all bg-indigo-600 hover:bg-indigo-700"
               disabled={isLoading || !formData.title.trim() || !formData.columnId}
             >
               {isLoading ? 'Guardando...' : task ? 'Actualizar' : 'Crear'}

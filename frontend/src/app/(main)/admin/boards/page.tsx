@@ -79,19 +79,19 @@ export default function AdminBoardsPage() {
     }
   };
 
-  // const getRoleBadge = (role: string) => {
-  //   const styles = {
-  //     admin: 'bg-purple-100 text-purple-700',
-  //     member: 'bg-blue-100 text-blue-700',
-  //     viewer: 'bg-gray-100 text-gray-700',
-  //   };
-    
-  //   return (
-  //     <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[role as keyof typeof styles]}`}>
-  //       {role}
-  //     </span>
-  //   );
-  // };
+      // const getRoleBadge = (role: string) => {
+      //   const styles = {
+      //     admin: 'bg-purple-100 text-purple-700',
+      //     member: 'bg-blue-100 text-blue-700',
+      //     viewer: 'bg-gray-100 text-gray-700',
+      //   };
+        
+      //   return (
+      //     <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[role as keyof typeof styles]}`}>
+      //       {role}
+      //     </span>
+      //   );
+      // };
 
   if (isLoading) {
     return (
@@ -109,17 +109,6 @@ export default function AdminBoardsPage() {
       
        {/* Header Centrado */}
       <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-
-      <Button
-          type="button"
-          variant="primary"
-          onClick={() => window.history.back()}
-          className="flex items-center gap-2 self-start md:self-auto"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Regresar
-        </Button>
-
 
         <div className="text-center flex-1">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Gestión de Boards</h1>
@@ -181,7 +170,12 @@ export default function AdminBoardsPage() {
             >
               <div className="p-3 md:p-4 h-full flex flex-col justify-between">
                 <div className="flex items-start justify-between">
-                  <h3 className="text-lg md:text-xl font-bold text-white truncate">{board.name}</h3>
+                <h3 
+                  className="text-lg md:text-xl font-bold text-white line-clamp-2 leading-tight pr-8 break-words"
+                  title={board.name} 
+                >
+                  {board.name}
+                  </h3>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

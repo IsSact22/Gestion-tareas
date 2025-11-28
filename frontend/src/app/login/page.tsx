@@ -32,7 +32,7 @@ export default function LoginPage() {
     try {
       await login(formData.email, formData.password);
       toast.success('¡Bienvenido de nuevo!', {
-        duration: 3000,
+        duration: 1000,
       });
       router.push('/dashboard');
     } catch (error: any) {
@@ -56,12 +56,12 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
              <Image 
-               src="/logo/logo-aura.svg" 
+               src="https://drive.google.com/uc?export=view&id=1LOsbQcwaCFfTrprLrr-8yCE1CDP15LHM"
                alt="AuraTasks Logo" 
                width={60} 
                height={60}
                className="w-35 h-35"
-             />/
+             />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Iniciar Sesión

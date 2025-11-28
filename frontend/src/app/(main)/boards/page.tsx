@@ -18,6 +18,9 @@ const BOARD_COLORS = [
   { name: 'Naranja', value: '#F59E0B' },
   { name: 'Rojo', value: '#EF4444' },
   { name: 'Cian', value: '#06B6D4' },
+  { name: 'Amarillo', value: '#FBBF24' },
+  { name: 'Morado', value: '#AC24FBFF'},
+  { name: 'Rojo oscuro', value: '#7E0313FF'},
 ];
 
 export default function BoardsPage() {

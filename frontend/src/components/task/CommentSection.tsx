@@ -87,8 +87,8 @@ export default function CommentSection({
                     className="w-8 h-8 rounded-full"
                   />
                 ) : (
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <User size={16} className="text-blue-600" />
+                  <div className="w-8 h-8 bg-indigo-200 rounded-full flex items-center justify-center">
+                    <User size={16} className="text-indigo-600" />
                   </div>
                 )}
               </div>
@@ -141,16 +141,16 @@ export default function CommentSection({
             placeholder="Escribe un comentario..."
             rows={2}
             disabled={isSubmitting || isLoading}
-            className="w-full px-3 text-gray-700 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
+            className="w-full px-3 text-gray-700 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none text-sm"
           />
         </div>
         <Button
           type="submit"
           disabled={!newComment.trim() || isSubmitting || isLoading}
-          className="self-end"
+          className="self-end bg-indigo-500 hover:bg-indigo-600"
         >
           {isSubmitting ? (
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin " />
           ) : (
             <Send size={16} />
           )}

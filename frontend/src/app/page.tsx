@@ -21,7 +21,7 @@ export default function Home() {
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity z-50">
               <div className="relative w-10 h-10 md:w-12 md:h-12">
                 <Image 
-                  src="/logo/logo-aura.svg" 
+                  src="https://drive.google.com/uc?export=view&id=1LOsbQcwaCFfTrprLrr-8yCE1CDP15LHM" 
                   alt="AuraTasks Logo" 
                   fill
                   className="object-contain"
@@ -211,7 +211,7 @@ export default function Home() {
           <div className="flex items-center justify-center space-x-2 mb-4">
              <div className="relative w-8 h-8 md:w-10 md:h-10">
                 <Image 
-                  src="/logo/logo-aura.svg" 
+                 src="https://drive.google.com/uc?export=view&id=1LOsbQcwaCFfTrprLrr-8yCE1CDP15LHM"
                   alt="AuraTasks Logo" 
                   width={60} 
                   height={60} 
