@@ -10,7 +10,7 @@ import SearchTasksUseCase from '../../application/task/searchTasksUseCase.js';
 import TaskRepository from '../../infrastructure/database/prisma/TaskRepository.js';
 import ColumnRepository from '../../infrastructure/database/prisma/ColumnRepository.js';
 import BoardRepository from '../../infrastructure/database/prisma/BoardRepository.js';
-import ActivityRepository from '@/src/infrastructure/database/prisma/ActivityRepository.js';
+import ActivityRepository from '../../infrastructure/database/prisma/ActivityRepository.js';
 
 const taskRepository = new TaskRepository();
 const columnRepository = new ColumnRepository();

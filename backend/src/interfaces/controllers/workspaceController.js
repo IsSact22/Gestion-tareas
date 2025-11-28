@@ -6,7 +6,7 @@ import AddMemberUseCase from '../../application/workspace/addMemberUseCase.js';
 import { emitToWorkspace } from '../../socket/index.js';
 import WorkspaceRepository from '../../infrastructure/database/prisma/workspaceRepository.js';
 import BoardRepository from '../../infrastructure/database/prisma/BoardRepository.js';
-import UserRepository from '../../infrastructure/database/prisma/userRepository.js';
+import UserRepository from '../../infrastructure/database/prisma/UserRepository.js';
 
 const workspaceRepository = new WorkspaceRepository();
 const boardRepository = new BoardRepository();
