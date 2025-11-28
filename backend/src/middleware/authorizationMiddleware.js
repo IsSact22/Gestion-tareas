@@ -1,4 +1,4 @@
-import AppError from '@/src/core/AppError.js';
+import AppError from '../core/AppError.js';
 
 /**
  * Middleware para verificar si el usuario tiene uno de los roles permitidos
