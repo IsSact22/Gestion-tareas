@@ -1,4 +1,4 @@
-import TeamRepository from "../../infrastructure/database/prisma/teamRepository.js";
+import TeamRepository from "../../infrastructure/database/prisma/TeamRepository.js";
 import { AppError } from "../../utils/appError.js";
 
 const teamRepository = new TeamRepository();

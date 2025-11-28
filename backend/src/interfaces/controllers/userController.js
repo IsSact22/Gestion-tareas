@@ -1,4 +1,4 @@
-import UserRepository from "../../infrastructure/database/prisma/userRepository.js";
+import UserRepository from "../../infrastructure/database/prisma/UserRepository.js";
 
 const userRepository = new UserRepository();
 

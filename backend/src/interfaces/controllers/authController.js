@@ -1,7 +1,7 @@
 import RegisterUseCase from '../../application/auth/registerUseCase.js';
 import LoginUseCase from '../../application/auth/loginUseCase.js';
 import GetMeUseCase from '../../application/auth/getMeUseCase.js';
-import UserRepository from '../../infrastructure/database/prisma/userRepository.js';
+import UserRepository from '../../infrastructure/database/prisma/UserRepository.js';
 
 const userRepository = new UserRepository();
 const registerUseCase = new RegisterUseCase(userRepository);
