@@ -1,5 +1,5 @@
 import GetActivitiesUseCase from '../../application/activity/getActivitiesUseCase.js';
-import ActivityRepository from '@/src/infrastructure/database/prisma/ActivityRepository.js';
+import ActivityRepository from '../../infrastructure/database/prisma/ActivityRepository.js';
 import BoardRepository from '../../infrastructure/database/prisma/BoardRepository.js';
 
 const activityRepository = new ActivityRepository();

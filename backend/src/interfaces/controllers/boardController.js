@@ -9,7 +9,7 @@ import NotificationRepository from '../../infrastructure/database/prisma/Notific
 import WorkspaceRepository from '../../infrastructure/database/prisma/workspaceRepository.js';
 import ColumnRepository from '../../infrastructure/database/prisma/ColumnRepository.js';
 import TaskRepository from '../../infrastructure/database/prisma/TaskRepository.js';
-import ActivityRepository from '@/src/infrastructure/database/prisma/ActivityRepository.js';
+import ActivityRepository from '../../infrastructure/database/prisma/ActivityRepository.js';
 import UserRepository from '../../infrastructure/database/prisma/UserRepository.js';
 
 const boardRepository = new BoardRepository();
