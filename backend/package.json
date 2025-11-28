@@ -8,7 +8,8 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "build": "prisma generate",
-    "vercel-build": "prisma generate && prisma migrate deploy",
+    "vercel-build": "prisma generate",
+    "postinstall": "prisma generate",
     "test": "jest",
     "test:watch": "jest --watch"
   },
