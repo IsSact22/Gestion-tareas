@@ -117,7 +117,7 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <UserPlus size={20} className="text-blue-600" />
+              <UserPlus size={20} className="text-indigo-600" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">Agregar Miembro</h2>
@@ -160,6 +160,7 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
               <Button
                 type="button"
                 onClick={handleSearchUser}
+                className="bg-indigo-600 hover:bg-indigo-700"
                 disabled={isSearching || !email.trim()}
                 variant="secondary"
               >
@@ -189,7 +190,7 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
           {/* Rol */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
-              Rol en el board *
+              Rol en el board 
             </label>
             <div className="space-y-2">
               {ROLES.map((roleOption) => (
@@ -197,7 +198,7 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
                   key={roleOption.value}
                   className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${
                     role === roleOption.value
-                      ? 'border-blue-500 bg-blue-50'
+                      ? 'border-indigo-500 bg-indigo-50'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
@@ -219,8 +220,8 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
           </div>
 
           {/* Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-800">
+          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+            <p className="text-sm text-indigo-800">
               💡 <strong>Nota:</strong> Los miembros del workspace ya tienen acceso a este board. 
               Solo agrega miembros adicionales si necesitas dar acceso a usuarios fuera del workspace.
             </p>
@@ -238,6 +239,7 @@ export default function AddBoardMemberModal({ isOpen, onClose, boardId }: AddBoa
             </Button>
             <Button
               type="submit"
+              className="bg-indigo-600 hover:bg-indigo-700"
               disabled={isLoading || !foundUser}
             >
               {isLoading ? 'Agregando...' : 'Agregar Miembro'}

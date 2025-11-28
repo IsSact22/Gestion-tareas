@@ -1,7 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* Configuración de imágenes */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'drive.google.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+  
+  /* Tu configuración existente de webpack */
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

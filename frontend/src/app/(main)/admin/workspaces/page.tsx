@@ -104,18 +104,6 @@ export default function AdminWorkspacesPage() {
       
       {/* Header Centrado */}
       <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-
-      <Button
-          type="button"
-          variant="primary"
-          onClick={() => window.history.back()}
-          className="flex items-center gap-2 self-start md:self-auto"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Regresar
-        </Button>
-
-
         <div className="text-center flex-1">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Gestión de Workspaces</h1>
           <p className="text-sm md:text-base text-gray-600">Vista general de todos los workspaces del sistema</p>

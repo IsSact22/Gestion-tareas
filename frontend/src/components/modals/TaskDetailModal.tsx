@@ -159,7 +159,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
                     onClick={() => handleStatusChange(status)}
                     className={`px-4 py-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
                       currentStatus === status
-                        ? `${statusColors[status]} ring-2 ring-offset-2 ring-blue-500`
+                        ? `${statusColors[status]} ring-2 ring-offset-2 ring-indigo-500`
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
@@ -248,7 +248,7 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit }: TaskD
                       />
                     ) : (
                       <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User size={16} className="text-blue-600" />
+                        <User size={16} className="text-indigo-600" />
                       </div>
                     )}
                     <div>

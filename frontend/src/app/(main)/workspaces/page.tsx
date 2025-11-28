@@ -107,7 +107,7 @@ export default function WorkspacesPage() {
             {workspaces.length === 0 ? (
                 <div className="flex flex-col items-center justify-center bg-white rounded-2xl border-2 border-dashed border-gray-300 py-12 md:py-16 px-4 text-center shadow-sm">
                     <div className="w-16 h-16 md:w-20 md:h-20 bg-blue-50 rounded-full flex items-center justify-center mb-4 md:mb-5">
-                        <Folder className="w-8 h-8 md:w-10 md:h-10 text-blue-500" />
+                        <Folder className="w-8 h-8 md:w-10 md:h-10 text-indigo-500" />
                     </div>
                     <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
                         No hay workspaces aún
@@ -135,9 +135,9 @@ export default function WorkspacesPage() {
                             <div className="flex items-start justify-between mb-3 md:mb-4">
                                 <div className="flex-1 min-w-0">
                                     <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-2 md:mb-3">
-                                        <Folder className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
+                                        <Folder className="w-5 h-5 md:w-6 md:h-6 text-indigo-600" />
                                     </div>
-                                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors truncate">
+                                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors truncate">
                                         {workspace.name}
                                     </h3>
                                     {workspace.description && (

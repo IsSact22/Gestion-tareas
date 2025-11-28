@@ -180,7 +180,7 @@ export default function DashboardPage() {
             <div className="space-y-3">
               {isLoading ? (
                 <div className="flex justify-center py-8">
-                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : workspaces.length === 0 ? (
                 <div className="text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                     <div
                       key={workspace.id}
                       onClick={() => router.push(`/workspaces/${workspace.id}`)}
-                      className="group flex items-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-blue-200 hover:shadow-md hover:bg-blue-50/30 transition-all cursor-pointer"
+                      className="group flex items-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-indigo-500 hover:shadow-md hover:bg-blue-50/30 transition-all cursor-pointer"
                     >
                       <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
                          <span className="font-bold text-lg">{workspace.name.charAt(0).toUpperCase()}</span>

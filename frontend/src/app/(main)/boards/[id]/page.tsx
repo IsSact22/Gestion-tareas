@@ -16,9 +16,12 @@ import ManageMembersModal from '@/components/modals/ManageMembersModal';
 import { Users, Settings, Star, UserPlus, MoreHorizontal, Share2, Filter, ChevronLeft } from 'lucide-react';
 import { Column } from '@/services/columnService';
 import { Task } from '@/services/taskService';
+import { useAuthStore } from '@/store/authStore';
 
 export default function BoardDetailPage() {
   const params = useParams();
+  const { user: currentUser } = useAuthStore();
+  const isAdmin = currentUser?.role === 'admin';
   const router = useRouter();
   const boardId = params?.id 
     ? (typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '')
@@ -142,7 +145,14 @@ export default function BoardDetailPage() {
         {/* Izquierda: Navegación y Título */}
         <div className="flex items-center gap-4 flex-1 min-w-0">
           <button 
-            onClick={() => router.push('/boards')}
+            onClick={() => {
+                // Lógica simple y clara
+                if (isAdmin) {
+                  router.push('/admin/boards');
+                } else {
+                  router.push('/boards');
+                }
+              }}
             className="p-2 -ml-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             title="Volver a mis tableros"
           >
@@ -203,11 +213,6 @@ export default function BoardDetailPage() {
 
           {/* Botonera de Acciones */}
           <div className="flex items-center gap-2">
-             <button className="hidden md:flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-                <Filter size={16} />
-                <span>Filtrar</span>
-             </button>
-
              <button 
                 onClick={() => setShowMemberModal(true)}
                 className="hidden md:flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-200 rounded-lg transition-all"

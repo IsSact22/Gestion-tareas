@@ -78,13 +78,9 @@ export default function Sidebar() {
         )}>
           <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
              <div className="relative w-10 h-10 flex-shrink-0 bg-white rounded-xl shadow-sm flex items-center justify-center border border-gray-100">
-               <Image 
-                  src="/logo/logo-aura.svg" 
-                  alt="AuraTasks Logo" 
-                  width={28} 
-                  height={28}
-                  className="object-contain"
-                />
+               <div className="relative w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-blue-200">
+               A
+            </div>
              </div>
              {!collapsed && (
                <span className="font-bold text-xl text-gray-800 tracking-tight whitespace-nowrap">

@@ -146,8 +146,8 @@ export default function ManageMembersModal({ isOpen, onClose, boardId }: ManageM
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200">
-          <Button variant="secondary" onClick={onClose} className="w-full">
+        <div className="p-6 border-t border-gray-200 ">
+          <Button variant="secondary" onClick={onClose} className="w-full bg-indigo-600 hover:bg-indigo-700">
             Cerrar
           </Button>
         </div>

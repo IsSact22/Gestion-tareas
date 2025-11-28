@@ -54,7 +54,7 @@ class SocketService {
     this.socket.on('connect', () => {
       console.log('✅ Conectado a Socket.IO:', this.socket?.id);
       this.reconnectAttempts = 0;
-      toast.success('Conectado en tiempo real', { duration: 2000 });
+      toast.success('Conectado en tiempo real', { duration: 1000 });
     });
 
     this.socket.on('disconnect', (reason) => {

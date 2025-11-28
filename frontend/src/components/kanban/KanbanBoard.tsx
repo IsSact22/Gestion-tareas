@@ -7,6 +7,8 @@ import {
   DragStartEvent,
   PointerSensor,
   useSensor,
+  MouseSensor,
+  TouchSensor,
   useSensors,
 } from '@dnd-kit/core';
 import { useColumnStore } from '@/store/columnStore';
@@ -37,11 +39,23 @@ export default function KanbanBoard({
   const { columns, fetchColumns } = useColumnStore();
   const { tasks, fetchTasks, moveTask } = useTaskStore();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
+  // Configuración de sensores para soporte móvil y desktop
+  // Solo PointerSensor para permitir scroll nativo en móvil
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    // 1. Configuración para Mouse (Desktop)
+    useSensor(MouseSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 10, // Arrastrar requiere mover el mouse 10px (evita clicks accidentales)
+      },
+    }),
+    
+    // 2. Configuración para Táctil (Móvil/Tablet)
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250, // CRUCIAL: Debes mantener presionado 250ms para "agarrar" la tarea.
+        tolerance: 5, // Si mueves el dedo más de 5px durante esos 250ms, se cancela el arrastre y SE HACE SCROLL.
       },
     })
   );
@@ -75,6 +89,7 @@ export default function KanbanBoard({
     const task = tasks.find((t) => t.id === active.id);
     if (task) {
       setActiveTask(task);
+      setIsDragging(true);
     }
   };
 
@@ -131,6 +146,7 @@ export default function KanbanBoard({
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveTask(null);
+    setIsDragging(false);
 
     if (!over) return;
 
@@ -202,7 +218,10 @@ export default function KanbanBoard({
          - Mobile: snap-x manda el comportamiento de carrusel.
          - Desktop: scroll normal.
       */}
-      <div className="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar snap-x snap-mandatory md:snap-none">
+      <div 
+        className={`flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar ${isDragging ? '' : 'snap-x snap-mandatory'} md:snap-none`}
+        style={{ touchAction: 'pan-x pan-y' }}
+      >
         
         {/* Contenedor de Columnas */}
         <div className="flex h-full p-4 gap-4 md:gap-6 items-start">

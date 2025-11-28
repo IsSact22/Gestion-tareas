@@ -59,7 +59,7 @@ export default function ColumnModal({ isOpen, onClose, column, boardId }: Column
           </h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1 text-black hover:bg-indigo-500 rounded-lg transition-colors"
           >
             <X size={20} />
           </button>
@@ -74,6 +74,7 @@ export default function ColumnModal({ isOpen, onClose, column, boardId }: Column
             <Input
               type="text"
               value={name}
+              
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Por hacer, En progreso, Hecho"
               required
@@ -93,6 +94,7 @@ export default function ColumnModal({ isOpen, onClose, column, boardId }: Column
             </Button>
             <Button
               type="submit"
+              className="bg-indigo-600 hover:bg-indigo-700"
               disabled={isLoading || !name.trim()}
             >
               {isLoading ? 'Guardando...' : column ? 'Actualizar' : 'Crear'}
