@@ -1,16 +1,20 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import socketService from '@/services/socketService';
-import { useAuthStore } from '@/store/authStore';
+// import { useAuthStore } from '@/store/authStore';
 
 /**
  * Hook para inicializar Socket.IO automáticamente
+ * TEMPORALMENTE DESHABILITADO - Vercel no soporta WebSockets
  */
 export function useSocket() {
-  const { token, isAuthenticated } = useAuthStore();
-  const connectionAttempted = useRef(false);
+  // const { token, isAuthenticated } = useAuthStore();
+  // const connectionAttempted = useRef(false);
 
   useEffect(() => {
-    if (isAuthenticated && token && !connectionAttempted.current) {
+    // SOCKET.IO DESHABILITADO TEMPORALMENTE
+    // Vercel no soporta WebSockets - se necesita Railway, Render, etc.
+    
+    /* if (isAuthenticated && token && !connectionAttempted.current) {
       connectionAttempted.current = true;
       console.log('🔌 Intentando conectar Socket.IO con token:', token.substring(0, 20) + '...');
       
@@ -22,8 +26,8 @@ export function useSocket() {
         // No desconectamos aquí para mantener la conexión activa
         // socketService.disconnect();
       };
-    }
-  }, [isAuthenticated, token]);
+    } */
+  }, []);
 
   return socketService;
 }
