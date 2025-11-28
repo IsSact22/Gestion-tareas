@@ -107,11 +107,6 @@ export default function BoardsPage() {
     setShowDropdown(null);
   };
 
-  const handleToggleFavorite = async (e: React.MouseEvent, boardId: string) => {
-    e.stopPropagation();
-    await toggleFavorite(boardId);
-  };
-
   if (isLoading && boards.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -176,10 +171,14 @@ export default function BoardsPage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/10" />
                 
                 <button
-                  onClick={(e) => handleToggleFavorite(e, board.id)}
-                  className="absolute top-4 right-4 p-2 rounded-xl bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-colors"
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    toggleFavorite(board.id);
+                  }}
+                  className="absolute top-4 right-4 p-2 rounded-xl bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-all hover:scale-110"
+                  title={board.isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
                 >
-                  <Star className={`w-5 h-5 ${board.isFavorite ? 'fill-yellow-300 text-yellow-300' : 'text-white'}`} />
+                  <Star className={`w-5 h-5 transition-all ${board.isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-white hover:text-yellow-200'}`} />
                 </button>
               </div>
 

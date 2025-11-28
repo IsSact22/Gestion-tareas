@@ -90,11 +90,12 @@ model Board {
 }
 
 model BoardMember {
-  id       String   @id @default(uuid())
-  boardId  String
-  userId   String
-  role     String   @default("member") // 'admin' | 'member' | 'viewer'
-  joinedAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  boardId    String
+  userId     String
+  role       String   @default("member") // 'admin' | 'member' | 'viewer'
+  isFavorite Boolean  @default(false)
+  joinedAt   DateTime @default(now())
 
   // Relaciones
   board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)

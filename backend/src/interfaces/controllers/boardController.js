@@ -194,3 +194,23 @@ export async function getAllBoardsAdmin(req, res, next) {
     next(error);
   }
 }
+
+// Toggle favorite status de un board para el usuario actual
+export async function toggleFavorite(req, res, next) {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    
+    const result = await boardRepository.toggleFavorite(id, userId);
+    
+    res.status(200).json({ 
+      success: true, 
+      data: { 
+        boardId: id,
+        isFavorite: result.isFavorite 
+      } 
+    });
+  } catch (error) {
+    next(error);
+  }
+}

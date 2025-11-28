@@ -209,17 +209,23 @@ export default function TasksPage() {
                   
                   {/* Left: Status Indicator (Visual) */}
                   <div className={`hidden md:flex w-12 h-12 rounded-2xl items-center justify-center flex-shrink-0 ${statusColors[task.status]} bg-opacity-50`}>
-                     {(() => {
+                      {(() => {
                         const Icon = statusIcons[task.status];
                         return <Icon size={20} />;
-                     })()}
+                      })()}
                   </div>
 
                   {/* Middle: Content */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-3 mb-2">
-                      <h3 className="font-bold text-lg text-gray-800 truncate">{task.title}</h3>
-                      <span className={`px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full border ${priorityColors[task.priority]}`}>
+                    {/* CAMBIO AQUÍ: Usamos items-start en lugar de items-center para que si el título tiene 2 líneas, el badge se quede arriba */}
+                    <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1 mb-2">
+                      {/* CAMBIO PRINCIPAL AQUÍ: Reemplazamos 'truncate' por 'line-clamp-2' */}
+                      <h3 className="font-bold text-lg text-gray-800 line-clamp-2 flex-1 pr-2">
+                        {task.title}
+                      </h3>
+                      
+                      {/* Badge de prioridad (flex-shrink-0 para que no se aplaste) */}
+                      <span className={`flex-shrink-0 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full border ${priorityColors[task.priority]} mt-1`}>
                         {priorityLabels[task.priority]}
                       </span>
                     </div>
@@ -228,7 +234,7 @@ export default function TasksPage() {
                       {task.description || "Sin descripción adicional."}
                     </p>
 
-                    {/* Metadata Footer */}
+                    {/* ... (Resto del Metadata Footer y Actions igual que antes) ... */}
                     <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
                       {task.dueDate && (
                         <div className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-md">
@@ -249,24 +255,22 @@ export default function TasksPage() {
                     </div>
                   </div>
 
-                  {/* Right: Actions */}
+                  {/* Right: Actions (Sin cambios aquí) */}
                   <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-start gap-3 mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-gray-100 w-full md:w-auto">
-                    
-                    {/* Status Changer (Mini) */}
                     <div className="flex bg-gray-50 p-1 rounded-lg">
                       {(Object.keys(statusLabels) as Array<keyof typeof statusLabels>).map((status) => {
-                         const Icon = statusIcons[status];
-                         const isActive = task.status === status;
-                         return (
-                           <button
-                             key={status}
-                             onClick={(e) => { e.stopPropagation(); handleStatusChange(task.id, status); }}
-                             className={`p-1.5 rounded-md transition-all ${isActive ? 'bg-white shadow text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
-                             title={statusLabels[status]}
-                           >
-                             <Icon size={16} />
-                           </button>
-                         )
+                          const Icon = statusIcons[status];
+                          const isActive = task.status === status;
+                          return (
+                            <button
+                              key={status}
+                              onClick={(e) => { e.stopPropagation(); handleStatusChange(task.id, status); }}
+                              className={`p-1.5 rounded-md transition-all ${isActive ? 'bg-white shadow text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
+                              title={statusLabels[status]}
+                            >
+                              <Icon size={16} />
+                            </button>
+                          )
                       })}
                     </div>
 

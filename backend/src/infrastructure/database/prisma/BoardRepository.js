@@ -81,7 +81,7 @@ export default class BoardRepository {
    * Buscar boards por usuario
    */
     async findByUserId(userId) {
-        return prisma.board.findMany({
+        const boards = await prisma.board.findMany({
             where: {
                 members: {
                     some: {
@@ -105,6 +105,15 @@ export default class BoardRepository {
                 },
                 columns: true
             }
+        });
+
+        // Agregar el campo isFavorite basado en la relación del usuario actual
+        return boards.map(board => {
+            const userMembership = board.members.find(m => m.userId === userId);
+            return {
+                ...board,
+                isFavorite: userMembership?.isFavorite || false
+            };
         });
     }
     /**
@@ -251,5 +260,27 @@ export default class BoardRepository {
         return prisma.boardMember.delete({
             where: { boardId_userId: { boardId, userId } }
         });
+    }
+
+    /**
+   * Toggle favorite status de un board para un usuario
+   */
+    async toggleFavorite(boardId, userId) {
+        // Buscar la relación BoardMember
+        const member = await prisma.boardMember.findUnique({
+            where: { boardId_userId: { boardId, userId } }
+        });
+
+        if (!member) {
+            throw new Error('No eres miembro de este board');
+        }
+
+        // Toggle el estado de favorito
+        const updated = await prisma.boardMember.update({
+            where: { boardId_userId: { boardId, userId } },
+            data: { isFavorite: !member.isFavorite }
+        });
+
+        return { isFavorite: updated.isFavorite };
     }
 }

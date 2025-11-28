@@ -7,7 +7,8 @@ import {
   deleteBoard,
   addMember,
   removeMember,
-  getAllBoardsAdmin
+  getAllBoardsAdmin,
+  toggleFavorite
 } from '../../../../interfaces/controllers/boardController.js';
 import { protect } from '../../../../middleware/authMiddleware.js';
 import { isAdmin } from '../../../../middleware/authorizationMiddleware.js';
@@ -26,5 +27,6 @@ router.put('/:id', updateBoard);
 router.delete('/:id', deleteBoard);
 router.post('/:id/members', addMember);
 router.delete('/:id/members/:userId', removeMember);
+router.patch('/:id/favorite', toggleFavorite);
 
 export default router;

@@ -76,8 +76,8 @@ class BoardService {
   }
 
   // Marcar/desmarcar como favorito
-  async toggleFavorite(id: string): Promise<Board> {
-    const response = await api.post(`/boards/${id}/favorite`);
+  async toggleFavorite(id: string): Promise<{ boardId: string; isFavorite: boolean }> {
+    const response = await api.patch(`/boards/${id}/favorite`);
     return response.data.data;
   }
 

@@ -117,12 +117,16 @@ export const useBoardStore = create<BoardState>((set) => ({
 
   toggleFavorite: async (id: string) => {
     try {
-      const updatedBoard = await boardService.toggleFavorite(id);
+      const result = await boardService.toggleFavorite(id);
       set((state) => ({
-        boards: state.boards.map((b) => (b.id === id ? updatedBoard : b)),
-        currentBoard: state.currentBoard?.id === id ? updatedBoard : state.currentBoard,
+        boards: state.boards.map((b) => 
+          b.id === id ? { ...b, isFavorite: result.isFavorite } : b
+        ),
+        currentBoard: state.currentBoard?.id === id 
+          ? { ...state.currentBoard, isFavorite: result.isFavorite } 
+          : state.currentBoard,
       }));
-      toast.success(updatedBoard.isFavorite ? 'Agregado a favoritos' : 'Removido de favoritos');
+      toast.success(result.isFavorite ? '⭐ Agregado a favoritos' : 'Removido de favoritos');
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Error al actualizar favorito';
       toast.error(errorMessage);
