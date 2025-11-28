@@ -26,9 +26,16 @@ const authenticateSocket = (socket, next) => {
 };
 
 function initializeSocket(server) {
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://auratask-phi.vercel.app',
+    config.frontendUrl
+  ].filter(Boolean);
+
   io = new Server(server, {
     cors: {
-      origin: config.frontendUrl,
+      origin: allowedOrigins,
       methods: ['GET', 'POST'],
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization']
