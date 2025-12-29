@@ -60,7 +60,18 @@ export default class BoardRepository {
                         }
                     }
                 },
-                columns: true
+                columns: {
+                    include: {
+                        tasks: {
+                            orderBy: {
+                                position: 'asc'
+                            }
+                        }
+                    },
+                    orderBy: {
+                        position: 'asc'
+                    }
+                }
             }
         });
     }
